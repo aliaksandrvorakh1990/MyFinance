@@ -1,6 +1,6 @@
-# My_Finance
+# My Finance
 
-LOGIN COMMAND
+LOGIN COMMAND<br/>
 SIGN_IN#LOGIN=admin&PASSWORD=1234<br/>
 SIGN_UP#LOGIN=MrRobot&PASSWORD=9999<br/>
 <br/>
