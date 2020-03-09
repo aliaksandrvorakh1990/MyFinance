@@ -21,7 +21,7 @@ public class AccountDataSourceImpl implements AccountDataSource {
         this.stringConvertor = stringConvertor;
         this.accountConvertor = accountConvertor;
     }
-
+    
     @Override
     public void addTo(Map<String, Account> map, Account object) {
         map.put(object.getId(), object);
