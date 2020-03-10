@@ -1,126 +1,136 @@
 package by.vorakh.training.my_finance.dao.datasource.factoty;
 
-import by.vorakh.training.my_finance.bean.Account;
-import by.vorakh.training.my_finance.bean.Record;
-import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.convertor.Convertor;
-import by.vorakh.training.my_finance.convertor.impl.AccountToStringConvertor;
-import by.vorakh.training.my_finance.convertor.impl.ExpenseRecordToStringConvertor;
-import by.vorakh.training.my_finance.convertor.impl.StringToAccountConvertor;
-import by.vorakh.training.my_finance.convertor.impl.StringToExpenseRecordConvertor;
-import by.vorakh.training.my_finance.convertor.impl.StringToUserConvertor;
-import by.vorakh.training.my_finance.convertor.impl.UserToStringConvertor;
-import by.vorakh.training.my_finance.dao.datasource.AccountDataSource;
-import by.vorakh.training.my_finance.dao.datasource.ExpenseRecordDataSource;
-import by.vorakh.training.my_finance.dao.datasource.UserDataSource;
-import by.vorakh.training.my_finance.dao.datasource.impl.AccountDataSourceImpl;
-import by.vorakh.training.my_finance.dao.datasource.impl.ExpenseDataSourceImpl;
-import by.vorakh.training.my_finance.dao.datasource.impl.UserDataSourceImpl;
+import by.vorakh.training.my_finance.convertor.impl.csv.AccountEntityToCsvConvertor;
+import by.vorakh.training.my_finance.convertor.impl.csv.CsvToAccountEntityConvertor;
+import by.vorakh.training.my_finance.convertor.impl.csv.CsvToRecordEntityConvertor;
+import by.vorakh.training.my_finance.convertor.impl.csv.CsvToUserEntityConvetor;
+import by.vorakh.training.my_finance.convertor.impl.csv.RecordEntityToCsvConvertor;
+import by.vorakh.training.my_finance.convertor.impl.csv.UserEntityToCsvConvetor;
+import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.RecordEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.UserEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.impl.csv.AccountEntityCsvDataSourceImpl;
+import by.vorakh.training.my_finance.dao.datasource.impl.csv.RecordEntityCsvDataSourceImpl;
+import by.vorakh.training.my_finance.dao.datasource.impl.csv.UserEntityCsvDataSourceImpl;
+import by.vorakh.training.my_finance.dao.entity.AccountEntity;
+import by.vorakh.training.my_finance.dao.entity.RecordEntity;
+import by.vorakh.training.my_finance.dao.entity.UserEntity;
 
 public class DataSourceFactory {
     
-    private UserDataSource userDataSourse;
-    private AccountDataSource accountDataSource;
-    private ExpenseRecordDataSource expenseRecordDataSource;
+    private UserEntityCsvDataSource userDataSourse;
+    private AccountEntityCsvDataSource accountDataSource;
+    private RecordEntityCsvDataSource recordDataSource;
     
     public DataSourceFactory() {
         setUserDataSourse(new UserDataSourceBuilder()
-                .setStringConvertor(new StringToUserConvertor())
-                .setUserConvertor(new UserToStringConvertor())
+                .setCsvToUserEntityConvertor(new CsvToUserEntityConvetor())
+                .setUserEntityToCsvConvertor(new UserEntityToCsvConvetor())
                 .build());
         setAccountDataSource(new AccountDataSourceBuilder()
-                .setAccountConvertor( new AccountToStringConvertor())
-                .setStringConvertor(new StringToAccountConvertor())
+                .setCsvToAccountEntityConvertor(
+                        new CsvToAccountEntityConvertor())
+                .setAccountEntityToCsvConvertor(
+                        new AccountEntityToCsvConvertor())
                 .build());
-        setExpenseRecordDataSource(new ExpenseRecordDataSourceBuilder()
-                .setRecordConvertor(new ExpenseRecordToStringConvertor())
-                .setStringConvertor(new StringToExpenseRecordConvertor())
+        setRecordDataSource(new RecordDataSourceBuilder()
+                .setCsvToRecordConvertor(new CsvToRecordEntityConvertor())
+                .setRecordToCsvConvertor(new RecordEntityToCsvConvertor())
                 .build());
     }
     
     private static class AccountDataSourceBuilder {
         
-        private Convertor<String, Account> stringConvertor;
-        private Convertor<Account, String> accountConvertor;
+        Convertor<String, AccountEntity> csvToAccountEntityConvertor;
+        Convertor<AccountEntity, String> accountEntityToCsvConvertor;
         
-        AccountDataSourceBuilder setStringConvertor(Convertor<String, Account> stringConvertor) {
-            this.stringConvertor = stringConvertor;
+        AccountDataSourceBuilder setCsvToAccountEntityConvertor(
+                Convertor<String, AccountEntity> csvToAccountEntityConvertor) {
+            this.csvToAccountEntityConvertor = csvToAccountEntityConvertor;
             return this;
         }
-        AccountDataSourceBuilder setAccountConvertor(Convertor<Account, String> accountConvertor) {
-            this.accountConvertor = accountConvertor;
+        AccountDataSourceBuilder setAccountEntityToCsvConvertor(
+                Convertor<AccountEntity, String> accountEntityToCsvConvertor) {
+            this.accountEntityToCsvConvertor = accountEntityToCsvConvertor;
             return this;
         }
-        AccountDataSourceImpl build() {
-            return new AccountDataSourceImpl(stringConvertor,accountConvertor);
+
+        AccountEntityCsvDataSource build() {
+            return new AccountEntityCsvDataSourceImpl(
+                    csvToAccountEntityConvertor,accountEntityToCsvConvertor);
         }
     }
     
     private static class UserDataSourceBuilder {
         
-        private Convertor<String, User> stringConvertor;
-        private Convertor<User, String> userConvertor;
-        
-        UserDataSourceBuilder setStringConvertor(Convertor<String, User> 
-                stringConvertor) {
-            this.stringConvertor = stringConvertor;
+        private Convertor<String, UserEntity> csvToUserEntityConvertor;
+        private Convertor<UserEntity, String> userEntityToCsvConvertor;
+
+        UserDataSourceBuilder setCsvToUserEntityConvertor(
+                Convertor<String, UserEntity> csvToUserEntityConvertor) {
+            this.csvToUserEntityConvertor = csvToUserEntityConvertor;
             return this;
         }
 
-        UserDataSourceBuilder setUserConvertor(Convertor<User, String> 
-                userConvertor) {
-            this.userConvertor = userConvertor;
+        UserDataSourceBuilder setUserEntityToCsvConvertor(
+                Convertor<UserEntity, String> userEntityToCsvConvertor) {
+            this.userEntityToCsvConvertor = userEntityToCsvConvertor;
             return this;
         }
 
-        UserDataSourceImpl build() {
-            return new UserDataSourceImpl(stringConvertor,userConvertor);
+        UserEntityCsvDataSource build() {
+            return new UserEntityCsvDataSourceImpl(csvToUserEntityConvertor, 
+                    userEntityToCsvConvertor);
         }
     }
     
-    private static class ExpenseRecordDataSourceBuilder {
-        private Convertor<String, Record> stringConvertor;
-        private Convertor<Record, String> recordConvertor;
-        
-        ExpenseRecordDataSourceBuilder setStringConvertor(
-                Convertor<String, Record> stringConvertor) {
-            this.stringConvertor = stringConvertor;
+    private static class RecordDataSourceBuilder {
+        private Convertor<String, RecordEntity> csvToRecordConvertor;
+        private Convertor<RecordEntity, String> recordToCsvConvertor;
+
+        RecordDataSourceBuilder setCsvToRecordConvertor(
+                Convertor<String, RecordEntity> csvToRecordConvertor) {
+            this.csvToRecordConvertor = csvToRecordConvertor;
+            return this;
+        }
+
+        RecordDataSourceBuilder setRecordToCsvConvertor(
+                Convertor<RecordEntity, String> recordToCsvConvertor) {
+            this.recordToCsvConvertor = recordToCsvConvertor;
             return this;
         }
         
-        ExpenseRecordDataSourceBuilder setRecordConvertor(
-                Convertor<Record, String> recordConvertor) {
-            this.recordConvertor = recordConvertor;
-            return this;
-        }
-        
-        ExpenseDataSourceImpl build() {
-            return new ExpenseDataSourceImpl(stringConvertor,recordConvertor);
+        RecordEntityCsvDataSource build() {
+            return new RecordEntityCsvDataSourceImpl(csvToRecordConvertor,
+                    recordToCsvConvertor);
         }
     }
     
-    private void setUserDataSourse(UserDataSource userDataSourse) {
+    private void setUserDataSourse(UserEntityCsvDataSource userDataSourse) {
         this.userDataSourse = userDataSourse;
     }
 
-    private void setAccountDataSource(AccountDataSource accountDataSource) {
+    private void setAccountDataSource(AccountEntityCsvDataSource 
+            accountDataSource) {
         this.accountDataSource = accountDataSource;
     }
 
-    private void setExpenseRecordDataSource(ExpenseRecordDataSource expenseRecordDataSource) {
-        this.expenseRecordDataSource = expenseRecordDataSource;
+    private void setRecordDataSource(RecordEntityCsvDataSource 
+            recordDataSource) {
+        this.recordDataSource = recordDataSource;
     }
 
-    public UserDataSource getUserDataSourse() {
+    public UserEntityCsvDataSource getUserDataSourse() {
         return userDataSourse;
     }
 
-    public AccountDataSource getAccountDataSource() {
+    public AccountEntityCsvDataSource getAccountDataSource() {
         return accountDataSource;
     }
 
-    public ExpenseRecordDataSource getExpenseRecordDataSource() {
-        return expenseRecordDataSource;
+    public RecordEntityCsvDataSource getRecordDataSource() {
+        return recordDataSource;
     }
 
 }
