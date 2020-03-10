@@ -8,12 +8,13 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Account implements Serializable {
+    
     private static final long serialVersionUID = -8025723822579428024L;
     
     private String id;
     private String name;
     private BigDecimal balance;
-    private List<ExpenseRecord> expenses;
+    private List<Record> expenses;
     
     public Account() {}
 
@@ -23,7 +24,7 @@ public class Account implements Serializable {
     }
 
     public Account(String name, BigDecimal balance, 
-            List<ExpenseRecord> expenses) {
+            List<Record> expenses) {
         this.name = name;
         this.balance = balance;
         this.expenses = expenses;
@@ -36,7 +37,7 @@ public class Account implements Serializable {
     }
 
     public Account(String id, String name, BigDecimal balance, 
-            List<ExpenseRecord> expenses) {
+            List<Record> expenses) {
         this.id = id;
         this.name = name;
         this.balance = balance;
@@ -55,7 +56,7 @@ public class Account implements Serializable {
         return balance;
     }
 
-    public List<ExpenseRecord> getExpenses() {
+    public List<Record> getExpenses() {
         return expenses;
     }
 
@@ -67,17 +68,17 @@ public class Account implements Serializable {
         this.name = name;
     }
 
-    public void setBalanse(BigDecimal balanse) {
-        this.balance = balanse;
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
     
-    public void setExpenses(List<ExpenseRecord> expenses) {
+    public void setExpenses(List<Record> expenses) {
         this.expenses = expenses;
     }
 
     @Override
     public String toString() {
-        return String.format("%s [id=%s, name=%s, balanse=%s, expenses=%s]",
+        return String.format("%s [id=%s, name=%s, balance=%s, expenses=%s]",
                 getClass().getName(), id, name, balance,expenses);
     }
 
@@ -88,7 +89,8 @@ public class Account implements Serializable {
         result = prime * result + ((balance == null) ? 0 : balance.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
         result = prime * result + ((name == null) ? 0 : name.hashCode());
-        return prime * result + ((expenses == null) ? 0 : expenses.hashCode());
+        result =prime * result + ((expenses == null) ? 0 : expenses.hashCode());
+        return result;
     }
 
     @Override
@@ -131,16 +133,14 @@ public class Account implements Serializable {
         return true;
     }
     
-    private static boolean equals(List<ExpenseRecord> listA, 
-            List<ExpenseRecord> listB) {
+    private static boolean equals(List<Record> listA, List<Record> listB) {
         boolean isEquals = false;
         if (listA!=null && listB!=null) {
             int sizeA = listA.size();
             int sizeB = listB.size();
             if (sizeA == sizeB) {
-                ExpenseRecord[] arrA= listA.toArray(new ExpenseRecord[sizeA]);
-                ArrayList<ExpenseRecord>  copyA = new ArrayList<>(Arrays
-                        .asList(arrA));
+                Record[] arrA= listA.toArray(new Record[sizeA]);
+                ArrayList<Record>  copyA = new ArrayList<>(Arrays.asList(arrA));
                 copyA.removeAll(listB);
                 if (copyA.isEmpty()) {
                     isEquals= true;
