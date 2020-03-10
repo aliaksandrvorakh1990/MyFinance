@@ -13,7 +13,7 @@ public class CsvToAccountEntityConvertor implements AccountEntityCsvValidator,
         Convertor<String, AccountEntity> {
 
     @Override
-    public AccountEntity converte(String object) throws ConvertorException {
+    public AccountEntity converte(String object) {
         if (!isCorrectAccountCsv(object)) {
             String message = "[CsvToAccountEntityConvertor]" + PROBLEM 
                     + "CVS has a wrong format for account entity";

@@ -13,7 +13,7 @@ import by.vorakh.training.my_finance.validation.csv.RecordEntityCsvValidator;
 public class CsvToRecordEntityConvertor implements RecordEntityCsvValidator, Convertor<String, RecordEntity> {
 
     @Override
-    public RecordEntity converte(String object) throws ConvertorException {
+    public RecordEntity converte(String object) {
         if (!isCorrectRecordCsv(object)) {
             String message = "[CsvToAccountEntityConvertor]" + PROBLEM 
                     + "CVS has a wrong format for account entity";

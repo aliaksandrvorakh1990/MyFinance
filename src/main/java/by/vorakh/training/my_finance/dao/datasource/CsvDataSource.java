@@ -19,7 +19,7 @@ import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
 import by.vorakh.training.my_finance.validation.FileValidator;
 
-public abstract class CsvDataSource<T> implements FileValidator {
+public abstract class CsvDataSource<T, C extends Collection<T>> implements FileValidator {
     
     private Convertor<String, T> csvToEntityConvertor;
     private Convertor<T, String> entitycsvToConvertor;
@@ -51,13 +51,12 @@ public abstract class CsvDataSource<T> implements FileValidator {
         try (Reader fileReader = new FileReader(file);
              BufferedReader reader = new BufferedReader(fileReader);) {
             Map<String, T> map = new LinkedHashMap<String, T>();
-            String currentLine;
-            while (!isEqualsNull(currentLine = reader.readLine())) {
-                T entity = csvToEntityConvertor.converte(currentLine);
+            reader.lines().forEach(csv -> {
+                T entity = csvToEntityConvertor.converte(csv);
                 addTo(map, entity);
-            }
+            });
             return map;
-        } catch (IOException |ConvertorException e) {
+        } catch (IOException e) {
             String message = READ_PROBLEM + e.getMessage();
             throw new DataSourceException(message, e);
         }
@@ -66,7 +65,7 @@ public abstract class CsvDataSource<T> implements FileValidator {
     protected abstract void addTo(Map<String, T> map, T entity);
     
     public void write(T entity, String path) throws DataSourceException {
-        if (entity != null) {
+        if (entity == null) {
             String message = WRITE_PROBLEM + "entity has null value.";
             throw new DataSourceException(message);
         }
@@ -82,20 +81,21 @@ public abstract class CsvDataSource<T> implements FileValidator {
         }
     }
     
-    @SuppressWarnings("null")
-    public void write(Collection<T> entities, String path) throws
+
+    public void write(C entities, String path) throws 
             DataSourceException {
-        if (entities != null) {
+        if (entities == null) {
             String message = WRITE_PROBLEM + "entities has null value.";
             throw new DataSourceException(message);
         }
-        entities.stream().forEach(entity -> {
+        for  (T entity : entities) {
             try {
                 write(entity, path);
             } catch (DataSourceException e) {
-                // write to logger
+                String message = WRITE_PROBLEM + e.getMessage();
+                throw new DataSourceException(message, e);
             }
-        });
+        }
     }
 
     public void clearFile(String path) throws DataSourceException {

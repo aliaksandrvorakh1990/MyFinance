@@ -12,7 +12,7 @@ public class CsvToUserEntityConvetor implements Convertor<String, UserEntity>,
         UserEntityCsvValidator {
 
     @Override
-    public UserEntity converte(String object) throws ConvertorException {
+    public UserEntity converte(String object) {
         if (!isCorrectUserCsv(object)) {
             String message = "[UserEntityToCsvConvetor]" + PROBLEM + "CVS has"
                     + " a wrong format for user entity";

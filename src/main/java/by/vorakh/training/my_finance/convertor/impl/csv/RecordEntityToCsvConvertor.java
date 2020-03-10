@@ -11,7 +11,7 @@ public class RecordEntityToCsvConvertor implements RecordEntityValidator,
         Convertor<RecordEntity, String> {
 
     @Override
-    public String converte(RecordEntity object) throws ConvertorException {
+    public String converte(RecordEntity object) {
         if (!isCorrectEntity(object)) {
             String message = "[RecordEntityToCsvConvertor]" + PROBLEM  
                     + "RecordEntity has null value or One and more fields "

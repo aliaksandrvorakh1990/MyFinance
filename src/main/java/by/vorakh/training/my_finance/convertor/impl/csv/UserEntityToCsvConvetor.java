@@ -11,7 +11,7 @@ public class UserEntityToCsvConvetor implements Convertor<UserEntity, String>,
         UserEntityValidator {
 
     @Override
-    public String converte(UserEntity object) throws ConvertorException {
+    public String converte(UserEntity object) {
         if (!isCorrectEntity(object)) {
             String message = "[UserEntityToCsvConvetor]" + PROBLEM + "UserEntity"
                     + " has null value or One and more fields have null value.";

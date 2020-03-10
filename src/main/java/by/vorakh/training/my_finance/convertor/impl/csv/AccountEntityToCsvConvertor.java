@@ -11,7 +11,7 @@ public class AccountEntityToCsvConvertor implements AccountEntityValidator,
         Convertor< AccountEntity, String> {
 
     @Override
-    public String converte(AccountEntity object) throws ConvertorException {
+    public String converte(AccountEntity object) {
         if (!isCorrectEntity(object)) {
             String message = "[AccountEntityToCsvConvertor]" + PROBLEM  
                     + "AccountEntity has null value or One and more fields "
