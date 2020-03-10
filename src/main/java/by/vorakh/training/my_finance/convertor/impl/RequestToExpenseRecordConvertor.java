@@ -2,7 +2,7 @@ package by.vorakh.training.my_finance.convertor.impl;
 
 import java.math.BigDecimal;
 
-import by.vorakh.training.my_finance.bean.ExpenseRecord;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
@@ -11,7 +11,7 @@ import by.vorakh.training.my_finance.validation.ExpenseTypeValidator;
 import by.vorakh.training.my_finance.validation.RequestValidator;
 
 public class RequestToExpenseRecordConvertor implements 
-        Convertor<String, ExpenseRecord>, RequestValidator, CurrencyValidator, 
+        Convertor<String, Record>, RequestValidator, CurrencyValidator, 
         ExpenseTypeValidator {
     
     private static final String REGEX = "&";
@@ -20,7 +20,7 @@ public class RequestToExpenseRecordConvertor implements
     private static final String TYPE = "TYPE";
     
     @Override
-    public ExpenseRecord converte(String object) throws ConvertorException {
+    public Record converte(String object) throws ConvertorException {
         String problem = "[RequestToExpenseRecordConvertor]"
                 + ConvertorException.PROBLEM;
         if (isEqualsNull(object)) {
@@ -57,7 +57,7 @@ public class RequestToExpenseRecordConvertor implements
                     break;
             }
         }
-        return new ExpenseRecord(amount, type);
+        return new Record(amount, type);
     }
 
 }

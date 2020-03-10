@@ -16,20 +16,10 @@ public class MyAccounts implements Command, IdValidator, AccountToTableOutputter
 
     private AccountService service;
     private RequestToIdConvertor convertor;
-    
-    protected MyAccounts() {}
 
     public MyAccounts(AccountService service, RequestToIdConvertor convertor) {
 	    this.service = service;
         this.convertor = convertor;
-    }
-    
-    public AccountService getService() {
-        return service;
-    }
-
-    public RequestToIdConvertor getConvertor() {
-        return convertor;
     }
 
     @Override
@@ -40,12 +30,9 @@ public class MyAccounts implements Command, IdValidator, AccountToTableOutputter
             throw new CommandException(message);
         }
         try {
-            String response = null;
             String id = convertor.converte(request);
-            if (isUserId(id)) {
-                List<Account> myAccounts = service.getAll(id);
-                response = createTable(myAccounts);
-            }
+            List<Account> myAccounts = service.getAll(id);
+            String response = createTable(myAccounts);
             return response;
         } catch (ConvertorException | ServiceException e) {
             String message = problem + e.getMessage();

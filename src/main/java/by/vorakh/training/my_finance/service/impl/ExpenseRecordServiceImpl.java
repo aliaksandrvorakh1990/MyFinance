@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import by.vorakh.training.my_finance.bean.Account;
-import by.vorakh.training.my_finance.bean.ExpenseRecord;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.convertor.impl.ExpenseRecordIdToAccountIdConvertor;
@@ -29,7 +29,7 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
     }
 
     @Override
-    public List<ExpenseRecord> getAll() throws ServiceException {
+    public List<Record> getAll() throws ServiceException {
         String problem = "[ExpenseRecordServiceImpl]Unable to execute operation"
                     + " of all expense records reading:";
         try {
@@ -41,7 +41,7 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
     }
 
     @Override
-    public List<ExpenseRecord> getAll(String  accountId) throws
+    public List<Record> getAll(String  accountId) throws
             ServiceException {
         String problem = "[ExpenseRecordServiceImpl]Unable to execute operation"
                 + " of expense records reading by  account Id:";
@@ -50,7 +50,7 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
             throw new ServiceException(message);
         }
         try {
-            List<ExpenseRecord> accountExpenses = new ArrayList<ExpenseRecord>();
+            List<Record> accountExpenses = new ArrayList<Record>();
             Account account = accountDAO.getById(accountId);
             if (!isEqualsNull(account)) {
                 accountExpenses.addAll(expenseDAO.getAll(account));
@@ -63,7 +63,7 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
     }
 
     @Override
-    public List<ExpenseRecord> getAll(String  accountId, ExpenseType type)
+    public List<Record> getAll(String  accountId, ExpenseType type)
             throws ServiceException  {
         String problem = "[ExpenseRecordServiceImpl]Unable to execute operation"
                 + " of expense records reading by account id and expense type:";
@@ -76,11 +76,11 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
             throw new ServiceException(message);
         }
         try {
-            List<ExpenseRecord> accountExpenses =
-                    new ArrayList<ExpenseRecord>();
+            List<Record> accountExpenses =
+                    new ArrayList<Record>();
             Account account = accountDAO.getById(accountId);
             if (!isEqualsNull(account)) {
-                for (ExpenseRecord expense : getAll(accountId)) {
+                for (Record expense : getAll(accountId)) {
                    ExpenseType currentExpenseType = expense.getType();
                    if (currentExpenseType.equals(type)) {
                        accountExpenses.add(expense);
@@ -95,7 +95,7 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
     }
 
     @Override
-    public ExpenseRecord getById(String id) throws ServiceException {
+    public Record getById(String id) throws ServiceException {
         String problem = "[ExpenseRecordServiceImpl]Unable to execute operation"
                 + " of expense records reading:";
         if(!isExpenseRecordId(id)) {
@@ -118,7 +118,7 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
     }
 
     @Override
-    public String create(ExpenseRecord object) throws ServiceException {
+    public String create(Record object) throws ServiceException {
         String problem = "[ExpenseRecordServiceImpl]Unable to execute "
                 + "ExpenseRecord creating operation:";
         if (isEqualsNull(object)) {
@@ -140,7 +140,7 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
                 balanse = (object.getType().getIsExpense()) 
                         ? balanse.subtract(amount) 
                         : balanse.add(amount);
-                seletedAccount.setBalanse(balanse);
+                seletedAccount.setBalance(balanse);
                 accountDAO.update(seletedAccount);
                 long creatingTime = new Date().getTime();
                 String recordId = String.format("%sT%s", id,
@@ -157,7 +157,7 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
     }
 
     @Override
-    public Boolean update(ExpenseRecord object) throws ServiceException {
+    public Boolean update(Record object) throws ServiceException {
         String problem = "[ExpenseRecordServiceImpl]Unable to execute "
                 + "ExpenseRecord updating operation:";
         if (isEqualsNull(object)) {
@@ -179,7 +179,7 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
             }
             Account seletedAccount = accountDAO.getById(accountId);
             if (!isEqualsNull(seletedAccount)) {
-                ExpenseRecord oldRecord = expenseDAO.getById(expenseId);
+                Record oldRecord = expenseDAO.getById(expenseId);
                 BigDecimal balanse =seletedAccount.getBalance();
                 BigDecimal oldAmount = oldRecord.getAmount();
                 balanse = (oldRecord.getType().getIsExpense()) 
@@ -189,7 +189,7 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
                 balanse = (object.getType().getIsExpense()) 
                         ? balanse.subtract(newAmount) 
                         : balanse.add(newAmount);
-                seletedAccount.setBalanse(balanse);
+                seletedAccount.setBalance(balanse);
                 accountDAO.update(seletedAccount);
                 response = expenseDAO.update(object);
             }
@@ -222,13 +222,13 @@ public class ExpenseRecordServiceImpl implements ExpenseRecordService,
             }
             Account seletedAccount = accountDAO.getById(accountId);
             if (!isEqualsNull(seletedAccount)) {
-                ExpenseRecord deletedRecord = expenseDAO.getById(id);
+                Record deletedRecord = expenseDAO.getById(id);
                 BigDecimal balanse =seletedAccount.getBalance();
                 BigDecimal amount = deletedRecord.getAmount();
                 balanse = (deletedRecord.getType().getIsExpense()) 
                         ? balanse.add(amount)  
                         : balanse.subtract(amount);
-                seletedAccount.setBalanse(balanse);
+                seletedAccount.setBalance(balanse);
                 accountDAO.update(seletedAccount);
                 response = expenseDAO.delete(id);
             }

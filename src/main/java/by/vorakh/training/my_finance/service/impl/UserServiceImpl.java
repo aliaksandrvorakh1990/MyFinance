@@ -12,7 +12,6 @@ import by.vorakh.training.my_finance.dao.UserDAO;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.UserService;
-import by.vorakh.training.my_finance.service.entity.LoginResponse;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 import by.vorakh.training.my_finance.validation.UserValidator;
 
@@ -39,7 +38,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
     }
 
     @Override
-    public User getById(Integer id) throws ServiceException {
+    public User getById(String id) throws ServiceException {
         String problem = "[UserServiceImpl]Unable to execute user reading "
                 + "operation using id:";
         if (isEqualsNull(id)) {
@@ -54,7 +53,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
         }
     }
 
-    public LoginResponse singIn(User user) throws ServiceException {
+    public UserRole singIn(User user) throws ServiceException {
         String problem = "[UserServiceImpl]Unable to execute sign in "
                 + "operation:";
         if (isEqualsNull(user)) {
@@ -62,7 +61,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
             throw new ServiceException(message);
         }
         try {
-            LoginResponse response = null;
+            UserRole role  = null;
             String login = user.getLogin();
             if (!isCorrectLogin(login)) {
                 String message = problem + "Login has wrong format or null."
@@ -75,25 +74,23 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
                         + "value.";
                 throw new ServiceException(message);
             }
-            User foundUser = getById(login.hashCode());
+            User foundUser = getById(login);
             if (!isEqualsNull(foundUser)) {
                 String encryptedPassword = getSHA(password);
-                String  foundUserPassoword = foundUser.getPassword();
-                Integer id = foundUser.getId();
-                UserRole role = foundUser.getRole();
-                if((encryptedPassword.equals(foundUserPassoword))
-                    && (!isEqualsNull(id)) && (!isEqualsNull(role))) {
-                    response = new LoginResponse(id, role);
+                String foundUserPassoword = foundUser.getPassword();
+                
+                if (encryptedPassword.equals(foundUserPassoword)) {
+                    role = foundUser.getRole();
                 }
             }
-            return response;
+            return role;
         } catch (ServiceException | CryptoException e) {
             String message = problem + e.getMessage();
             throw new ServiceException(message, e);
         }
     }
 
-    public LoginResponse singUp(User user) throws ServiceException {
+    public UserRole singUp(User user) throws ServiceException {
         String problem = "[UserServiceImpl]Unable to execute sign up "
                 + "operation:";
         if (isEqualsNull(user)) {
@@ -101,10 +98,11 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
             throw new ServiceException(message);
         }
         try {
-            Integer id = create(user);
-            UserRole role = user.getRole();
-            LoginResponse response = (isEqualsNull(id)) ? null
-                    : new LoginResponse(id, role);
+            UserRole response = null;
+            String id = create(user);
+            if (id != null) {
+                response = user.getRole();
+            } 
             return response;
         } catch (ServiceException e) {
             String message = problem + e.getMessage();
@@ -113,7 +111,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
     }
 
     @Override
-    public Integer create(User object) throws ServiceException {
+    public String create(User object) throws ServiceException {
         String problem = "[UserServiceImpl]Unable to execute user creating "
                 + "operation:";
         if (isEqualsNull(object)) {
@@ -123,10 +121,6 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
         String login = object.getLogin();
         if (!isCorrectLogin(login)) {
             String message = problem + "Login has wrong format or null value";
-            throw new ServiceException(message);
-        }
-        if (!isIdOFThisLogin(login, object.getId())) {
-            String message = problem + "ID is not for this login.";
             throw new ServiceException(message);
         }
         String password = object.getPassword();
@@ -141,26 +135,21 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
             throw new ServiceException(message);
         }
         try {
+            String response = null;
             String encryptedPassword = getSHA(password);
             object.setPassword(encryptedPassword);
-            boolean isContainLogin = false;
-            for (User user : getAll()) {
-                if(login.equals(user.getLogin())) {
-                    isContainLogin = true;
-                    break;
-                }
-            }
-            Integer id = null;
+            boolean isContainLogin = !isEqualsNull(getById(login));
             if (!isContainLogin) {
-            id = userDAO.create(object);
-                String accountId = object.getId().toString();
+                response = userDAO.create(object);
+                String accountId = object.getLogin();
                 String accoutnName = new String("MyFirstAccount");
                 BigDecimal startBalance = new BigDecimal(0).
                         setScale(2, BigDecimal.ROUND_HALF_UP);
-                accountService.create(new Account(accountId, accoutnName,
-                    startBalance));
+                Account newAccount = new Account(accountId, accoutnName,
+                        startBalance);
+                accountService.create(newAccount);
             }
-            return id;
+            return response;
         } catch (DAOException | ServiceException | CryptoException e) {
                 String message = problem + e.getMessage();
                 throw new ServiceException(message, e);
@@ -177,13 +166,13 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
         }
         try {
             Boolean response = null;
-            Integer id = object.getId();
+            String id = object.getLogin();
             boolean isContain = isEqualsNull(getById(id)) ;
             if (isContain) {
                 List<Account> userAccounts = object.getAccounts();
                 if (!isEqualsNull(userAccounts)) {
                     for (Account account : userAccounts) {
-                    accountService.update(account);
+                        accountService.update(account);
                     }
                 }
                 response = userDAO.update(object);
@@ -196,7 +185,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
     }
 
     @Override
-    public Boolean deleteById(Integer id) throws ServiceException {
+    public Boolean deleteById(String id) throws ServiceException {
         String problem = "[UserServiceImpl]Unable to execute user deleting "
                 + "operation:";
         if (isEqualsNull(id)) {
@@ -211,7 +200,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
                 List<Account> userAccounts = deletedUser.getAccounts();
                 if (!isEqualsNull(userAccounts)) {
                     for (Account account : userAccounts) {
-                    accountService.deleteById(account.getId());
+                        accountService.deleteById(account.getId());
                     }
                 }
                 response = userDAO.delete(id);

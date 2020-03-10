@@ -9,15 +9,6 @@ public interface UserValidator extends NotNullValidator {
         return ((!isEqualsNull(login)) && (login.matches(regex)));
     }
 
-    default boolean isIdOFThisLogin(String login, Integer id) {
-        boolean isCorrect = false;
-        if((!isEqualsNull(login)) && (!isEqualsNull(id))) {
-            Integer loginHash = login.hashCode();
-            isCorrect =  id.equals(loginHash);
-        }
-        return isCorrect;
-    }
-
     default boolean isCorrectPassword(String password) {
         String regex ="[a-zA-Z\\d]{4,12}?";
         return ((!isEqualsNull(password)) && (password.matches(regex)));

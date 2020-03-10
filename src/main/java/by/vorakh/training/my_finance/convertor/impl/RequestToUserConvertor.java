@@ -27,7 +27,6 @@ public class RequestToUserConvertor implements Convertor<String, User>, UserVali
             String message = problem + "Request has less than two args.";
             throw new ConvertorException(message);
         }
-        Integer id = null;
         String login = null;
         String password = null;
         UserRole role = null;
@@ -43,7 +42,6 @@ public class RequestToUserConvertor implements Convertor<String, User>, UserVali
                         throw new ConvertorException(message);
                     }
                     login = argValue;
-                    id = login.hashCode();
                     break;
                 case PASS_ARG:
                     if(!isCorrectPassword(argValue)) {
@@ -61,7 +59,7 @@ public class RequestToUserConvertor implements Convertor<String, User>, UserVali
                     break;
             }
         }
-        return new User(id, login, password, role);
+        return new User(login, password, role);
     }
 
 }

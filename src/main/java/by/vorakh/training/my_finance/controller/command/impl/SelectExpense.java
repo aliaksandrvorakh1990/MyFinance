@@ -1,6 +1,6 @@
 package by.vorakh.training.my_finance.controller.command.impl;
 
-import by.vorakh.training.my_finance.bean.ExpenseRecord;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
@@ -32,7 +32,7 @@ public class SelectExpense implements Command, IdValidator {
             String response = null;
             String id = convertor.converte(request);
             if (isExpenseRecordId(id)) {
-                ExpenseRecord myRecord = service.getById(id);
+                Record myRecord = service.getById(id);
                 response = myRecord.toString();
             }
             return response;

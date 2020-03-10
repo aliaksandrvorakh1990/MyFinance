@@ -22,7 +22,7 @@ public class LoginController implements Controller {
              String commandName = request.substring(0, beginIndex);	
              Command executionCommand = provider.getCommand(commandName);
              String requestArgs = (isCorrectRequestWithoutArgs(request)) ? null 
-        	        : request.substring(beginIndex + 1);
+                     : request.substring(beginIndex + 1);
              return executionCommand.execute(requestArgs);
         } catch (CommandException e) {
             // log e.printStackTrace();

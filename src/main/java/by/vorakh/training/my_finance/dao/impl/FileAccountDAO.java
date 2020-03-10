@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import by.vorakh.training.my_finance.bean.Account;
-import by.vorakh.training.my_finance.bean.ExpenseRecord;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.ExpenseRecordDAO;
 import by.vorakh.training.my_finance.dao.datasource.AccountDataSource;
@@ -29,7 +29,7 @@ public class FileAccountDAO implements AccountDAO , NotNullValidator{
             String path = accountDataSource.getPathToFile();
             Map<String, Account> accountsMap = accountDataSource.read(path);
             for (Account account : accountsMap.values()) {
-                List<ExpenseRecord> accountExpenses = expenseDAO.getAll(account);
+                List<Record> accountExpenses = expenseDAO.getAll(account);
                 account.setExpenses(accountExpenses);
             }
             List<Account> allAccounts = new ArrayList<Account>(accountsMap.values());
@@ -57,7 +57,7 @@ public class FileAccountDAO implements AccountDAO , NotNullValidator{
             for (Account account : accountsMap.values()) {
                 String accountId = account.getId();
                 if (accountId.startsWith(userId)) {
-                    List<ExpenseRecord> accountExpenses = expenseDAO.getAll(account);
+                    List<Record> accountExpenses = expenseDAO.getAll(account);
                     account.setExpenses(accountExpenses);
                     allUserAccounts.add(account);
                 }
@@ -82,7 +82,7 @@ public class FileAccountDAO implements AccountDAO , NotNullValidator{
             Map<String, Account> accountsMap = accountDataSource.read(path);
             Account account = accountsMap.get(id);
             if (!isEqualsNull(account)) {
-                List<ExpenseRecord> accountExpenses = expenseDAO.getAll(account);
+                List<Record> accountExpenses = expenseDAO.getAll(account);
                 account.setExpenses(accountExpenses);
             }
             return account;

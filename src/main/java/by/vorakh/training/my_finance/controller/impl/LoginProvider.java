@@ -11,7 +11,6 @@ import by.vorakh.training.my_finance.controller.command.impl.Exit;
 import by.vorakh.training.my_finance.controller.command.impl.SignIn;
 import by.vorakh.training.my_finance.controller.command.impl.SignUp;
 import by.vorakh.training.my_finance.controller.command.impl.WrongRequest;
-import by.vorakh.training.my_finance.convertor.impl.LoginResponseStringConvertor;
 import by.vorakh.training.my_finance.convertor.impl.RequestToUserConvertor;
 import by.vorakh.training.my_finance.service.factory.ServiceFactory;
 
@@ -27,11 +26,9 @@ public class LoginProvider implements CommandProvider {
     private void init() {
         repository.put(CommandName.SIGN_IN, new SignIn(
                 new ServiceFactory().getUserService(),
-                new  LoginResponseStringConvertor(),
                 new RequestToUserConvertor()));
         repository.put(CommandName.SIGN_UP, new SignUp(
                 new ServiceFactory().getUserService(),
-                new  LoginResponseStringConvertor(),
                 new RequestToUserConvertor()));
         repository.put(CommandName.WRONG_REQUEST, new WrongRequest());
         repository.put(CommandName.EXIT, new Exit());

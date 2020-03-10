@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import by.vorakh.training.my_finance.bean.Account;
-import by.vorakh.training.my_finance.bean.ExpenseRecord;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.dao.datasource.ExpenseRecordDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
@@ -15,23 +15,23 @@ public class ExpenseDataSourceImpl implements ExpenseRecordDataSource {
     private static final String PATH_FORMAT =
             "./src/main/resources/records/%s.txt";
 
-    private Convertor<String, ExpenseRecord> stringConvertor;
+    private Convertor<String, Record> stringConvertor;
 
-    private Convertor<ExpenseRecord, String> recordConvertor;
+    private Convertor<Record, String> recordConvertor;
 
-    public ExpenseDataSourceImpl(Convertor<String, ExpenseRecord> stringConvertor,
-            Convertor<ExpenseRecord, String> recordConvertor) {
+    public ExpenseDataSourceImpl(Convertor<String, Record> stringConvertor,
+            Convertor<Record, String> recordConvertor) {
         this.stringConvertor = stringConvertor;
         this.recordConvertor = recordConvertor ;
     }
 
     @Override
-    public void addTo(Map<String, ExpenseRecord> map, ExpenseRecord object) {
+    public void addTo(Map<String, Record> map, Record object) {
         map.put(object.getId(), object);
     }
     
     @Override
-    public String getPathToFile(ExpenseRecord record) throws DataSourceException {
+    public String getPathToFile(Record record) throws DataSourceException {
         if (isEqualsNull(record)) {
             String message = "Unable to execute path getting operation"
                     + "Record has null value.";
@@ -67,26 +67,26 @@ public class ExpenseDataSourceImpl implements ExpenseRecordDataSource {
     }
     
     @Override
-    public Map<String, ExpenseRecord> read(String path) throws
+    public Map<String, Record> read(String path) throws
             DataSourceException{
         return this.read(path, stringConvertor);
     }
     
     @Override
-    public void write(ExpenseRecord record, String path, boolean append) throws
+    public void write(Record record, String path, boolean append) throws
             DataSourceException {
         this.write(record, append, path, recordConvertor);
     }
     
     @Override
-    public void write(Collection<ExpenseRecord> records, boolean append) throws
+    public void write(Collection<Record> records, boolean append) throws
             DataSourceException {
         final String PROBLEM = "Unable to execute file writing operation:";
         if (isEqualsNull(records)) {
             String message = PROBLEM + "Records Collection has null value.";
             throw new DataSourceException(message);
         }
-        for (ExpenseRecord record : records) {
+        for (Record record : records) {
             try {
                 String path = getPathToFile(record);
                 write(record, path, append);

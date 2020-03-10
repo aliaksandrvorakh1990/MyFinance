@@ -19,7 +19,6 @@ public class Main {
     private final static String EXIT = "Exit";
     
     private static ContollerStrategy mainContoller = new ContollerStrategy();
-    private static String id = null;
 
     public static void main (String args[]) throws IOException {
         Console console = System.console();
@@ -43,8 +42,7 @@ public class Main {
         while (true) {
             selectController(role);
             if (role.equals(USER) || role.equals(ADMIN)) {
-                console.format("You are identified%nid=%s%nrole=%s%n", 
-                        id , role);
+                console.format("You are identified%nrole=%s%n", role);
                 break;
             }
             String command = console.readLine("Enter command: ");
@@ -60,9 +58,7 @@ public class Main {
                     doExit(console);
             }
             if (response != null) {
-                String[] idAndRole = response.split("\\|");
-                id = idAndRole[0];
-                role = idAndRole[1];
+                role = response;
             }
         }
     }

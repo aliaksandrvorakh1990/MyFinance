@@ -26,9 +26,9 @@ public class FileUserDAO implements UserDAO, NotNullValidator {
     public List<User> getAll() throws DAOException {
         try {
             String path = userDataSource.getPathToFile();
-            Map<Integer, User> users; users = userDataSource.read(path);
+            Map<String, User> users; users = userDataSource.read(path);
             for (User user : users.values()) {
-            String userID = user.getId().toString();
+            String userID = user.getLogin();
                 List<Account> userAccounts = accountDAO.getAll(userID);
                 user.setAccounts(userAccounts);
             }
@@ -42,7 +42,7 @@ public class FileUserDAO implements UserDAO, NotNullValidator {
         }
     }
 
-    public User getById(Integer id) throws DAOException {
+    public User getById(String id) throws DAOException {
         String problem = "[FileUserDAO]Unable to execute operation"
                 + " of reading using id:";
         if (isEqualsNull(id)) {
@@ -51,7 +51,7 @@ public class FileUserDAO implements UserDAO, NotNullValidator {
         }
         try {
             String path = userDataSource.getPathToFile();
-            Map<Integer, User> users = userDataSource.read(path);
+            Map<String, User> users = userDataSource.read(path);
             User user = users.get(id);
             if (!isEqualsNull(user)) {
                 List<Account> userAccounts = accountDAO.getAll(id.toString());
@@ -64,7 +64,7 @@ public class FileUserDAO implements UserDAO, NotNullValidator {
         }
     }
 
-    public Integer create(User object) throws DAOException {
+    public String create(User object) throws DAOException {
         String problem = "[FileUserDAO]Unable to execute creating"
                 + " operation:";
         if (isEqualsNull(object)) {
@@ -75,7 +75,7 @@ public class FileUserDAO implements UserDAO, NotNullValidator {
             String path = userDataSource.getPathToFile();
             boolean append = true;
             userDataSource.write(object, path, append);
-            return object.getId();
+            return object.getLogin();
         }  catch (DataSourceException e) {
             String message = problem + object + e.getMessage();
             throw new DAOException(message, e);
@@ -91,9 +91,9 @@ public class FileUserDAO implements UserDAO, NotNullValidator {
             throw new DAOException(message);
         }
         try {
-            Integer id = object.getId();
+            String id = object.getLogin();
             String path = userDataSource.getPathToFile();
-            Map<Integer, User> usersMap = userDataSource.read(path);
+            Map<String, User> usersMap = userDataSource.read(path);
             boolean isUpdated = !isEqualsNull(usersMap.replace(id, object));
             if (isUpdated) {
                 userDataSource.clearFile(path);
@@ -108,7 +108,7 @@ public class FileUserDAO implements UserDAO, NotNullValidator {
     }
 
     @Override
-    public boolean delete(Integer id) throws DAOException {
+    public boolean delete(String id) throws DAOException {
         String problem = "[FileUserDAO]Unable to execute deleting"
                 + " operation:";
         if (isEqualsNull(id)) {
@@ -117,7 +117,7 @@ public class FileUserDAO implements UserDAO, NotNullValidator {
         }
         try {
             String path = userDataSource.getPathToFile();
-            Map<Integer, User> usersMap = userDataSource.read(path);
+            Map<String, User> usersMap = userDataSource.read(path);
             boolean isDeleted = !isEqualsNull(usersMap.remove(id));
             if (isDeleted) {
                 userDataSource.clearFile(path);

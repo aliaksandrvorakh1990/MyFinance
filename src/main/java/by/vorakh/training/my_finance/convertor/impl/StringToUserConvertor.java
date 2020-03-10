@@ -11,7 +11,6 @@ public class StringToUserConvertor implements Convertor<String, User> ,
 
     private static final String FIELD_DELIMETER = "&";
     private static final char DELIMETER = '=';
-    private static final String ID = "ID";
     private static final String LOGIN = "LOGIN";
     private static final String PASSWORD = "PASSWORD";
     private static final String ROLE = "ROLE";
@@ -23,7 +22,6 @@ public class StringToUserConvertor implements Convertor<String, User> ,
                     + "String has null value.";
             throw new ConvertorException(message);
         }
-        Integer id = null;
         String login = null;
         String password = null;
         UserRole role = null;
@@ -33,9 +31,6 @@ public class StringToUserConvertor implements Convertor<String, User> ,
             String fieldName = field.substring(0, beginIndex);
             String fieldValue = field.substring(beginIndex + 1);
             switch (fieldName.toUpperCase()) {
-                case ID:
-                    id = Integer.valueOf(fieldValue);
-                    break;
                 case LOGIN:
                     login = fieldValue;
                     break;
@@ -47,7 +42,7 @@ public class StringToUserConvertor implements Convertor<String, User> ,
                     break;
             }
         }
-        return new User(id, login, password, role);
+        return new User(login, password, role);
     }
 
 }

@@ -2,7 +2,7 @@ package by.vorakh.training.my_finance.controller.command.impl;
 
 import java.util.List;
 
-import by.vorakh.training.my_finance.bean.ExpenseRecord;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
@@ -36,7 +36,7 @@ public class MyExpenses implements Command, IdValidator,
             String response = null;
             String id = convertor.converte(request);
             if (isAccountId(id)) {
-                List<ExpenseRecord> myRecords = service.getAll(id);
+                List<Record> myRecords = service.getAll(id);
                 response = createTable(myRecords);
             }
             return response;

@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import by.vorakh.training.my_finance.bean.Account;
-import by.vorakh.training.my_finance.bean.ExpenseRecord;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.dao.AccountDAO;
@@ -52,12 +52,8 @@ public class AccountServiceImpl implements AccountService, IdValidator,
             String message = problem + "User ID has null value.\n";
             throw new ServiceException(message);
         }
-        if (!isUserId(userId)) {
-            String message = problem + "This ID is not User Id Format.\n";
-            throw new ServiceException(message);
-        }
         try {
-            User user = userDAO.getById(Integer.valueOf(userId));
+            User user = userDAO.getById(userId);
             List<Account> userAccounts = new ArrayList<Account>();
             if (!isEqualsNull(user)) {
                 userAccounts.addAll(accountDao.getAll(userId));
@@ -73,10 +69,6 @@ public class AccountServiceImpl implements AccountService, IdValidator,
     public Account getById(String id) throws ServiceException {
         String problem = "[AccountServiceImpl]Unable to execute operation"
                 + " of accounts reading using account id:";
-        if (isEqualsNull(id)) {
-            String message = problem + "Account ID has null value.\n";
-            throw new ServiceException(message);
-        }
         if (!isAccountId(id)) {
             String message = problem + "This ID is not Account Id Format.\n";
             throw new ServiceException(message);
@@ -97,33 +89,25 @@ public class AccountServiceImpl implements AccountService, IdValidator,
             String message = problem + "Account has null value.";
             throw new ServiceException(message);
         }
-        String userId = object.getId();
-        if (!isUserId(userId)) {
-            String message = problem + "This is not user id.";
-            throw new ServiceException(message);
-        }
         try {
             String response = null;
-            User selecttedUser = userDAO.getById(Integer.valueOf(userId));
+            String userId = object.getId();
+            User selecttedUser = userDAO.getById(userId);
             if (!isEqualsNull(selecttedUser)) {
                 long creatingTime = new Date().getTime();
-                String accountId = String.format("%sA%s", userId,
+                String accountId = String.format("%s@%s", userId,
                         creatingTime);
-                if (!isAccountId(accountId)) {
-                    String message = problem + "This id has wrong format.";
-                    throw new ServiceException(message);
-                }
                 object.setId(accountId);
-                String recordId = String.format("%sT%s", accountId,
+                String recordId = String.format("%s/%s", accountId,
                         creatingTime);
-                ExpenseRecord firstRecord = new ExpenseRecord(recordId,
+                Record firstRecord = new Record(recordId,
                         object.getBalance(), ExpenseType.INCOME);
                 accountDao.create(object);
                 expenseDAO.create(firstRecord);
                 response =object.getId();
             }
             return response;
-        } catch (DAOException | ServiceException e) {
+        } catch (DAOException e) {
             String message = problem + e.getMessage();
             throw new ServiceException(message, e);
         }

@@ -24,8 +24,8 @@ public class UserDataSourceImpl implements UserDataSource, NotNullValidator {
     }
 
     @Override
-    public void addTo(Map<Integer, User> map, User object) {
-        map.put(object.getId(), object);
+    public void addTo(Map<String, User> map, User object) {
+        map.put(object.getLogin(), object);
     }
 
     @Override
@@ -34,7 +34,7 @@ public class UserDataSourceImpl implements UserDataSource, NotNullValidator {
     }
     
     @Override
-    public Map<Integer, User> read(String path) throws
+    public Map<String, User> read(String path) throws
             DataSourceException{
         return this.read(path, stringConvertor);
     }

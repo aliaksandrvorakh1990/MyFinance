@@ -41,10 +41,6 @@ public class CreateAccount implements Command, RequestValidator, IdValidator,
         }
         try {
             String userId = idConvertor.converte(request);
-            if (!isUserId(userId)) {
-            String message = problem + "Request has to have Id.";
-                throw new CommandException(message);
-            }
             Account account = accountConvertor.converte(request);
             account.setId(userId);
             String accountId = service.create(account);

@@ -3,22 +3,23 @@ package by.vorakh.training.my_finance.bean;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class ExpenseRecord implements Serializable {
+public class Record implements Serializable {
+
     private static final long serialVersionUID = -5869930803209218929L;
     
     private String id;
     private BigDecimal amount;
     private ExpenseType type;
     
-    public ExpenseRecord() {}
+    public Record() {}
 
-    public ExpenseRecord(BigDecimal amount, 
+    public Record(BigDecimal amount, 
             ExpenseType type) {
         this.amount = amount;
         this.type = type;
     }
 
-    public ExpenseRecord(String id, BigDecimal amount, ExpenseType type) {
+    public Record(String id, BigDecimal amount, ExpenseType type) {
         this.id = id;
         this.amount = amount;
         this.type = type;
@@ -60,7 +61,8 @@ public class ExpenseRecord implements Serializable {
         int result = 1;
         result = prime * result + ((amount == null) ? 0 : amount.hashCode());
         result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return prime * result + ((type == null) ? 0 : type.hashCode());
+        result = prime * result + ((type == null) ? 0 : type.hashCode());
+        return result;
     }
 
     @Override
@@ -68,10 +70,13 @@ public class ExpenseRecord implements Serializable {
         if (this == obj) {
             return true;
         }
-        if (obj == null || getClass() != obj.getClass()) {
+        if (obj == null) {
             return false;
         }
-        ExpenseRecord other = (ExpenseRecord) obj;
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Record other = (Record) obj;
         if (amount == null) {
             if (other.amount != null) {
                 return false;
@@ -86,6 +91,9 @@ public class ExpenseRecord implements Serializable {
         } else if (id.compareTo(other.id) != 0) {
             return false;
         }
-        return type == other.type;
+        if (type != other.type) {
+            return false;
+        }
+        return true;
     }    
 }

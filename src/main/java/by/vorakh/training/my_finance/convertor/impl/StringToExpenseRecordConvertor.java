@@ -2,14 +2,14 @@ package by.vorakh.training.my_finance.convertor.impl;
 
 import java.math.BigDecimal;
 
-import by.vorakh.training.my_finance.bean.ExpenseRecord;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.validation.NotNullValidator;
 
 public class StringToExpenseRecordConvertor implements
-        Convertor<String, ExpenseRecord>, NotNullValidator {
+        Convertor<String, Record>, NotNullValidator {
 
     private static final String FIELD_DELIMETER = "&";
     private static final char DELIMETER = '=';
@@ -18,7 +18,7 @@ public class StringToExpenseRecordConvertor implements
     private static final String AMOUNT = "AMOUNT";
 
     @Override
-    public ExpenseRecord converte(String object) throws ConvertorException {
+    public Record converte(String object) throws ConvertorException {
         if ((isEqualsNull(object))) {
             String message = "Unable to execute convertion operation: "
                     + "String has null value.";
@@ -50,7 +50,7 @@ public class StringToExpenseRecordConvertor implements
                     break;
             }
         }
-        return new ExpenseRecord(id, amount, type);
+        return new Record(id, amount, type);
     }
 
 }

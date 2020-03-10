@@ -1,13 +1,12 @@
 package by.vorakh.training.my_finance.controller.command.impl;
 
 import by.vorakh.training.my_finance.bean.User;
+import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.convertor.impl.LoginResponseStringConvertor;
 import by.vorakh.training.my_finance.convertor.impl.RequestToUserConvertor;
 import by.vorakh.training.my_finance.service.UserService;
-import by.vorakh.training.my_finance.service.entity.LoginResponse;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 import by.vorakh.training.my_finance.validation.NotNullValidator;
 
@@ -15,25 +14,16 @@ public class SignIn implements Command, NotNullValidator {
     
     
     private UserService userService;
-	private LoginResponseStringConvertor  loginResponseConvertor;
 	private  RequestToUserConvertor requestUserConvertor ;
-	
-	protected SignIn() {}
 
-	public SignIn(UserService loginService, 
-	        LoginResponseStringConvertor loginResponseConvertor,
+	public SignIn(UserService loginService,
 		    RequestToUserConvertor requestUserConvertor) {
 	    this.userService = loginService;
-	    this.loginResponseConvertor = loginResponseConvertor;
 	    this.requestUserConvertor = requestUserConvertor;
 	}
 
 	public UserService getUserService() {
 	    return userService;
-	}
-
-	public LoginResponseStringConvertor getLoginResponseConvertor() {
-	    return loginResponseConvertor;
 	}
 
 	public RequestToUserConvertor getRequestUserConvertor() {
@@ -49,16 +39,12 @@ public class SignIn implements Command, NotNullValidator {
         }
 		try {
 			User user = requestUserConvertor.converte(request);
-			LoginResponse serviceResponse = userService.singIn(user);
-			String response = loginResponseConvertor.converte(serviceResponse);
-			return response;
-		} catch (ConvertorException e) {
-			String message = "Convertor";
+			UserRole serviceResponse = userService.singIn(user);
+			return serviceResponse.name();
+		} catch (ConvertorException | ServiceException e) {
+			String message = problem + e.getMessage();
 			throw new CommandException(message, e);
-		} catch (ServiceException e) {
-			String message = "Service";
-			throw new CommandException(message, e);
-		}
+		} 
 	}
 	
 }

@@ -1,7 +1,7 @@
 package by.vorakh.training.my_finance.dao.datasource.factoty;
 
 import by.vorakh.training.my_finance.bean.Account;
-import by.vorakh.training.my_finance.bean.ExpenseRecord;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.impl.AccountToStringConvertor;
@@ -79,17 +79,17 @@ public class DataSourceFactory {
     }
     
     private static class ExpenseRecordDataSourceBuilder {
-        private Convertor<String, ExpenseRecord> stringConvertor;
-        private Convertor<ExpenseRecord, String> recordConvertor;
+        private Convertor<String, Record> stringConvertor;
+        private Convertor<Record, String> recordConvertor;
         
         ExpenseRecordDataSourceBuilder setStringConvertor(
-                Convertor<String, ExpenseRecord> stringConvertor) {
+                Convertor<String, Record> stringConvertor) {
             this.stringConvertor = stringConvertor;
             return this;
         }
         
         ExpenseRecordDataSourceBuilder setRecordConvertor(
-                Convertor<ExpenseRecord, String> recordConvertor) {
+                Convertor<Record, String> recordConvertor) {
             this.recordConvertor = recordConvertor;
             return this;
         }

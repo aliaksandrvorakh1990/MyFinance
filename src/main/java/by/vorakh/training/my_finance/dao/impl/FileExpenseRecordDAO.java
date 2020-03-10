@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import by.vorakh.training.my_finance.bean.Account;
-import by.vorakh.training.my_finance.bean.ExpenseRecord;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.dao.ExpenseRecordDAO;
 import by.vorakh.training.my_finance.dao.datasource.AccountDataSource;
 import by.vorakh.training.my_finance.dao.datasource.ExpenseRecordDataSource;
@@ -25,14 +25,14 @@ public class FileExpenseRecordDAO implements ExpenseRecordDAO, NotNullValidator 
     }
 
     @Override
-    public List<ExpenseRecord> getAll() throws DAOException {
+    public List<Record> getAll() throws DAOException {
         try {
             String path = accountDataSource.getPathToFile();
             List<Account> allAccounts = new ArrayList<Account>(accountDataSource
                 .read(path).values());
-            List<ExpenseRecord> allExpenses = new ArrayList<ExpenseRecord>();
+            List<Record> allExpenses = new ArrayList<Record>();
             for(Account account : allAccounts) {
-            List<ExpenseRecord>  accountExpenses = getAll(account);
+            List<Record>  accountExpenses = getAll(account);
             allExpenses.addAll(accountExpenses);
             }
             return allExpenses;
@@ -45,7 +45,7 @@ public class FileExpenseRecordDAO implements ExpenseRecordDAO, NotNullValidator 
     }
 
     @Override
-    public List<ExpenseRecord> getAll(Account account) throws DAOException {
+    public List<Record> getAll(Account account) throws DAOException {
         String problem = "[FileExpenseRecordDAO]Unable to execute operation"
                 + " of reading using account :";
         if (isEqualsNull(account)) {
@@ -54,9 +54,9 @@ public class FileExpenseRecordDAO implements ExpenseRecordDAO, NotNullValidator 
         }
         try {
             String path = expenseDataSource.getPathToFile(account);
-            Map<String, ExpenseRecord> expenses = expenseDataSource.read(path);
-            List<ExpenseRecord> accountExpenses =
-                    new ArrayList<ExpenseRecord>(expenses.values());
+            Map<String, Record> expenses = expenseDataSource.read(path);
+            List<Record> accountExpenses =
+                    new ArrayList<Record>(expenses.values());
             return accountExpenses;
         } catch (DataSourceException e) {
             String message = problem + e.getMessage();
@@ -65,7 +65,7 @@ public class FileExpenseRecordDAO implements ExpenseRecordDAO, NotNullValidator 
     }
 
     @Override
-    public ExpenseRecord getById(String id) throws DAOException {
+    public Record getById(String id) throws DAOException {
         String problem = "[FileExpenseRecordDAO]Unable to execute operation"
                 + " of reading using id :";
         if (isEqualsNull(id)) {
@@ -74,7 +74,7 @@ public class FileExpenseRecordDAO implements ExpenseRecordDAO, NotNullValidator 
         }
         try {
             String path = expenseDataSource.getPathToFile(id);
-            Map<String, ExpenseRecord> expenses = expenseDataSource.read(path);
+            Map<String, Record> expenses = expenseDataSource.read(path);
             return expenses.get(id);
         } catch (DataSourceException e) {
             String message = problem + e.getMessage();
@@ -83,7 +83,7 @@ public class FileExpenseRecordDAO implements ExpenseRecordDAO, NotNullValidator 
     }
 
     @Override
-    public String create(ExpenseRecord object) throws DAOException {
+    public String create(Record object) throws DAOException {
         String problem = "[FileExpenseRecordDAO]Unable to execute creating"
                 + " operation:";
         if (isEqualsNull(object)) {
@@ -103,7 +103,7 @@ public class FileExpenseRecordDAO implements ExpenseRecordDAO, NotNullValidator 
 
     
     @Override
-    public boolean update(ExpenseRecord object) throws DAOException {
+    public boolean update(Record object) throws DAOException {
         String problem = "[FileExpenseRecordDAO]Unable to execute updating"
                 + " operation:";
         if (isEqualsNull(object)) {
@@ -113,7 +113,7 @@ public class FileExpenseRecordDAO implements ExpenseRecordDAO, NotNullValidator 
         try {
             String id = object.getId();
             String path = expenseDataSource.getPathToFile(id);
-            Map<String, ExpenseRecord> expenses = expenseDataSource.read(path);
+            Map<String, Record> expenses = expenseDataSource.read(path);
             boolean isUpdated = !isEqualsNull(expenses.replace(id, object));
             if (isUpdated) {
                 expenseDataSource.clearFile(path);
@@ -137,7 +137,7 @@ public class FileExpenseRecordDAO implements ExpenseRecordDAO, NotNullValidator 
         }
         try {
             String path = expenseDataSource.getPathToFile(id);
-            Map<String, ExpenseRecord> expenses = expenseDataSource.read(path);
+            Map<String, Record> expenses = expenseDataSource.read(path);
             boolean isDeleted = !isEqualsNull(expenses.remove(id));
             if (isDeleted) {
                 expenseDataSource.clearFile(path);
