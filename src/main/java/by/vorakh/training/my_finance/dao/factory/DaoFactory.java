@@ -100,7 +100,7 @@ public class DaoFactory {
         return accountDAO;
     }
 
-    public RecordDAO getExpenseRecordDAO() {
+    public RecordDAO getRecordDAO() {
         return recordDAO;
     }
 
