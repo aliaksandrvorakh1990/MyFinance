@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import by.vorakh.training.my_finance.dao.RecordDAO;
+import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.csv.RecordEntityCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
@@ -17,22 +18,24 @@ public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
     
     private final static String PATH_FORMAT= "src/main/resources/csv/records/%s.csv";
     
-    private RecordEntityCsvDataSource dataSource;
-    private CsvAccountDAO accountDAO;
+    private RecordEntityCsvDataSource recordDataSource;
+    private AccountEntityCsvDataSource accountDataSource;
     
     public CsvRecordDAO(RecordEntityCsvDataSource dataSource, 
-            CsvAccountDAO accountDAO) {
-        this.dataSource = dataSource;
-        this.accountDAO = accountDAO;
+            AccountEntityCsvDataSource accountDataSource) {
+        this.recordDataSource = dataSource;
+        this.accountDataSource = accountDataSource;
     }
 
     @Override
     public List<RecordEntity> getAll() throws DAOException {
         try {
             List<RecordEntity> allRecords = new ArrayList<RecordEntity>();
-            for (AccountEntity account : accountDAO.getAll()) {
+            String accountsPath = "src/main/resources/csv/accounts.csv";
+            for (AccountEntity account : accountDataSource
+                    .read(accountsPath).values()) {
                 String path = getPath(account.getId());
-                allRecords.addAll(dataSource.read(path).values());
+                allRecords.addAll(recordDataSource.read(path).values());
             }
             return new ArrayList<RecordEntity>();
         } catch (DataSourceException e) {
@@ -49,7 +52,7 @@ public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
         }
         try {
             String path = getPath(accountId);
-            return new ArrayList<RecordEntity>(dataSource.read(path).values());
+            return new ArrayList<RecordEntity>(recordDataSource.read(path).values());
         } catch (DataSourceException e) {
             String message = e.getMessage();
             throw new DAOException(message, e);
@@ -65,7 +68,7 @@ public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
         try {
             String accountId = null;
             String path = getPath(accountId);
-            RecordEntity record = dataSource.read(path).get(id);
+            RecordEntity record = recordDataSource.read(path).get(id);
             return record;
         } catch (DataSourceException e) {
             String message = e.getMessage();
@@ -83,7 +86,7 @@ public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
         try {
             String accountId = getAccountIdFrom(object.getId());
             String path = getPath(accountId);
-            dataSource.write(object, path);
+            recordDataSource.write(object, path);
             return object.getId();
         } catch (DataSourceException e) {
             String message = e.getMessage();
@@ -101,12 +104,12 @@ public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
         try {
             String accountId = getAccountIdFrom(object.getId());
             String path = getPath(accountId);
-            Map<String, RecordEntity> records = dataSource.read(path);
+            Map<String, RecordEntity> records = recordDataSource.read(path);
             String id = object.getId();
             boolean isUpdated = (records.replace(id, object) != null);
             if (isUpdated) {
-                dataSource.clearFile(path);
-                dataSource.write(records.values(), path);
+                recordDataSource.clearFile(path);
+                recordDataSource.write(records.values(), path);
             }
             return isUpdated;
         } catch (DataSourceException e) {
@@ -124,11 +127,11 @@ public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
         try {
             String accountId = getAccountIdFrom(id);
             String path = getPath(accountId);
-            Map<String, RecordEntity> records = dataSource.read(path);
+            Map<String, RecordEntity> records = recordDataSource.read(path);
             boolean isDeleted = (records.remove(id) != null);
             if (isDeleted) {
-                dataSource.clearFile(path);
-                dataSource.write(records.values(), path);
+                recordDataSource.clearFile(path);
+                recordDataSource.write(records.values(), path);
             }
             return isDeleted;
         } catch (DataSourceException e) {
