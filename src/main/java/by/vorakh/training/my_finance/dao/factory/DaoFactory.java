@@ -1,128 +1,111 @@
 package by.vorakh.training.my_finance.dao.factory;
 
 import by.vorakh.training.my_finance.dao.AccountDAO;
-import by.vorakh.training.my_finance.dao.ExpenseRecordDAO;
+import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.UserDAO;
-import by.vorakh.training.my_finance.dao.datasource.AccountDataSource;
-import by.vorakh.training.my_finance.dao.datasource.ExpenseRecordDataSource;
-import by.vorakh.training.my_finance.dao.datasource.UserDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.RecordEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.UserEntityCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.factoty.DataSourceFactory;
-import by.vorakh.training.my_finance.dao.impl.FileAccountDAO;
-import by.vorakh.training.my_finance.dao.impl.FileExpenseRecordDAO;
-import by.vorakh.training.my_finance.dao.impl.FileUserDAO;
+import by.vorakh.training.my_finance.dao.impl.csv.CsvAccountDAO;
+import by.vorakh.training.my_finance.dao.impl.csv.CsvRecordDAO;
+import by.vorakh.training.my_finance.dao.impl.csv.CsvUserDAO;
 
 public class DaoFactory {
     
-    private AccountDAO AccountDAO;
-    private ExpenseRecordDAO ExpenseRecordDAO;
-    private UserDAO UserDAO;
+    private AccountDAO accountDAO;
+    private RecordDAO recordDAO;
+    private UserDAO userDAO;
     
     public DaoFactory () {
-        setExpenseRecordDAO(new ExpenseRecordDAOBuilder()
+        setRecordDAO(new RecordDAOBuilder()
+                .setRecordDataSource(new DataSourceFactory()
+                        .getRecordDataSource())
                 .setAccountDataSource(new DataSourceFactory()
                         .getAccountDataSource())
-                .setExpenseDataSource(new DataSourceFactory()
-                        .getExpenseRecordDataSource())
                 .build());
         setAccountDAO(new AccountDAOBuilder()
-                .setAccountDataSource(new DataSourceFactory()
+                .setDataSource(new DataSourceFactory()
                         .getAccountDataSource())
-                .setExpenseDAO(getExpenseRecordDAO())
                 .build());
         setUserDAO(new UserDAOBuilder()
-                .setUserDataSource(new DataSourceFactory()
+                .setDataSource(new DataSourceFactory()
                         .getUserDataSourse())
-                .setAccountDAO(getAccountDAO())
                 .build());
-        
     }
 
     private static class AccountDAOBuilder {
         
-        private AccountDataSource accountDataSource;
-        private ExpenseRecordDAO expenseDAO;
+        private AccountEntityCsvDataSource dataSource;
         
-        AccountDAOBuilder setAccountDataSource(AccountDataSource 
-                accountDataSource) {
-            this.accountDataSource = accountDataSource;
-            return this;
-        }
-        AccountDAOBuilder setExpenseDAO(ExpenseRecordDAO expenseDAO) {
-            this.expenseDAO = expenseDAO;
+        AccountDAOBuilder setDataSource(AccountEntityCsvDataSource dataSource) {
+            this.dataSource = dataSource;
             return this;
         }
         
         AccountDAO build() {
-            return new FileAccountDAO(accountDataSource, expenseDAO);
+            return new CsvAccountDAO(dataSource);
         }
     }
     
-    private static class ExpenseRecordDAOBuilder {
+    private static class RecordDAOBuilder {
+
+        private RecordEntityCsvDataSource recordDataSource;
+        private AccountEntityCsvDataSource accountDataSource;
         
-        private ExpenseRecordDataSource expenseDataSource;
-        private AccountDataSource accountDataSource;
-        
-        ExpenseRecordDAOBuilder setExpenseDataSource(ExpenseRecordDataSource 
-                expenseDataSource) {
-            this.expenseDataSource = expenseDataSource;
+        RecordDAOBuilder setRecordDataSource(RecordEntityCsvDataSource 
+                recordDataSource) {
+            this.recordDataSource = recordDataSource;
             return this;
         }
-        
-        ExpenseRecordDAOBuilder setAccountDataSource(AccountDataSource 
+
+        RecordDAOBuilder setAccountDataSource(AccountEntityCsvDataSource 
                 accountDataSource) {
             this.accountDataSource = accountDataSource;
             return this;
         }
 
-        ExpenseRecordDAO build() {
-            return new FileExpenseRecordDAO(expenseDataSource, 
-                    accountDataSource);
+        RecordDAO build() {
+            return new CsvRecordDAO(recordDataSource,accountDataSource);
         }
     }
     
     private static class UserDAOBuilder {
         
-        private UserDataSource userDataSource;
-        private AccountDAO accountDAO;
+        private UserEntityCsvDataSource dataSource;
 
-        UserDAOBuilder setUserDataSource(UserDataSource userDataSource) {
-            this.userDataSource = userDataSource;
-            return this;
-        }
-
-        UserDAOBuilder setAccountDAO(AccountDAO accountDAO) {
-            this.accountDAO = accountDAO;
+        UserDAOBuilder setDataSource(UserEntityCsvDataSource dataSource) {
+            this.dataSource = dataSource;
             return this;
         }
 
         UserDAO build() {
-            return new FileUserDAO(userDataSource, 
-                    accountDAO);
+            return new CsvUserDAO(dataSource);
         }
     }
     
     private void setAccountDAO(AccountDAO accountDAO) {
-        AccountDAO = accountDAO;
+        this.accountDAO = accountDAO;
     }
 
-    private void setExpenseRecordDAO(ExpenseRecordDAO expenseRecordDAO) {
-        ExpenseRecordDAO = expenseRecordDAO;
+    private void setRecordDAO(RecordDAO recordDAO) {
+        this.recordDAO = recordDAO;
     }
 
     private void setUserDAO(UserDAO userDAO) {
-        UserDAO = userDAO;
+        this.userDAO = userDAO;
     }
 
     public AccountDAO getAccountDAO() {
-        return AccountDAO;
+        return accountDAO;
     }
 
-    public ExpenseRecordDAO getExpenseRecordDAO() {
-        return ExpenseRecordDAO;
+    public RecordDAO getExpenseRecordDAO() {
+        return recordDAO;
     }
 
     public UserDAO getUserDAO() {
-        return UserDAO;
+        return userDAO;
     }
 
 }
