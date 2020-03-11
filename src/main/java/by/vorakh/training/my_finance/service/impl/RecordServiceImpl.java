@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.ExpenseType;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.dao.AccountDAO;
@@ -127,8 +127,7 @@ public class RecordServiceImpl implements RecordService,
         try {
             String response = null;
             String id = object.getId();
-            String accountId = getAccountIdFrom(id);
-            AccountEntity seletedAccount = accountDAO.getById(accountId);
+            AccountEntity seletedAccount = accountDAO.getById(id);
             if (!isEqualsNull(seletedAccount)) {
                 BigDecimal balanse =seletedAccount.getBalance();
                 BigDecimal amount = object.getAmount();
