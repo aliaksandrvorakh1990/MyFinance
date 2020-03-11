@@ -13,8 +13,6 @@ public interface Service<T,V> extends NotNullValidator{
     
     V create(T object) throws ServiceException;
     
-    Boolean update(T object) throws ServiceException;
-    
     Boolean deleteById(V id) throws ServiceException ;
 
 }

@@ -4,16 +4,22 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.bean.User;
+import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.dao.AccountDAO;
-import by.vorakh.training.my_finance.dao.ExpenseRecordDAO;
+import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.UserDAO;
+import by.vorakh.training.my_finance.dao.entity.AccountEntity;
+import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.AccountService;
+import by.vorakh.training.my_finance.service.RecordService;
+import by.vorakh.training.my_finance.service.exception.BeanFillingException;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 import by.vorakh.training.my_finance.validation.CurrencyValidator;
 import by.vorakh.training.my_finance.validation.IdValidator;
@@ -23,82 +29,69 @@ public class AccountServiceImpl implements AccountService, IdValidator,
 
     private AccountDAO accountDao;
     private UserDAO userDAO;
-    private ExpenseRecordDAO expenseDAO;
-
-    public AccountServiceImpl(AccountDAO accountDao, UserDAO userDAO,
-            ExpenseRecordDAO expenseDAO) {
-        this.accountDao = accountDao;
-        this.userDAO = userDAO;
-        this.expenseDAO = expenseDAO;
-    }
-
+    private RecordDAO expenseDAO;
+    private RecordService recordService;
+    private Convertor<AccountEntity, Account> entityConvertor;
+    private Convertor<Account, AccountEntity> beanConvertor;
+    
     @Override
     public List<Account> getAll() throws ServiceException {
-        String problem = "[AccountServiceImpl]Unable to execute operation"
-                + " of all accounts reading:";
         try {
-            return accountDao.getAll();
+            return accountDao.getAll().stream().collect(
+                    Collectors.mapping(accountEntity -> fillBean(accountEntity), 
+                    Collectors.toList()));
         } catch (DAOException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new ServiceException(message);
         }
     }
 
     @Override
     public List<Account> getAll(String userId) throws ServiceException {
-        String problem = "[AccountServiceImpl]Unable to execute operation"
-                + " of accounts reading using user id:";
-        if (isEqualsNull(userId)) {
-            String message = problem + "User ID has null value.\n";
+        if (userId != null) {
+            String message = "User ID has null value.\n";
             throw new ServiceException(message);
         }
         try {
-            User user = userDAO.getById(userId);
-            List<Account> userAccounts = new ArrayList<Account>();
-            if (!isEqualsNull(user)) {
-                userAccounts.addAll(accountDao.getAll(userId));
-            }
-            return userAccounts;
+            return accountDao.getAll(userId).stream().collect(
+                    Collectors.mapping(accountEntity -> fillBean(accountEntity),
+                    Collectors.toList()));
         } catch (DAOException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new ServiceException(message);
         }
     }
 
     @Override
     public Account getById(String id) throws ServiceException {
-        String problem = "[AccountServiceImpl]Unable to execute operation"
-                + " of accounts reading using account id:";
         if (!isAccountId(id)) {
-            String message = problem + "This ID is not Account Id Format.\n";
+            String message = "This ID is not Account Id Format.\n";
             throw new ServiceException(message);
         }
         try {
-            return accountDao.getById(id);
+            return fillBean(accountDao.getById(id));
         } catch (DAOException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new ServiceException(message, e);
         }
     }
 
     @Override
     public String create(Account object) throws ServiceException {
-        String problem = "[AccountServiceImpl]Unable to execute account creating "
-                + "operation:";
         if (isEqualsNull(object)) {
-            String message = problem + "Account has null value.";
+            String message = "Account has null value.";
             throw new ServiceException(message);
         }
         try {
             String response = null;
             String userId = object.getId();
-            User selecttedUser = userDAO.getById(userId);
-            if (!isEqualsNull(selecttedUser)) {
+            User selectedUser = userDAO.getById(userId);
+            if (!isEqualsNull(selectedUser)) {
                 long creatingTime = new Date().getTime();
                 String accountId = String.format("%s@%s", userId,
                         creatingTime);
                 object.setId(accountId);
-                String recordId = String.format("%s/%s", accountId,
+                String recordId = String.format("%s@%s", accountId,
                         creatingTime);
                 Record firstRecord = new Record(recordId,
                         object.getBalance(), ExpenseType.INCOME);
@@ -108,46 +101,15 @@ public class AccountServiceImpl implements AccountService, IdValidator,
             }
             return response;
         } catch (DAOException e) {
-            String message = problem + e.getMessage();
-            throw new ServiceException(message, e);
-        }
-    }
-
-    @Override
-    public Boolean update(Account object) throws ServiceException {
-        String problem = "[AccountServiceImpl]Unable to execute account updating"
-            + " operation:";
-        if (isEqualsNull(object)) {
-            String message = problem + "Account has null value.";
-            throw new ServiceException(message);
-        }
-        try {
-            Boolean response = null;
-            String id = object.getId();
-            Account oldAccount = getById(id);
-            if (isEqualsNull(oldAccount)) {
-                String message = problem + "Account does not exist.";
-                throw new ServiceException(message);
-            }
-            BigDecimal balance = object.getBalance();
-            if (!isCorrectValue(balance)) {
-                String message = problem + "balance has bad value.";
-                throw new ServiceException(message);
-            }
-            response = accountDao.update(object);
-            return response;
-        } catch (DAOException | ServiceException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new ServiceException(message, e);
         }
     }
 
     @Override
     public Boolean deleteById(String id) throws ServiceException {
-        String problem = "[AccountServiceImpl]Unable to execute account deleting"
-                + " operation:";
         if (isEqualsNull(id)) {
-            String message = problem + "Account has null value.";
+            String message =  "Account has null value.";
             throw new ServiceException(message);
         }
         try {
@@ -158,9 +120,24 @@ public class AccountServiceImpl implements AccountService, IdValidator,
             }
             return response;
         } catch (DAOException | ServiceException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new ServiceException(message, e);
         }
+    }
+    
+    private Account fillBean(AccountEntity entity) {
+        try {
+            Account account = entityConvertor.converte(entity);
+            String id = account.getId();
+            List<Record> accountRecords = recordService
+                    .getAll(id);
+            account.setExpenses(accountRecords);
+            return account;
+        } catch (ServiceException e) {
+            String message = e.getMessage();
+            throw new BeanFillingException(message, e);
+        }
+        
     }
 
 }

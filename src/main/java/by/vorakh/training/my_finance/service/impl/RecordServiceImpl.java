@@ -148,40 +148,7 @@ public class RecordServiceImpl implements RecordService,
             throw new ServiceException(message, e);
         }
     }
-
-    @Override
-    public Boolean update(Record object) throws ServiceException {
-        if (isEqualsNull(object)) {
-            String message = "ExpenseRecord has null value";
-            throw new ServiceException(message);
-        }
-        try {
-            Boolean response = null;
-            String expenseId = object.getId();
-            String accountId = getAccountIdFrom(expenseId);
-            AccountEntity seletedAccount = accountDAO.getById(accountId);
-            if (!isEqualsNull(seletedAccount)) {
-                RecordEntity oldRecord = expenseDAO.getById(expenseId);
-                BigDecimal balanse =seletedAccount.getBalance();
-                BigDecimal oldAmount = oldRecord.getAmount();
-                balanse = (oldRecord.getType().getIsExpense()) 
-                        ? balanse.add(oldAmount)  
-                        : balanse.subtract(oldAmount);
-                BigDecimal newAmount = object.getAmount();
-                balanse = (object.getType().getIsExpense()) 
-                        ? balanse.subtract(newAmount) 
-                        : balanse.add(newAmount);
-                seletedAccount.setBalance(balanse);
-                accountDAO.update(seletedAccount);
-                response = expenseDAO.update(beanConvertor.converte(object));
-            }
-            return response;
-        } catch (DAOException | ConvertorException e) {
-            String message = e.getMessage();
-            throw new ServiceException(message, e);
-        }
-    }
-
+    
     @Override
     public Boolean deleteById(String id) throws ServiceException {
         if (!isRecordId(id)) {
