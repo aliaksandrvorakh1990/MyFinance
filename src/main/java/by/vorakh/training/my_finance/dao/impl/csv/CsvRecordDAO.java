@@ -37,7 +37,7 @@ public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
                 String path = getPath(account.getId());
                 allRecords.addAll(recordDataSource.read(path).values());
             }
-            return new ArrayList<RecordEntity>();
+            return allRecords;
         } catch (DataSourceException e) {
             String message = e.getMessage();
             throw new DAOException(message, e);
