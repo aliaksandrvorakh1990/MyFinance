@@ -43,23 +43,22 @@ public abstract class CsvDataSource<T, C extends Collection<T>> implements FileV
             String message = READ_PROBLEM + "File path has null value.";
             throw new DataSourceException(message);
         }
+        Map<String, T> map = new LinkedHashMap<String, T>();
         File file = new File(path);
-        if (!isExistedFile(file)) {
-            String message = READ_PROBLEM + UNCORRECT_FILE;
-            throw new DataSourceException(message);
+        if (isExistedFile(file)) {
+            try (Reader fileReader = new FileReader(file);
+                    BufferedReader reader = new BufferedReader(fileReader);) {
+                reader.lines().filter(csv -> !csv.isEmpty()).forEach(csv -> {
+                        T entity = csvToEntityConvertor.converte(csv);
+                        addTo(map, entity);
+                });
+                   
+            } catch (IOException e) {
+                String message = READ_PROBLEM + e.getMessage();
+                throw new DataSourceException(message, e);
+            }
         }
-        try (Reader fileReader = new FileReader(file);
-             BufferedReader reader = new BufferedReader(fileReader);) {
-            Map<String, T> map = new LinkedHashMap<String, T>();
-            reader.lines().forEach(csv -> {
-                T entity = csvToEntityConvertor.converte(csv);
-                addTo(map, entity);
-            });
-            return map;
-        } catch (IOException e) {
-            String message = READ_PROBLEM + e.getMessage();
-            throw new DataSourceException(message, e);
-        }
+        return map;
     }
     
     protected abstract void addTo(Map<String, T> map, T entity);
