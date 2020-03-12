@@ -1,5 +1,6 @@
 package by.vorakh.training.my_finance.dao.impl.csv;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -7,6 +8,7 @@ import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -132,6 +134,7 @@ public class CsvRecordDAOTest {
         assertEquals(expected, actual);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testUpdate() throws DataSourceException, DAOException {
         RecordEntity updatedRecord = new RecordEntity(
@@ -140,15 +143,20 @@ public class CsvRecordDAOTest {
         when(recordDataSource.read(path1)).thenReturn(recordMap1);
         boolean actual = dao.update(updatedRecord);
         verify(recordDataSource, times(1)).clearFile(path1);
+        verify(recordDataSource, times(1)).write(any(Collection.class), 
+                any(String.class));
         assertTrue(actual);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testDelete() throws DataSourceException, DAOException {
         String id = "MrRobot@1583824237692@1583924900106";
         when(recordDataSource.read(path1)).thenReturn(recordMap1);
         boolean actual = dao.delete(id);
         verify(recordDataSource, times(1)).clearFile(path1);
+        verify(recordDataSource, times(1)).write(any(Collection.class), 
+                any(String.class));
         assertTrue(actual);
     }
 
