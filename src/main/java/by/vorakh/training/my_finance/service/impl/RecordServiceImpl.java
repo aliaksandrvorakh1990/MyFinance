@@ -40,10 +40,9 @@ public class RecordServiceImpl implements RecordService,
     @Override
     public List<Record> getAll() throws ServiceException {
         try {
-            return expenseDAO.getAll().stream()
-                    .collect(Collectors.mapping(recordEntity -> 
-                            entityConvertor.converte(recordEntity), 
-                            Collectors.toList()));
+            return expenseDAO.getAll().stream().map(recordEntity -> 
+                    entityConvertor.converte(recordEntity))
+                    .collect(Collectors.toList());
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);

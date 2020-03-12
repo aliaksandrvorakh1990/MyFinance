@@ -31,9 +31,7 @@ public class AccountServiceImpl implements AccountService, IdValidator,
     private RecordService recordService;
     private Convertor<AccountEntity, Account> entityConvertor;
     private Convertor<Account, AccountEntity> beanConvertor;
-    
-    
-    
+
     public AccountServiceImpl(AccountDAO accountDao, UserDAO userDAO, 
             RecordDAO expenseDAO, RecordService recordService,
             Convertor<AccountEntity, Account> entityConvertor, 
@@ -49,9 +47,8 @@ public class AccountServiceImpl implements AccountService, IdValidator,
     @Override
     public List<Account> getAll() throws ServiceException {
         try {
-            return accountDao.getAll().stream().collect(
-                    Collectors.mapping(accountEntity -> fillBean(accountEntity), 
-                    Collectors.toList()));
+            return accountDao.getAll().stream()
+                    .map(this::fillBean).collect(Collectors.toList());
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message);
