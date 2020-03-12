@@ -31,7 +31,7 @@ public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
     public List<RecordEntity> getAll() throws DAOException {
         try {
             List<RecordEntity> allRecords = new ArrayList<RecordEntity>();
-            String accountsPath = "src/main/resources/csv/accounts.csv";
+            String accountsPath = "./csv/accounts.csv";
             for (AccountEntity account : accountDataSource
                     .read(accountsPath).values()) {
                 String path = getPath(account.getId());
