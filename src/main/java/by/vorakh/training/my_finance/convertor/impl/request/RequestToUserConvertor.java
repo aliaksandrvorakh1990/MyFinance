@@ -1,4 +1,4 @@
-package by.vorakh.training.my_finance.convertor.impl;
+package by.vorakh.training.my_finance.convertor.impl.request;
 
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;

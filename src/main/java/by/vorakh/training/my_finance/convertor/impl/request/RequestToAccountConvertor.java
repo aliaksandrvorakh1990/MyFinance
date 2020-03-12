@@ -1,4 +1,4 @@
-package by.vorakh.training.my_finance.convertor.impl;
+package by.vorakh.training.my_finance.convertor.impl.request;
 
 import java.math.BigDecimal;
 
@@ -21,7 +21,7 @@ public class RequestToAccountConvertor implements Convertor<String, Account>,
     public Account converte(String object) throws ConvertorException {
         String problem = "[RequestToAccountConvertor]"
                 + ConvertorException.PROBLEM;
-        if (isEqualsNull(object)) {
+        if (object == null) {
             String message = problem + "Request has null value.";
             throw new ConvertorException(message);
         }

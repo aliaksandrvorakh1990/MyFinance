@@ -11,7 +11,7 @@ import by.vorakh.training.my_finance.controller.command.impl.Exit;
 import by.vorakh.training.my_finance.controller.command.impl.SignIn;
 import by.vorakh.training.my_finance.controller.command.impl.SignUp;
 import by.vorakh.training.my_finance.controller.command.impl.WrongRequest;
-import by.vorakh.training.my_finance.convertor.impl.RequestToUserConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToUserConvertor;
 import by.vorakh.training.my_finance.service.factory.ServiceFactory;
 
 public class LoginProvider implements CommandProvider {

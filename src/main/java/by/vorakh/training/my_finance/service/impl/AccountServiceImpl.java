@@ -60,7 +60,7 @@ public class AccountServiceImpl implements AccountService, IdValidator,
 
     @Override
     public List<Account> getAll(String userId) throws ServiceException {
-        if (userId != null) {
+        if (userId == null) {
             String message = "User ID has null value.\n";
             throw new ServiceException(message);
         }
@@ -76,7 +76,7 @@ public class AccountServiceImpl implements AccountService, IdValidator,
 
     @Override
     public Account getById(String id) throws ServiceException {
-        if (!isAccountId(id)) {
+        if (id == null) {
             String message = "This ID is not Account Id Format.\n";
             throw new ServiceException(message);
         }
@@ -90,7 +90,7 @@ public class AccountServiceImpl implements AccountService, IdValidator,
 
     @Override
     public String create(Account object) throws ServiceException {
-        if (isEqualsNull(object)) {
+        if (object == null) {
             String message = "Account has null value.";
             throw new ServiceException(message);
         }
@@ -98,7 +98,7 @@ public class AccountServiceImpl implements AccountService, IdValidator,
             String response = null;
             String userId = object.getId();
             UserEntity selectedUser = userDAO.getById(userId);
-            if (!isEqualsNull(selectedUser)) {
+            if (selectedUser != null) {
                 long creatingTime = new Date().getTime();
                 String accountId = String.format("%s@%s", userId,
                         creatingTime);
@@ -120,14 +120,14 @@ public class AccountServiceImpl implements AccountService, IdValidator,
 
     @Override
     public Boolean deleteById(String id) throws ServiceException {
-        if (isEqualsNull(id)) {
+        if (id == null) {
             String message =  "Account has null value.";
             throw new ServiceException(message);
         }
         try {
             Boolean response = null;
             AccountEntity deletedAccount = accountDao.getById(id);
-            if (!isEqualsNull(deletedAccount)) {
+            if (deletedAccount != null) {
                 expenseDAO.deleteById(id);
                 response = accountDao.delete(id);
             }

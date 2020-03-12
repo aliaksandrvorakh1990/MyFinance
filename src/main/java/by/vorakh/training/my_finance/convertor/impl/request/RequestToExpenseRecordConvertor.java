@@ -1,4 +1,4 @@
-package by.vorakh.training.my_finance.convertor.impl;
+package by.vorakh.training.my_finance.convertor.impl.request;
 
 import java.math.BigDecimal;
 
@@ -23,7 +23,7 @@ public class RequestToExpenseRecordConvertor implements
     public Record converte(String object) throws ConvertorException {
         String problem = "[RequestToExpenseRecordConvertor]"
                 + ConvertorException.PROBLEM;
-        if (isEqualsNull(object)) {
+        if (object == null) {
             String message = problem + "Request has null value.";
             throw new ConvertorException(message);
         }

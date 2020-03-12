@@ -6,21 +6,19 @@ import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.convertor.impl.RequestToIdConvertor;
-import by.vorakh.training.my_finance.service.ExpenseRecordService;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor;
+import by.vorakh.training.my_finance.output.ExpenseToTableOutputter;
+import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 import by.vorakh.training.my_finance.validation.IdValidator;
-import by.vorakh.training.my_finance.view.output.ExpenseToTableOutputter;
 
 public class MyExpenses implements Command, IdValidator, 
         ExpenseToTableOutputter {
     
-    private ExpenseRecordService service;
+    private RecordService service;
     private RequestToIdConvertor convertor;
-    
-    protected MyExpenses() {}
 
-    public MyExpenses(ExpenseRecordService service, RequestToIdConvertor convertor) {
+    public MyExpenses(RecordService service, RequestToIdConvertor convertor) {
         this.service = service;
         this.convertor = convertor;
     }

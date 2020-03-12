@@ -98,7 +98,7 @@ public abstract class CsvDataSource<T, C extends Collection<T>> implements FileV
     }
 
     public void clearFile(String path) throws DataSourceException {
-        if (isEqualsNull(path)) {
+        if (path == null) {
             String message = CREAR_PROBLEM + "path has null value.";
             throw new DataSourceException(message);
         }

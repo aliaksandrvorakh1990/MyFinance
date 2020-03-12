@@ -1,18 +1,17 @@
-package by.vorakh.training.my_finance.view.output;
+package by.vorakh.training.my_finance.output;
 import java.math.BigDecimal;
 import java.util.List;
 
 import by.vorakh.training.my_finance.bean.Account;
-import by.vorakh.training.my_finance.validation.NotNullValidator;
 
-public interface AccountToTableOutputter extends NotNullValidator {
+public interface AccountToTableOutputter {
     
     public final static String FORMAT = "|%-30s|%-20s|%-15s|%-10s|%n";
     
     default String createTable(Account account) {
         String head =  String.format(FORMAT, "ID","Name", "Balance", "Records");
         StringBuffer sb = new StringBuffer(head);
-        if (!isEqualsNull(account)) {
+        if (account != null) {
             String id = account.getId();
             String name = account.getName();
             BigDecimal balance = account.getBalance();
@@ -26,7 +25,7 @@ public interface AccountToTableOutputter extends NotNullValidator {
         String head =  String.format(FORMAT, "ID","Name", "Balance", "Records");
         StringBuffer sb = new StringBuffer(head);
         
-        if (!isEqualsNull(accounts)) {
+        if (accounts != null) {
             for (Account account : accounts) {
                 String id = account.getId();
                 String name = account.getName();

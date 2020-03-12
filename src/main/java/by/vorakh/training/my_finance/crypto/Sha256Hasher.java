@@ -7,13 +7,12 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 import by.vorakh.training.my_finance.crypto.exception.CryptoException;
-import by.vorakh.training.my_finance.validation.NotNullValidator;
 
-public interface Sha256Hasher extends NotNullValidator {
+public interface Sha256Hasher {
 
     default String getSHA(String password) throws CryptoException {
         String problem = "[Sha256Hasher]Unable to execute encrypting operation:";
-        if (isEqualsNull(password)) {
+        if (password == null) {
             String message = problem + "Password has null value.";
             throw new CryptoException(message);
         }

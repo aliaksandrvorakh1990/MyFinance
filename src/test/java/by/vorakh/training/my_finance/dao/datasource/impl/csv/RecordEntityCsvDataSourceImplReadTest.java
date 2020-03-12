@@ -24,10 +24,10 @@ public class RecordEntityCsvDataSourceImplReadTest {
     public void init() {
         Convertor<String, RecordEntity> csvToEntityConvertor = 
                 new CsvToRecordEntityConvertor();
-        Convertor<RecordEntity, String> entitycsvToConvertor = 
+        Convertor<RecordEntity, String> entityToCsvConvertor = 
                 new RecordEntityToCsvConvertor();
         ds = new RecordEntityCsvDataSourceImpl(
-                csvToEntityConvertor, entitycsvToConvertor);
+                csvToEntityConvertor, entityToCsvConvertor);
     }
 
     @Test

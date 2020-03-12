@@ -17,9 +17,9 @@ import by.vorakh.training.my_finance.controller.command.impl.MyExpenses;
 import by.vorakh.training.my_finance.controller.command.impl.SelectAccount;
 import by.vorakh.training.my_finance.controller.command.impl.SelectExpense;
 import by.vorakh.training.my_finance.controller.command.impl.WrongRequest;
-import by.vorakh.training.my_finance.convertor.impl.RequestToAccountConvertor;
-import by.vorakh.training.my_finance.convertor.impl.RequestToExpenseRecordConvertor;
-import by.vorakh.training.my_finance.convertor.impl.RequestToIdConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToAccountConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToExpenseRecordConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor;
 import by.vorakh.training.my_finance.service.factory.ServiceFactory;
 
 
@@ -48,17 +48,17 @@ public class UserCommandProvider implements CommandProvider {
 		        new ServiceFactory().getAccountService(), 
 		        new RequestToIdConvertor()));
 		repository.put(CommandName.MY_EXPENSES, new MyExpenses(
-		        new ServiceFactory().getExpenseRecordService(), 
+		        new ServiceFactory().getRecordService(), 
 		        new RequestToIdConvertor()));
 		repository.put(CommandName.SELECT_EXPENSE, new SelectExpense(
-		        new ServiceFactory().getExpenseRecordService(), 
+		        new ServiceFactory().getRecordService(), 
                 new RequestToIdConvertor()));
 		repository.put(CommandName.CREATE_EXPENSE, new CreateExpense(
-		        new ServiceFactory().getExpenseRecordService(), 
+		        new ServiceFactory().getRecordService(), 
                 new RequestToIdConvertor(),
 		        new RequestToExpenseRecordConvertor()));
 		repository.put(CommandName.DELETE_EXPENSE, new DeleteExpense(
-		        new ServiceFactory().getExpenseRecordService(), 
+		        new ServiceFactory().getRecordService(), 
                 new RequestToIdConvertor()));
 	}
 	

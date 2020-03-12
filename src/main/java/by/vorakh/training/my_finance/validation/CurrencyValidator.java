@@ -2,15 +2,15 @@ package by.vorakh.training.my_finance.validation;
 
 import java.math.BigDecimal;
 
-public interface CurrencyValidator extends NotNullValidator {
+public interface CurrencyValidator {
 
     default boolean isCorrectCurrency(String str) {
         String regex = "(\\d+|\\d+.\\d+)";
-        return ((!isEqualsNull(str)) && (str.matches(regex)));
+        return ((str != null) && (str.matches(regex)));
     }
 
     default boolean isCorrectValue(BigDecimal money) {
         BigDecimal zero = new BigDecimal(0);
-        return ((!isEqualsNull(money)) && (money.compareTo(zero)>= 0));
+        return ((money != null) && (money.compareTo(zero)>= 0));
     }
 }

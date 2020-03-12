@@ -120,7 +120,7 @@ public class RecordServiceImpl implements RecordService,
 
     @Override
     public String create(Record object) throws ServiceException {
-        if (isEqualsNull(object)) {
+        if (object == null) {
             String message = "ExpenseRecord has null value";
             throw new ServiceException(message);
         }
@@ -128,7 +128,7 @@ public class RecordServiceImpl implements RecordService,
             String response = null;
             String id = object.getId();
             AccountEntity seletedAccount = accountDAO.getById(id);
-            if (!isEqualsNull(seletedAccount)) {
+            if (seletedAccount != null) {
                 BigDecimal balanse =seletedAccount.getBalance();
                 BigDecimal amount = object.getAmount();
                 balanse = (object.getType().getIsExpense()) 

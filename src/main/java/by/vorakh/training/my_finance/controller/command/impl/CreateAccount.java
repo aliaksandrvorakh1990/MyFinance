@@ -4,8 +4,8 @@ import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.convertor.impl.RequestToAccountConvertor;
-import by.vorakh.training.my_finance.convertor.impl.RequestToIdConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToAccountConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor;
 import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 import by.vorakh.training.my_finance.validation.CurrencyValidator;
@@ -19,8 +19,6 @@ public class CreateAccount implements Command, RequestValidator, IdValidator,
     private RequestToIdConvertor idConvertor ;
     private AccountService service ;
 
-    protected CreateAccount() {}
-
     public CreateAccount(RequestToAccountConvertor accountConvertor,
             RequestToIdConvertor idConvertor, AccountService service) {
         this.accountConvertor = accountConvertor;
@@ -31,7 +29,7 @@ public class CreateAccount implements Command, RequestValidator, IdValidator,
     @Override
     public String execute(String request) throws CommandException {
         String problem ="Unable to excute SelectAccount Command:";
-        if (isEqualsNull(request)) {
+        if (request == null) {
             String message = problem + "Request has null value.";
             throw new CommandException(message);
         }

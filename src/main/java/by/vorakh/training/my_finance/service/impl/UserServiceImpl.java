@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
             String login = user.getLogin();
             String password = user.getPassword();
             User foundUser = getById(login);
-            if (!isEqualsNull(foundUser)) {
+            if (foundUser != null) {
                 String encryptedPassword = getSHA(password);
                 String foundUserPassoword = foundUser.getPassword();
                 if (encryptedPassword.equals(foundUserPassoword)) {
@@ -116,7 +116,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
             String response = null;
             String encryptedPassword = getSHA(password);
             object.setPassword(encryptedPassword);
-            boolean isContainLogin = !isEqualsNull(getById(login));
+            boolean isContainLogin = getById(login) != null;
             if (!isContainLogin) {
                 response = userDAO.create(beanConvertor.converte(object));
                 String accountId = object.getLogin();
@@ -146,7 +146,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
             boolean isContain = deletedUser != null;
             if (isContain) {
                 List<Account> userAccounts = deletedUser.getAccounts();
-                if (!isEqualsNull(userAccounts)) {
+                if (userAccounts != null) {
                     for (Account account : userAccounts) {
                         accountService.deleteById(account.getId());
                     }

@@ -1,19 +1,18 @@
-package by.vorakh.training.my_finance.view.output;
+package by.vorakh.training.my_finance.output;
 
 import java.util.List;
 
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;
-import by.vorakh.training.my_finance.validation.NotNullValidator;
 
-public interface UserToTableOutputter extends NotNullValidator {
+public interface UserToTableOutputter {
     
 public final static String FORMAT = "|%-20s|%-10s|%n";
     
     default String createTable(User user) {
         String head =  String.format(FORMAT, "Login", "Role");
         StringBuffer sb = new StringBuffer(head);
-        if (!isEqualsNull(user)) {
+        if (user != null) {
             String login = user.getLogin();
             UserRole role = user.getRole();
             sb.append(String.format(FORMAT, login, role));
@@ -24,7 +23,7 @@ public final static String FORMAT = "|%-20s|%-10s|%n";
     default String createTable(List<User> users) {
         String head =  String.format(FORMAT, "Login", "Role");
         StringBuffer sb = new StringBuffer(head);
-        if (!isEqualsNull(users)) {
+        if (users != null) {
             for (User user : users) {
                 String login = user.getLogin();
                 UserRole role = user.getRole();

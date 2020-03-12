@@ -5,17 +5,14 @@ import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.convertor.impl.RequestToUserConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToUserConvertor;
 import by.vorakh.training.my_finance.service.UserService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.NotNullValidator;
 
-public class SignUp implements Command, NotNullValidator {
+public class SignUp implements Command {
 
     private UserService userService;
     private  RequestToUserConvertor requestUserConvertor ;
-
-    protected SignUp() {}
 
     public SignUp(UserService userService, 
             RequestToUserConvertor requestUserConvertor) {
@@ -23,18 +20,10 @@ public class SignUp implements Command, NotNullValidator {
         this.requestUserConvertor = requestUserConvertor;
     }
 
-    public UserService getUserService() {
-        return userService;
-    }
-
-    public RequestToUserConvertor getRequestUserConvertor() {
-        return requestUserConvertor;
-    }
-
     @Override
     public String execute(String request) throws CommandException {
         String problem ="Unable to excute SingUp Command:";
-        if (isEqualsNull(request)) {
+        if (request == null) {
             String message = problem + "Request has null value.\n";
             throw new CommandException(message);
         }
