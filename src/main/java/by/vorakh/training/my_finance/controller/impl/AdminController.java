@@ -25,8 +25,7 @@ public class AdminController implements Controller {
                     : request.substring(beginIndex + 1);
             return executionCommand.execute(requestArgs);
         } catch (CommandException e) {
-            // log e.printStackTrace();
-            String message = "Problem with Admin Controller";
+            String message = e.getMessage();
             throw new ControllerException(message, e);
         }
     }

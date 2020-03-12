@@ -5,17 +5,14 @@ import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.convertor.impl.RequestToUserConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToUserConvertor;
 import by.vorakh.training.my_finance.service.UserService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.NotNullValidator;
 
-public class SignUp implements Command, NotNullValidator {
+public class SignUp implements Command {
 
     private UserService userService;
     private  RequestToUserConvertor requestUserConvertor ;
-
-    protected SignUp() {}
 
     public SignUp(UserService userService, 
             RequestToUserConvertor requestUserConvertor) {
@@ -23,28 +20,23 @@ public class SignUp implements Command, NotNullValidator {
         this.requestUserConvertor = requestUserConvertor;
     }
 
-    public UserService getUserService() {
-        return userService;
-    }
-
-    public RequestToUserConvertor getRequestUserConvertor() {
-        return requestUserConvertor;
-    }
-
     @Override
     public String execute(String request) throws CommandException {
-        String problem ="Unable to excute SingUp Command:";
-        if (isEqualsNull(request)) {
-            String message = problem + "Request has null value.\n";
+        if (!isMultiArgsRequest(request)) {
+            String message = "Wrong request";
             throw new CommandException(message);
         }
         try {
             User newUser = requestUserConvertor.converte(request);
             newUser.setRole(UserRole.USER);
             UserRole serviceResponse = userService.singUp(newUser);
-            return serviceResponse.name();
+            String response = (serviceResponse == null) 
+                    ? "Unable to excute SingUp: user with this login contains "
+                            + "in system." 
+                    : serviceResponse.name();
+            return response;
         } catch (ConvertorException | ServiceException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new CommandException(message, e);
         }
     }

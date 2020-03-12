@@ -4,21 +4,19 @@ import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.convertor.impl.RequestToExpenseRecordConvertor;
-import by.vorakh.training.my_finance.convertor.impl.RequestToIdConvertor;
-import by.vorakh.training.my_finance.service.ExpenseRecordService;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToExpenseRecordConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor;
+import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.IdValidator;
+import by.vorakh.training.my_finance.validation.type.IdValidator;
 
 public class CreateExpense implements Command, IdValidator {
 
-    private ExpenseRecordService service;
+    private RecordService service;
     private RequestToIdConvertor idConvertor;
     private RequestToExpenseRecordConvertor expenseConvertor;
     
-    protected CreateExpense() {}
-    
-    public CreateExpense(ExpenseRecordService service, 
+    public CreateExpense(RecordService service, 
             RequestToIdConvertor idConvertor,
             RequestToExpenseRecordConvertor expenseConvertor) {
         this.service = service;
@@ -34,13 +32,16 @@ public class CreateExpense implements Command, IdValidator {
             throw new CommandException(message);
         }
         try {
-            String response = null;
+            String serviceResponse = null;
             Record newExpenseRecord = expenseConvertor.converte(request);
             String id = idConvertor.converte(request);
-            if (isAccountId(id) && !isEqualsNull(newExpenseRecord)) {
+            if (isAccountId(id)) {
                 newExpenseRecord.setId(id);
-                response = service.create(newExpenseRecord);
+                serviceResponse = service.create(newExpenseRecord);
             }
+            String response = (serviceResponse == null) 
+                    ? "RECORD DOES NOT CREATED" 
+                    : String.format("YOUR RECORD ID: %s", serviceResponse);
             return response;
         } catch (ConvertorException | ServiceException e) {
             String message = problem + e.getMessage();

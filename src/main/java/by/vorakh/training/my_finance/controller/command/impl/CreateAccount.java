@@ -4,13 +4,13 @@ import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.convertor.impl.RequestToAccountConvertor;
-import by.vorakh.training.my_finance.convertor.impl.RequestToIdConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToAccountConvertor;
+import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor;
 import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.CurrencyValidator;
-import by.vorakh.training.my_finance.validation.IdValidator;
-import by.vorakh.training.my_finance.validation.RequestValidator;
+import by.vorakh.training.my_finance.validation.request.RequestValidator;
+import by.vorakh.training.my_finance.validation.type.CurrencyValidator;
+import by.vorakh.training.my_finance.validation.type.IdValidator;
 
 public class CreateAccount implements Command, RequestValidator, IdValidator,
         CurrencyValidator {
@@ -18,8 +18,6 @@ public class CreateAccount implements Command, RequestValidator, IdValidator,
     private RequestToAccountConvertor accountConvertor;
     private RequestToIdConvertor idConvertor ;
     private AccountService service ;
-
-    protected CreateAccount() {}
 
     public CreateAccount(RequestToAccountConvertor accountConvertor,
             RequestToIdConvertor idConvertor, AccountService service) {
@@ -31,7 +29,7 @@ public class CreateAccount implements Command, RequestValidator, IdValidator,
     @Override
     public String execute(String request) throws CommandException {
         String problem ="Unable to excute SelectAccount Command:";
-        if (isEqualsNull(request)) {
+        if (request == null) {
             String message = problem + "Request has null value.";
             throw new CommandException(message);
         }
@@ -44,7 +42,9 @@ public class CreateAccount implements Command, RequestValidator, IdValidator,
             Account account = accountConvertor.converte(request);
             account.setId(userId);
             String accountId = service.create(account);
-            return accountId;
+            String response = (accountId == null) ? "ACCOUNT DOES NOT CREATED" 
+                    : String.format("YOUR ACCCOUNT ID: %s", accountId);
+            return response;
         } catch (ConvertorException | ServiceException e) {
             String message = problem + e.getMessage();
             throw new CommandException(message, e);

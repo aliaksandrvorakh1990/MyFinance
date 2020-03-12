@@ -1,7 +1,6 @@
 package by.vorakh.training.my_finance.view;
 
 import java.io.Console;
-import java.io.IOException;
 import java.util.Arrays;
 
 import by.vorakh.training.my_finance.controller.CommandName;
@@ -20,7 +19,7 @@ public class Main {
     
     private static ContollerStrategy mainContoller = new ContollerStrategy();
 
-    public static void main (String args[]) throws IOException {
+    public static void main (String[] args) {
         Console console = System.console();
         if (console == null) {
             System.out.println("No console. \nRun application in terminal");
@@ -31,8 +30,8 @@ public class Main {
         do {
             String command = console.readLine("Enter command with arguments: ");
             response = mainContoller.executeTask(command);
-            console.format("%s.%n",response);
-        } while(response.equals(EXIT));
+            console.format("%s%n",response);
+        } while(!response.equals(EXIT));
         doExit(console);
     } 
     
@@ -42,7 +41,7 @@ public class Main {
         while (true) {
             selectController(role);
             if (role.equals(USER) || role.equals(ADMIN)) {
-                console.format("You are identified%nrole=%s%n", role);
+                console.format("You are identified%nYour role is %s%n", role);
                 break;
             }
             String command = console.readLine("Enter command: ");
@@ -53,9 +52,11 @@ public class Main {
                 case SIGN_UP:
                     response = doSignUp(console);
                     break;
+                case "EXIT":
+                    doExit(console);
+                    break;
                 default:
                     console.printf("Wrong command for logining.%n");
-                    doExit(console);
             }
             if (response != null) {
                 role = response;

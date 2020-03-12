@@ -1,6 +1,6 @@
 package by.vorakh.training.my_finance.convertor.exception;
 
-public class ConvertorException extends Exception {
+public class ConvertorException extends RuntimeException {
 
 	private static final long serialVersionUID = 4398226992589624886L;
 	

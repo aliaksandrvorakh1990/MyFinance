@@ -2,99 +2,97 @@ package by.vorakh.training.my_finance.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;
+import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.crypto.Sha256Hasher;
 import by.vorakh.training.my_finance.crypto.exception.CryptoException;
 import by.vorakh.training.my_finance.dao.UserDAO;
+import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.UserService;
+import by.vorakh.training.my_finance.service.exception.BeanFillingException;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.UserValidator;
 
-public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher {
+public class UserServiceImpl implements UserService, Sha256Hasher {
 
     private UserDAO userDAO ;
     private AccountService accountService;
+    private Convertor<UserEntity, User> entityConvertor;
+    private Convertor<User, UserEntity> beanConvertor;
 
-    public UserServiceImpl(UserDAO userDAO, AccountService accountService) {
+    public UserServiceImpl(UserDAO userDAO, AccountService accountService, 
+            Convertor<UserEntity, User> entityConvertor,
+            Convertor<User, UserEntity> beanConvertor) {
+        super();
         this.userDAO = userDAO;
         this.accountService = accountService;
+        this.entityConvertor = entityConvertor;
+        this.beanConvertor = beanConvertor;
     }
 
     @Override
     public List<User> getAll() throws ServiceException {
         try {
-            return userDAO.getAll();
+            return userDAO.getAll().stream().collect(
+                    Collectors.mapping(userEntity -> fillBean(userEntity), 
+                    Collectors.toList()));
         } catch (DAOException e) {
-            String problem = "[UserServiceImpl]Unable to execute user reading "
-                    + "operation:";
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new ServiceException(message, e);
         }
     }
 
     @Override
     public User getById(String id) throws ServiceException {
-        String problem = "[UserServiceImpl]Unable to execute user reading "
-                + "operation using id:";
-        if (isEqualsNull(id)) {
-            String message = problem + "id has null value";
+        if (id == null) {
+            String message ="id has null value";
             throw new ServiceException(message);
         }
         try {
-            return userDAO.getById(id);
+            User foundUser = null;
+            UserEntity user = userDAO.getById(id);
+            if (user != null) {
+                foundUser = fillBean(user);
+            }
+            return foundUser;
         } catch (DAOException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new ServiceException(message, e);
         }
     }
 
     public UserRole singIn(User user) throws ServiceException {
-        String problem = "[UserServiceImpl]Unable to execute sign in "
-                + "operation:";
-        if (isEqualsNull(user)) {
-            String message = problem + "User has null value.";
+        if (user == null) {
+            String message = "User has null value.";
             throw new ServiceException(message);
         }
         try {
             UserRole role  = null;
             String login = user.getLogin();
-            if (!isCorrectLogin(login)) {
-                String message = problem + "Login has wrong format or null."
-                        + "value.";
-                throw new ServiceException(message);
-            }
             String password = user.getPassword();
-            if (!isCorrectPassword(password)) {
-                String message = problem + "Password has wrong format or null."
-                        + "value.";
-                throw new ServiceException(message);
-            }
-            User foundUser = getById(login);
-            if (!isEqualsNull(foundUser)) {
+            UserEntity foundUser = userDAO.getById(login);
+            if (foundUser != null) {
                 String encryptedPassword = getSHA(password);
                 String foundUserPassoword = foundUser.getPassword();
-                
                 if (encryptedPassword.equals(foundUserPassoword)) {
                     role = foundUser.getRole();
                 }
             }
             return role;
-        } catch (ServiceException | CryptoException e) {
-            String message = problem + e.getMessage();
+        } catch (CryptoException | DAOException e) {
+            String message = e.getMessage();
             throw new ServiceException(message, e);
         }
     }
 
     public UserRole singUp(User user) throws ServiceException {
-        String problem = "[UserServiceImpl]Unable to execute sign up "
-                + "operation:";
-        if (isEqualsNull(user)) {
-            String message = problem + "User has null value.";
+        if (user == null) {
+            String message ="User has null value.";
             throw new ServiceException(message);
         }
         try {
@@ -105,42 +103,26 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
             } 
             return response;
         } catch (ServiceException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new ServiceException(message);
         }
     }
 
     @Override
     public String create(User object) throws ServiceException {
-        String problem = "[UserServiceImpl]Unable to execute user creating "
-                + "operation:";
-        if (isEqualsNull(object)) {
-            String message = problem + "User has null value";
+        if (object == null) {
+            String message = "User has null value";
             throw new ServiceException(message);
         }
         String login = object.getLogin();
-        if (!isCorrectLogin(login)) {
-            String message = problem + "Login has wrong format or null value";
-            throw new ServiceException(message);
-        }
         String password = object.getPassword();
-        if (!isCorrectPassword(password)) {
-            String message = problem + "Password has null value or uncorrect "
-                + "format";
-            throw new ServiceException(message);
-        }
-        UserRole userRole = object.getRole();
-        if (isEqualsNull(userRole)) {
-            String message = problem + "Role has null value";
-            throw new ServiceException(message);
-        }
         try {
             String response = null;
             String encryptedPassword = getSHA(password);
             object.setPassword(encryptedPassword);
-            boolean isContainLogin = !isEqualsNull(getById(login));
+            boolean isContainLogin = userDAO.getById(login) != null;
             if (!isContainLogin) {
-                response = userDAO.create(object);
+                response = userDAO.create(beanConvertor.converte(object));
                 String accountId = object.getLogin();
                 String accoutnName = new String("MyFirstAccount");
                 BigDecimal startBalance = new BigDecimal(0).
@@ -151,54 +133,24 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
             }
             return response;
         } catch (DAOException | ServiceException | CryptoException e) {
-                String message = problem + e.getMessage();
+                String message = e.getMessage();
                 throw new ServiceException(message, e);
         }
     }
 
     @Override
-    public Boolean update(User object) throws ServiceException {
-        String problem = "[UserServiceImpl]Unable to execute user updating "
-                + "operation:";
-        if (isEqualsNull(object)) {
-            String message = problem + "User has null value";
-            throw new ServiceException(message);
-        }
-        try {
-            Boolean response = null;
-            String id = object.getLogin();
-            boolean isContain = isEqualsNull(getById(id)) ;
-            if (isContain) {
-                List<Account> userAccounts = object.getAccounts();
-                if (!isEqualsNull(userAccounts)) {
-                    for (Account account : userAccounts) {
-                        accountService.update(account);
-                    }
-                }
-                response = userDAO.update(object);
-            }
-            return response;
-        } catch (DAOException | ServiceException e) {
-            String message = problem + e.getMessage();
-            throw new ServiceException(message, e);
-        }
-    }
-
-    @Override
     public Boolean deleteById(String id) throws ServiceException {
-        String problem = "[UserServiceImpl]Unable to execute user deleting "
-                + "operation:";
-        if (isEqualsNull(id)) {
-            String message = problem + "User has null value";
+        if (id == null) {
+            String message = "User has null value";
             throw new ServiceException(message);
         }
         try {
             Boolean response = null;
             User deletedUser = getById(id);
-            boolean isContain = !isEqualsNull(deletedUser);
+            boolean isContain = deletedUser != null;
             if (isContain) {
                 List<Account> userAccounts = deletedUser.getAccounts();
-                if (!isEqualsNull(userAccounts)) {
+                if (userAccounts != null) {
                     for (Account account : userAccounts) {
                         accountService.deleteById(account.getId());
                     }
@@ -207,9 +159,24 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
             }
             return response;
         } catch (DAOException | ServiceException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new ServiceException(message, e);
         }
+    }
+    
+    private User fillBean(UserEntity entity) {
+        try {
+            User user = entityConvertor.converte(entity);
+            String id = user.getLogin();
+            List<Account> userAccounts = accountService
+                    .getAll(id);
+            user.setAccounts(userAccounts);
+            return user;
+        } catch (ServiceException e) {
+            String message = e.getMessage();
+            throw new BeanFillingException(message, e);
+        }
+        
     }
 
 }
