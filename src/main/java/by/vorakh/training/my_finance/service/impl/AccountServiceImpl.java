@@ -1,20 +1,18 @@
 package by.vorakh.training.my_finance.service.impl;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import by.vorakh.training.my_finance.bean.Account;
-import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.ExpenseType;
-import by.vorakh.training.my_finance.bean.User;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.UserDAO;
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
+import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.AccountService;
@@ -85,7 +83,7 @@ public class AccountServiceImpl implements AccountService, IdValidator,
         try {
             String response = null;
             String userId = object.getId();
-            User selectedUser = userDAO.getById(userId);
+            UserEntity selectedUser = userDAO.getById(userId);
             if (!isEqualsNull(selectedUser)) {
                 long creatingTime = new Date().getTime();
                 String accountId = String.format("%s@%s", userId,
@@ -93,9 +91,9 @@ public class AccountServiceImpl implements AccountService, IdValidator,
                 object.setId(accountId);
                 String recordId = String.format("%s@%s", accountId,
                         creatingTime);
-                Record firstRecord = new Record(recordId,
+                RecordEntity firstRecord = new RecordEntity(recordId,
                         object.getBalance(), ExpenseType.INCOME);
-                accountDao.create(object);
+                accountDao.create(beanConvertor.converte(object));
                 expenseDAO.create(firstRecord);
                 response =object.getId();
             }
@@ -114,12 +112,13 @@ public class AccountServiceImpl implements AccountService, IdValidator,
         }
         try {
             Boolean response = null;
-            Account deletedAccount = getById(id);
+            AccountEntity deletedAccount = accountDao.getById(id);
             if (!isEqualsNull(deletedAccount)) {
+                expenseDAO.deleteById(id);
                 response = accountDao.delete(id);
             }
             return response;
-        } catch (DAOException | ServiceException e) {
+        } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
         }
