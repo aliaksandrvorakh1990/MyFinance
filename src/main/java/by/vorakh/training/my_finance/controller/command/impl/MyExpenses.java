@@ -25,21 +25,19 @@ public class MyExpenses implements Command, IdValidator,
 
     @Override
     public String execute(String request) throws CommandException {
-        String problem ="Unable to excute MyExpenses Command:";
         if (!isSingleArgRequest(request)) {
-            String message = problem + "Request has to have one arg.";
+            String message = "Request has to have one arg.";
             throw new CommandException(message);
         }
         try {
             String response = null;
             String id = convertor.converte(request);
-            if (isAccountId(id)) {
-                List<Record> myRecords = service.getAll(id);
-                response = createTable(myRecords);
-            }
+            List<Record> myRecords = service.getAll(id);
+            response = (myRecords.isEmpty()) ? "NO RECORDS" 
+                    : createTable(myRecords);
             return response;
         } catch (ConvertorException | ServiceException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new CommandException(message, e);
         }
     }

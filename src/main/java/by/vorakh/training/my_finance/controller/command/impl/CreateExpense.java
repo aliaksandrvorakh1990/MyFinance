@@ -32,13 +32,16 @@ public class CreateExpense implements Command, IdValidator {
             throw new CommandException(message);
         }
         try {
-            String response = null;
+            String serviceResponse = null;
             Record newExpenseRecord = expenseConvertor.converte(request);
             String id = idConvertor.converte(request);
             if (isAccountId(id)) {
                 newExpenseRecord.setId(id);
-                response = service.create(newExpenseRecord);
+                serviceResponse = service.create(newExpenseRecord);
             }
+            String response = (serviceResponse == null) 
+                    ? "RECORD DOES NOT CREATED" 
+                    : String.format("YOUR RECORD ID: %s", serviceResponse);
             return response;
         } catch (ConvertorException | ServiceException e) {
             String message = problem + e.getMessage();

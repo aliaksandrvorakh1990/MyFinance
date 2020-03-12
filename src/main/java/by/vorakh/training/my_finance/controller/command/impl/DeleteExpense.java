@@ -21,9 +21,8 @@ public class DeleteExpense implements Command, IdValidator {
 
     @Override
     public String execute(String request) throws CommandException {
-        String problem ="Unable to excute DeleteExpense Command:";
         if (!isSingleArgRequest(request)) {
-            String message = problem + "Request has to have one arg.";
+            String message =  "Request has to have one arg.";
             throw new CommandException(message);
         }
         try {
@@ -31,12 +30,13 @@ public class DeleteExpense implements Command, IdValidator {
             String id = idConvertor.converte(request);
             if (isRecordId(id)) {
                 Boolean isDelete = service.deleteById(id);
-                response = (isDelete == null) ? null 
+                response = (isDelete == null) ? "THIS RECORD CANNOT DELETE, "
+                        + "IT DOES NOT EXIST"
                         : isDelete.toString();
             }
             return response;
         } catch (ConvertorException | ServiceException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new CommandException(message, e);
         }
     }

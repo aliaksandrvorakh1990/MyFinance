@@ -22,13 +22,8 @@ public class DeleteAccount implements Command, RequestValidator, IdValidator {
 
     @Override
     public String execute(String request) throws CommandException {
-	    String problem ="Unable to excute SelectAccount Command:";
-	    if (request == null) {
-	        String message = problem + "Request has null value.";
-	        throw new CommandException(message);
-	    }
         if (!isSingleArgRequest(request)) {
-            String message = problem + "Request has to have one arg.";
+            String message = "Request has to have one arg.";
             throw new CommandException(message);
         }
         try {
@@ -36,12 +31,13 @@ public class DeleteAccount implements Command, RequestValidator, IdValidator {
 	        String id = idConvertor.converte(request);
             if (isAccountId(id)) {
                 Boolean isDelete =  service.deleteById(id);
-                response = (isDelete == null) ? null 
+                response = (isDelete == null) ? "THIS ACCOUNT CANNOT DELETE, "
+                        + "IT DOES NOT EXIST" 
                         : isDelete.toString();
             }
             return response;
 	    } catch (ConvertorException | ServiceException e) {
-	        String message = problem + e.getMessage();
+	        String message = e.getMessage();
             throw new CommandException(message, e);
 	    }
     }

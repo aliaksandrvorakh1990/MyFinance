@@ -24,18 +24,18 @@ public class MyAccounts implements Command, IdValidator, AccountToTableOutputter
 
     @Override
     public String execute(String request) throws CommandException {
-        String problem ="Unable to excute MyAccounts Command:";
         if (!isSingleArgRequest(request)) {
-            String message = problem + "Request has to have one arg.";
+            String message = "Request has to have one arg.";
             throw new CommandException(message);
         }
         try {
             String id = convertor.converte(request);
             List<Account> myAccounts = service.getAll(id);
-            String response = createTable(myAccounts);
+            String response = (myAccounts.isEmpty()) ? "NO ACCOUNTS" 
+                    : createTable(myAccounts);
             return response;
         } catch (ConvertorException | ServiceException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new CommandException(message, e);
         }
     }

@@ -42,7 +42,9 @@ public class CreateAccount implements Command, RequestValidator, IdValidator,
             Account account = accountConvertor.converte(request);
             account.setId(userId);
             String accountId = service.create(account);
-            return accountId;
+            String response = (accountId == null) ? "ACCOUNT DOES NOT CREATED" 
+                    : String.format("YOUR ACCCOUNT ID: %s", accountId);
+            return response;
         } catch (ConvertorException | ServiceException e) {
             String message = problem + e.getMessage();
             throw new CommandException(message, e);

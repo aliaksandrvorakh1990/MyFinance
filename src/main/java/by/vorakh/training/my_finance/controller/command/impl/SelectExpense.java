@@ -5,11 +5,13 @@ import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor;
+import by.vorakh.training.my_finance.output.ExpenseToTableOutputter;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 import by.vorakh.training.my_finance.validation.type.IdValidator;
 
-public class SelectExpense implements Command, IdValidator {
+public class SelectExpense implements Command, IdValidator, 
+        ExpenseToTableOutputter {
     
     private RecordService service;
     private RequestToIdConvertor convertor;
@@ -31,7 +33,8 @@ public class SelectExpense implements Command, IdValidator {
             String id = convertor.converte(request);
             if (isRecordId(id)) {
                 Record myRecord = service.getById(id);
-                response = myRecord.toString();
+                response = (myRecord == null) ? "RECORD DOES NOT EXIST" 
+                        : createTable(myRecord);
             }
             return response;
         } catch (ConvertorException | ServiceException e) {

@@ -23,9 +23,8 @@ public class SelectAccount implements Command, IdValidator,
 
     @Override
     public String execute(String request) throws CommandException {
-        String problem ="Unable to excute SelectAccount Command:";
         if (!isSingleArgRequest(request)) {
-            String message = problem + "Request has to have one arg.";
+            String message = "Request has to have one arg.";
             throw new CommandException(message);
         }
         try {
@@ -33,11 +32,12 @@ public class SelectAccount implements Command, IdValidator,
             String id = convertor.converte(request);
             if (isAccountId(id)) {
                 Account myAccount = service.getById(id);
-                response = createTable(myAccount);
+                response = (myAccount == null) ? "ACCOUNT DOES NOT EXIST" 
+                        : createTable(myAccount);
             }
             return response;
         } catch (ConvertorException | ServiceException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new CommandException(message, e);
         }
     }
