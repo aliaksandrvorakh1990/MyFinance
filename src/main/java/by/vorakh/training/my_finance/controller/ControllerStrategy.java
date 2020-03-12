@@ -17,6 +17,7 @@ public class ControllerStrategy {
             try {
                 response = this.controller.executeTask(request);
         } catch (ControllerException e) {
+            // write to logger
             response ="This command is impossible to execute";
         }
         return response;

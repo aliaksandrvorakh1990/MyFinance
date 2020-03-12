@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class User implements Serializable {
+    
     private static final long serialVersionUID = -5179173428408300964L;
     
     private String login;
@@ -25,8 +26,6 @@ public class User implements Serializable {
         this.password = password;
         this.role = role;
     }
-    
-   
         
     public User( String login, String password, UserRole role, 
              List<Account> accounts) {

@@ -19,12 +19,12 @@ import by.vorakh.training.my_finance.dao.entity.UserEntity;
 
 public class DataSourceFactory {
     
-    private UserEntityCsvDataSource userDataSourse;
+    private UserEntityCsvDataSource userDataSource;
     private AccountEntityCsvDataSource accountDataSource;
     private RecordEntityCsvDataSource recordDataSource;
     
     public DataSourceFactory() {
-        setUserDataSourse(new UserDataSourceBuilder()
+        setUserDataSource(new UserDataSourceBuilder()
                 .setCsvToUserEntityConvertor(new CsvToUserEntityConvetor())
                 .setUserEntityToCsvConvertor(new UserEntityToCsvConvetor())
                 .build());
@@ -107,8 +107,8 @@ public class DataSourceFactory {
         }
     }
     
-    private void setUserDataSourse(UserEntityCsvDataSource userDataSourse) {
-        this.userDataSourse = userDataSourse;
+    private void setUserDataSource(UserEntityCsvDataSource userDataSource) {
+        this.userDataSource = userDataSource;
     }
 
     private void setAccountDataSource(AccountEntityCsvDataSource 
@@ -122,7 +122,7 @@ public class DataSourceFactory {
     }
 
     public UserEntityCsvDataSource getUserDataSourse() {
-        return userDataSourse;
+        return userDataSource;
     }
 
     public AccountEntityCsvDataSource getAccountDataSource() {
