@@ -7,7 +7,7 @@ import by.vorakh.training.my_finance.controller.exception.ControllerException;
 
 public class LoginController implements Controller {
     
-    private final LoginProvider provider = new LoginProvider();
+    private final LoginCommandProvider provider = new LoginCommandProvider();
     
     private final static char paramDelimeter = '#';
     

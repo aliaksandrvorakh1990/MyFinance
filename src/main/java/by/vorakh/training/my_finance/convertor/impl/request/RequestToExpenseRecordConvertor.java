@@ -21,14 +21,9 @@ public class RequestToExpenseRecordConvertor implements
     
     @Override
     public Record converte(String object) throws ConvertorException {
-        String problem = "[RequestToExpenseRecordConvertor]"
-                + ConvertorException.PROBLEM;
-        if (object == null) {
-            String message = problem + "Request has null value.";
-            throw new ConvertorException(message);
-        }
         if(!isMultiArgsRequest(object)) {
-            String message = problem + "Request has less than two args.";
+            String message = "Request has less than two args or "
+                    + "null value.";
             throw new ConvertorException(message);
         }
         ExpenseType type = null;
@@ -41,14 +36,14 @@ public class RequestToExpenseRecordConvertor implements
             switch (argName.toUpperCase()) {
                 case TYPE:
                     if(!isCorrectExpenseType(argValue)) {
-                        String message = problem + "Nonexistent type.";
+                        String message = "Nonexistent type.";
                         throw new ConvertorException(message);
                     }
                     type = ExpenseType.valueOf(argValue);
                     break;
                 case AMOUNT:
                     if (!isCorrectCurrency(argValue)) {
-                        String message = problem + "Amount has not Currency "
+                        String message = "Amount has not Currency "
                                 + "format.";
                         throw new ConvertorException(message);
                     }

@@ -19,13 +19,9 @@ public class RequestToUserConvertor implements Convertor<String, User>,
 
     @Override
     public User converte(String object) throws ConvertorException {
-    String problem = "[RequestUserConvertor]" + ConvertorException.PROBLEM;
-        if ((object == null)) {
-            String message = problem + "Request has null value.";
-            throw new ConvertorException(message);
-        }
         if (!isMultiArgsRequest(object)) {
-            String message = problem + "Request has less than two args.";
+            String message = "Request has less than two args or has "
+                    + "null value.";
             throw new ConvertorException(message);
         }
         String login = null;
@@ -39,21 +35,21 @@ public class RequestToUserConvertor implements Convertor<String, User>,
             switch (argName.toUpperCase()) {
                 case LOGIN_ARG:
                     if(!isCorrectLogin(argValue)) {
-                        String message = problem + "Wrong login format.";
+                        String message = "Wrong login format.";
                         throw new ConvertorException(message);
                     }
                     login = argValue;
                     break;
                 case PASS_ARG:
                     if(!isCorrectPassword(argValue)) {
-                        String message = problem + "Wrong password format.";
+                        String message = "Wrong password format.";
                         throw new ConvertorException(message);
                     }
                     password = argValue;
                     break;
                 case ROLE_ARG:
                     if(!isCorrectRole(argValue)) {
-                        String message = problem + "Nonexistent role.";
+                        String message = "Nonexistent role.";
                         throw new ConvertorException(message);
                     }
                     role = UserRole.valueOf(argValue);

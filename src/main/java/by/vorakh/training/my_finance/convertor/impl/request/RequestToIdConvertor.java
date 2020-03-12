@@ -1,7 +1,5 @@
 package by.vorakh.training.my_finance.convertor.impl.request;
 
-import static by.vorakh.training.my_finance.convertor.exception.ConvertorException.PROBLEM;
-
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.validation.request.RequestValidator;
@@ -15,8 +13,7 @@ public class RequestToIdConvertor implements Convertor<String, String>, RequestV
     @Override
     public String converte(String object) throws ConvertorException {
         if (object == null) {
-            String message = "[RequestUserConvertor]" + PROBLEM  + "Request "
-                    + "has null value.";
+            String message = "Request has null value.";
             throw new ConvertorException(message);
         }
         String id = null;

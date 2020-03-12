@@ -11,13 +11,8 @@ import by.vorakh.training.my_finance.crypto.exception.CryptoException;
 public interface Sha256Hasher {
 
     default String getSHA(String password) throws CryptoException {
-        String problem = "[Sha256Hasher]Unable to execute encrypting operation:";
-        if (password == null) {
-            String message = problem + "Password has null value.";
-            throw new CryptoException(message);
-        }
-        if (password.isEmpty()) {
-            String message = problem + "Password length is ZERO.";
+        if ((password == null) || (password.isEmpty())) {
+            String message =  "Password length is ZERO or has null value.";
             throw new CryptoException(message);
         }
         try {
@@ -31,7 +26,7 @@ public interface Sha256Hasher {
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new CryptoException(message, e);
         }
     }

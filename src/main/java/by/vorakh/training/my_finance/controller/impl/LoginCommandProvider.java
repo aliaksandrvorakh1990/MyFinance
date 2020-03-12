@@ -14,12 +14,12 @@ import by.vorakh.training.my_finance.controller.command.impl.WrongRequest;
 import by.vorakh.training.my_finance.convertor.impl.request.RequestToUserConvertor;
 import by.vorakh.training.my_finance.service.factory.ServiceFactory;
 
-public class LoginProvider implements CommandProvider {
+public class LoginCommandProvider implements CommandProvider {
 
     private final Map<CommandName, Command> repository =
             new EnumMap<>(CommandName.class);
 
-    LoginProvider() {
+    LoginCommandProvider() {
         init();
     }
 

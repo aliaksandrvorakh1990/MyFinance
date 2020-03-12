@@ -19,14 +19,9 @@ public class RequestToAccountConvertor implements Convertor<String, Account>,
 
     @Override
     public Account converte(String object) throws ConvertorException {
-        String problem = "[RequestToAccountConvertor]"
-                + ConvertorException.PROBLEM;
-        if (object == null) {
-            String message = problem + "Request has null value.";
-            throw new ConvertorException(message);
-        }
         if(!isMultiArgsRequest(object)) {
-            String message = problem + "Request has less than two args.";
+            String message = "Request has less than two args or "
+                    + "null value.";
             throw new ConvertorException(message);
         }
         String name = null;
@@ -39,7 +34,7 @@ public class RequestToAccountConvertor implements Convertor<String, Account>,
             switch (argName.toUpperCase()) {
                 case NAME:
                     if (!isCorrectAccountName(argValue)) {
-                        String message = problem + "Account Name has uncorrect"
+                        String message = "Account Name has uncorrect"
                                 + " format.";
                         throw new ConvertorException(message);
                     }
@@ -47,7 +42,7 @@ public class RequestToAccountConvertor implements Convertor<String, Account>,
                     break;
                 case BALANCE:
                     if (!isCorrectCurrency(argValue)) {
-                        String message = problem + "Balance has not Currency "
+                        String message = "Balance has not Currency "
                                 + "format.";
                         throw new ConvertorException(message);
                     }
