@@ -9,7 +9,7 @@ public class Exit implements Command {
 
     @Override
     public String execute(String request) throws CommandException {
-        return "Exit";
+        return "EXIT";
     }
 
 }
