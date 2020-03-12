@@ -32,6 +32,20 @@ public class AccountServiceImpl implements AccountService, IdValidator,
     private Convertor<AccountEntity, Account> entityConvertor;
     private Convertor<Account, AccountEntity> beanConvertor;
     
+    
+    
+    public AccountServiceImpl(AccountDAO accountDao, UserDAO userDAO, 
+            RecordDAO expenseDAO, RecordService recordService,
+            Convertor<AccountEntity, Account> entityConvertor, 
+            Convertor<Account, AccountEntity> beanConvertor) {
+        this.accountDao = accountDao;
+        this.userDAO = userDAO;
+        this.expenseDAO = expenseDAO;
+        this.recordService = recordService;
+        this.entityConvertor = entityConvertor;
+        this.beanConvertor = beanConvertor;
+    }
+
     @Override
     public List<Account> getAll() throws ServiceException {
         try {
