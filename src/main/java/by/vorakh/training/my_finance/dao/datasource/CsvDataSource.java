@@ -2,24 +2,24 @@ package by.vorakh.training.my_finance.dao.datasource;
 
 import static by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException.*;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Reader;
 import java.io.Writer;
+import java.nio.file.Files;
+import java.nio.file.InvalidPathException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
-import by.vorakh.training.my_finance.validation.FileValidator;
 
-public abstract class CsvDataSource<T, C extends Collection<T>> implements FileValidator {
+public abstract class CsvDataSource<T, C extends Collection<T>> {
     
     private Convertor<String, T> csvToEntityConvertor;
     private Convertor<T, String> entitycsvToConvertor;
@@ -44,19 +44,15 @@ public abstract class CsvDataSource<T, C extends Collection<T>> implements FileV
             throw new DataSourceException(message);
         }
         Map<String, T> map = new LinkedHashMap<String, T>();
-        File file = new File(path);
-        if (isExistedFile(file)) {
-            try (Reader fileReader = new FileReader(file);
-                    BufferedReader reader = new BufferedReader(fileReader);) {
-                reader.lines().filter(csv -> !csv.isEmpty()).forEach(csv -> {
-                        T entity = csvToEntityConvertor.converte(csv);
-                        addTo(map, entity);
-                });
-                   
-            } catch (IOException e) {
-                String message = READ_PROBLEM + e.getMessage();
-                throw new DataSourceException(message, e);
-            }
+        try (Stream<String> stream = Files.lines(Paths.get(path))) {
+            stream.filter(csv -> !csv.isEmpty()).forEach(csv -> {
+                    T entity = csvToEntityConvertor.converte(csv);
+                    addTo(map, entity);
+            });
+               
+        } catch (InvalidPathException | IOException e) {
+            String message = READ_PROBLEM + e.getMessage();
+            throw new DataSourceException(message, e);
         }
         return map;
     }
@@ -103,7 +99,8 @@ public abstract class CsvDataSource<T, C extends Collection<T>> implements FileV
             throw new DataSourceException(message);
         }
         boolean append = false;
-        try (Writer fileWriter = new FileWriter(path, append);
+        File file = new File(path);
+        try (Writer fileWriter = new FileWriter(file, append);
              BufferedWriter writer = new BufferedWriter(fileWriter);) {
             writer.write("");
         } catch (IOException e) {
