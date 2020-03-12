@@ -2,16 +2,20 @@ package by.vorakh.training.my_finance.service.impl;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;
+import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.crypto.Sha256Hasher;
 import by.vorakh.training.my_finance.crypto.exception.CryptoException;
 import by.vorakh.training.my_finance.dao.UserDAO;
+import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.UserService;
+import by.vorakh.training.my_finance.service.exception.BeanFillingException;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 import by.vorakh.training.my_finance.validation.UserValidator;
 
@@ -19,16 +23,25 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
 
     private UserDAO userDAO ;
     private AccountService accountService;
+    private Convertor<UserEntity, User> entityConvertor;
+    private Convertor<User, UserEntity> beanConvertor;
 
-    public UserServiceImpl(UserDAO userDAO, AccountService accountService) {
+    public UserServiceImpl(UserDAO userDAO, AccountService accountService, 
+            Convertor<UserEntity, User> entityConvertor,
+            Convertor<User, UserEntity> beanConvertor) {
+        super();
         this.userDAO = userDAO;
         this.accountService = accountService;
+        this.entityConvertor = entityConvertor;
+        this.beanConvertor = beanConvertor;
     }
 
     @Override
     public List<User> getAll() throws ServiceException {
         try {
-            return userDAO.getAll();
+            return userDAO.getAll().stream().collect(
+                    Collectors.mapping(userEntity -> fillBean(userEntity), 
+                    Collectors.toList()));
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
@@ -37,12 +50,12 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
 
     @Override
     public User getById(String id) throws ServiceException {
-        if (isEqualsNull(id)) {
+        if (id == null) {
             String message ="id has null value";
             throw new ServiceException(message);
         }
         try {
-            return userDAO.getById(id);
+            return fillBean(userDAO.getById(id));
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
@@ -50,7 +63,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
     }
 
     public UserRole singIn(User user) throws ServiceException {
-        if (isEqualsNull(user)) {
+        if (user == null) {
             String message = "User has null value.";
             throw new ServiceException(message);
         }
@@ -74,7 +87,7 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
     }
 
     public UserRole singUp(User user) throws ServiceException {
-        if (isEqualsNull(user)) {
+        if (user == null) {
             String message ="User has null value.";
             throw new ServiceException(message);
         }
@@ -93,20 +106,19 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
 
     @Override
     public String create(User object) throws ServiceException {
-        if (isEqualsNull(object)) {
+        if (object == null) {
             String message = "User has null value";
             throw new ServiceException(message);
         }
         String login = object.getLogin();
         String password = object.getPassword();
-        UserRole userRole = object.getRole();
         try {
             String response = null;
             String encryptedPassword = getSHA(password);
             object.setPassword(encryptedPassword);
             boolean isContainLogin = !isEqualsNull(getById(login));
             if (!isContainLogin) {
-                response = userDAO.create(object);
+                response = userDAO.create(beanConvertor.converte(object));
                 String accountId = object.getLogin();
                 String accoutnName = new String("MyFirstAccount");
                 BigDecimal startBalance = new BigDecimal(0).
@@ -124,14 +136,14 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
 
     @Override
     public Boolean deleteById(String id) throws ServiceException {
-        if (isEqualsNull(id)) {
+        if (id == null) {
             String message = "User has null value";
             throw new ServiceException(message);
         }
         try {
             Boolean response = null;
             User deletedUser = getById(id);
-            boolean isContain = !isEqualsNull(deletedUser);
+            boolean isContain = deletedUser != null;
             if (isContain) {
                 List<Account> userAccounts = deletedUser.getAccounts();
                 if (!isEqualsNull(userAccounts)) {
@@ -146,6 +158,21 @@ public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher
             String message = e.getMessage();
             throw new ServiceException(message, e);
         }
+    }
+    
+    private User fillBean(UserEntity entity) {
+        try {
+            User user = entityConvertor.converte(entity);
+            String id = user.getLogin();
+            List<Account> userAccounts = accountService
+                    .getAll(id);
+            user.setAccounts(userAccounts);
+            return user;
+        } catch (ServiceException e) {
+            String message = e.getMessage();
+            throw new BeanFillingException(message, e);
+        }
+        
     }
 
 }
