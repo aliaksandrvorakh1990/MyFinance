@@ -8,7 +8,7 @@ import by.vorakh.training.my_finance.convertor.impl.request.RequestToExpenseReco
 import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.IdValidator;
+import by.vorakh.training.my_finance.validation.type.IdValidator;
 
 public class CreateExpense implements Command, IdValidator {
 

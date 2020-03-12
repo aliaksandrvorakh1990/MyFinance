@@ -4,11 +4,12 @@ import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.validation.RequestValidator;
-import by.vorakh.training.my_finance.validation.UserValidator;
+import by.vorakh.training.my_finance.validation.request.RequestValidator;
+import by.vorakh.training.my_finance.validation.type.NameValidator;
+import by.vorakh.training.my_finance.validation.type.PasswordValidator;
 
-public class RequestToUserConvertor implements Convertor<String, User>, UserValidator,
-        RequestValidator{
+public class RequestToUserConvertor implements Convertor<String, User>, 
+        NameValidator, PasswordValidator, RequestValidator{
 
     private static final String REGEX = "&";
     private static final char ARG_DELIMETER = '=';

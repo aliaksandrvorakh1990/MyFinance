@@ -1,4 +1,4 @@
-package by.vorakh.training.my_finance.validation;
+package by.vorakh.training.my_finance.validation.type;
 
 public interface IdValidator {
 

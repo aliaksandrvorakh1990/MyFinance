@@ -17,9 +17,8 @@ import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.UserService;
 import by.vorakh.training.my_finance.service.exception.BeanFillingException;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.UserValidator;
 
-public class UserServiceImpl implements UserService, UserValidator, Sha256Hasher {
+public class UserServiceImpl implements UserService, Sha256Hasher {
 
     private UserDAO userDAO ;
     private AccountService accountService;

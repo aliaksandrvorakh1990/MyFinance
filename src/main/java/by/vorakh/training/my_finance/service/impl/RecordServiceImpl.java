@@ -18,7 +18,7 @@ import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.IdValidator;
+import by.vorakh.training.my_finance.validation.type.IdValidator;
 
 public class RecordServiceImpl implements RecordService,
         IdValidator {

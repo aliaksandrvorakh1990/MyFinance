@@ -8,9 +8,9 @@ import by.vorakh.training.my_finance.convertor.impl.request.RequestToAccountConv
 import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor;
 import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.CurrencyValidator;
-import by.vorakh.training.my_finance.validation.IdValidator;
-import by.vorakh.training.my_finance.validation.RequestValidator;
+import by.vorakh.training.my_finance.validation.request.RequestValidator;
+import by.vorakh.training.my_finance.validation.type.CurrencyValidator;
+import by.vorakh.training.my_finance.validation.type.IdValidator;
 
 public class CreateAccount implements Command, RequestValidator, IdValidator,
         CurrencyValidator {

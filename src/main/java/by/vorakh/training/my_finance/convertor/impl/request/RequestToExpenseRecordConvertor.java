@@ -6,13 +6,13 @@ import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.validation.CurrencyValidator;
-import by.vorakh.training.my_finance.validation.ExpenseTypeValidator;
-import by.vorakh.training.my_finance.validation.RequestValidator;
+import by.vorakh.training.my_finance.validation.request.RequestValidator;
+import by.vorakh.training.my_finance.validation.type.CurrencyValidator;
+import by.vorakh.training.my_finance.validation.type.NameValidator;
 
 public class RequestToExpenseRecordConvertor implements 
         Convertor<String, Record>, RequestValidator, CurrencyValidator, 
-        ExpenseTypeValidator {
+        NameValidator {
     
     private static final String REGEX = "&";
     private static final char ARG_DELIMETER = '=';
