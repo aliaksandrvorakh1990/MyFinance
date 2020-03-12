@@ -8,8 +8,7 @@ public class WrongRequest implements Command {
     @Override
     public String execute(String request) throws CommandException {
         String defaultResponse = "Wrong Request";
-        String reponse = (request == null) ? defaultResponse : request;
-        return reponse;
+        return defaultResponse;
     }
 
 }
