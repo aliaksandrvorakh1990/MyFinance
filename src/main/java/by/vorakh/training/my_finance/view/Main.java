@@ -15,7 +15,7 @@ public class Main {
     private final static String USER = "USER";
     private final static String SIGN_IN = "SIGN_IN";
     private final static String SIGN_UP = "SIGN_UP";
-    private final static String EXIT = "Exit";
+    private final static String EXIT = "EXIT";
     
     private static ControllerStrategy mainController = new ControllerStrategy();
 
@@ -52,7 +52,7 @@ public class Main {
                 case SIGN_UP:
                     response = doSignUp(console);
                     break;
-                case "EXIT":
+                case EXIT:
                     doExit(console);
                     break;
                 default:
