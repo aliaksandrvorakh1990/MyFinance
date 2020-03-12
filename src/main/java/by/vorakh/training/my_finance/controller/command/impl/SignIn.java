@@ -10,31 +10,34 @@ import by.vorakh.training.my_finance.service.UserService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 
 public class SignIn implements Command {
-    
+
     private UserService userService;
-	private  RequestToUserConvertor requestUserConvertor ;
+    private  RequestToUserConvertor requestUserConvertor ;
 
-	public SignIn(UserService loginService,
-		    RequestToUserConvertor requestUserConvertor) {
-	    this.userService = loginService;
-	    this.requestUserConvertor = requestUserConvertor;
-	}
+    public SignIn(UserService loginService,
+            RequestToUserConvertor requestUserConvertor) {
+        this.userService = loginService;
+        this.requestUserConvertor = requestUserConvertor;
+    }
 
-	@Override
-	public String execute(String request) throws CommandException {
-	    String problem ="Unable to excute SingIn Command:";
-        if (request == null) {
-            String message = problem + "Request has null value.\n";
+    @Override
+    public String execute(String request) throws CommandException {
+        if (!isMultiArgsRequest(request)) {
+            String message = "Wrong request";
             throw new CommandException(message);
         }
-		try {
-			User user = requestUserConvertor.converte(request);
-			UserRole serviceResponse = userService.singIn(user);
-			return serviceResponse.name();
-		} catch (ConvertorException | ServiceException e) {
-			String message = problem + e.getMessage();
-			throw new CommandException(message, e);
-		} 
-	}
-	
+        try {
+            User user = requestUserConvertor.converte(request);
+            UserRole serviceResponse = userService.singIn(user);
+            String response = (serviceResponse == null)
+                    ? "Unable to excute SingIn: user with this login does not "
+                            + "contain in system."
+                    : serviceResponse.name();
+            return response;
+        } catch (ConvertorException | ServiceException e) {
+            String message = e.getMessage();
+            throw new CommandException(message, e);
+        }
+    }
+
 }

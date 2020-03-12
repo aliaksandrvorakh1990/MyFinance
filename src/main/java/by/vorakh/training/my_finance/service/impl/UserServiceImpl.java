@@ -70,7 +70,7 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
             UserRole role  = null;
             String login = user.getLogin();
             String password = user.getPassword();
-            User foundUser = getById(login);
+            UserEntity foundUser = userDAO.getById(login);
             if (foundUser != null) {
                 String encryptedPassword = getSHA(password);
                 String foundUserPassoword = foundUser.getPassword();
@@ -79,7 +79,7 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
                 }
             }
             return role;
-        } catch (ServiceException | CryptoException e) {
+        } catch (CryptoException | DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
         }
@@ -115,7 +115,7 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
             String response = null;
             String encryptedPassword = getSHA(password);
             object.setPassword(encryptedPassword);
-            boolean isContainLogin = getById(login) != null;
+            boolean isContainLogin = userDAO.getById(login) != null;
             if (!isContainLogin) {
                 response = userDAO.create(beanConvertor.converte(object));
                 String accountId = object.getLogin();

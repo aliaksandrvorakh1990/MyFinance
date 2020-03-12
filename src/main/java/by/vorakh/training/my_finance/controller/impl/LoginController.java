@@ -13,11 +13,11 @@ public class LoginController implements Controller {
     
     @Override
     public String executeTask(String request) throws ControllerException {
-        if (!isCorrect(request)) {
-            String message = "Wrong Request";
-                throw new ControllerException(message);
-        }
         try {
+            if (!isCorrect(request)) {
+                String message = "Wrong Request";
+                    throw new ControllerException(message);
+            }
              int beginIndex = request.indexOf(paramDelimeter);
              String commandName = request.substring(0, beginIndex);	
              Command executionCommand = provider.getCommand(commandName);
@@ -25,8 +25,7 @@ public class LoginController implements Controller {
                      : request.substring(beginIndex + 1);
              return executionCommand.execute(requestArgs);
         } catch (CommandException e) {
-            // log e.printStackTrace();
-            String message = "Problem with Login Controller";
+            String message = e.getMessage();
             throw new ControllerException(message, e);
         }
     }

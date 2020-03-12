@@ -22,18 +22,21 @@ public class SignUp implements Command {
 
     @Override
     public String execute(String request) throws CommandException {
-        String problem ="Unable to excute SingUp Command:";
-        if (request == null) {
-            String message = problem + "Request has null value.\n";
+        if (!isMultiArgsRequest(request)) {
+            String message = "Wrong request";
             throw new CommandException(message);
         }
         try {
             User newUser = requestUserConvertor.converte(request);
             newUser.setRole(UserRole.USER);
             UserRole serviceResponse = userService.singUp(newUser);
-            return serviceResponse.name();
+            String response = (serviceResponse == null) 
+                    ? "Unable to excute SingUp: user with this login contains "
+                            + "in system." 
+                    : serviceResponse.name();
+            return response;
         } catch (ConvertorException | ServiceException e) {
-            String message = problem + e.getMessage();
+            String message = e.getMessage();
             throw new CommandException(message, e);
         }
     }
