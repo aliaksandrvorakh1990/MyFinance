@@ -2,9 +2,11 @@ package by.vorakh.training.my_finance.validation.bean;
 
 import by.vorakh.training.my_finance.bean.Record;
 
-public interface RecordValidator {
+public class RecordValidator {
     
-    default boolean isCorrectForConverting(Record record) {
+    private RecordValidator() {}
+    
+    public static boolean isCorrectForConverting(Record record) {
         return ((record != null) && ((record.getId() != null) 
                 && (record.getAmount() != null) 
                 && (record.getType() != null)));

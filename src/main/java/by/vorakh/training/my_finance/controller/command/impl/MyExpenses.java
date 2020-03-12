@@ -1,5 +1,7 @@
 package by.vorakh.training.my_finance.controller.command.impl;
 
+import static  by.vorakh.training.my_finance.validation.request.RequestValidator.isSingleArgRequest;
+
 import java.util.List;
 
 import by.vorakh.training.my_finance.bean.Record;
@@ -10,10 +12,8 @@ import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor
 import by.vorakh.training.my_finance.output.ExpenseToTableOutputter;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.type.IdValidator;
 
-public class MyExpenses implements Command, IdValidator, 
-        ExpenseToTableOutputter {
+public class MyExpenses implements Command, ExpenseToTableOutputter {
     
     private RecordService service;
     private RequestToIdConvertor convertor;

@@ -1,5 +1,8 @@
 package by.vorakh.training.my_finance.controller.command.impl;
 
+import static  by.vorakh.training.my_finance.validation.request.RequestValidator.isMultiArgsRequest;
+import static by.vorakh.training.my_finance.validation.type.IdValidator.*;
+
 import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
@@ -8,9 +11,8 @@ import by.vorakh.training.my_finance.convertor.impl.request.RequestToExpenseReco
 import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.type.IdValidator;
 
-public class CreateExpense implements Command, IdValidator {
+public class CreateExpense implements Command {
 
     private RecordService service;
     private RequestToIdConvertor idConvertor;

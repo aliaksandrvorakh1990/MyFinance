@@ -11,8 +11,8 @@ public abstract class UserEntityCsvDataSource extends
 
     protected UserEntityCsvDataSource(
             Convertor<String, UserEntity> csvToEntityConvertor,
-            Convertor<UserEntity, String> entitycsvToConvertor) {
-        super(csvToEntityConvertor, entitycsvToConvertor);
+            Convertor<UserEntity, String> entityToCsvConvertor) {
+        super(csvToEntityConvertor, entityToCsvConvertor);
     }
     
 }

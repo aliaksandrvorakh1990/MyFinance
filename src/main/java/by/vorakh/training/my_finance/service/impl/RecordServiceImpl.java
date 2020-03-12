@@ -1,5 +1,8 @@
 package by.vorakh.training.my_finance.service.impl;
 
+import static by.vorakh.training.my_finance.validation.type.IdValidator.isAccountId;
+import static by.vorakh.training.my_finance.validation.type.IdValidator.isRecordId;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,10 +21,8 @@ import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.type.IdValidator;
 
-public class RecordServiceImpl implements RecordService,
-        IdValidator {
+public class RecordServiceImpl implements RecordService {
 
     private AccountDAO accountDAO;
     private RecordDAO expenseDAO;

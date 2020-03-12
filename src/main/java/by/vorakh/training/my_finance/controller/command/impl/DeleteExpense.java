@@ -1,14 +1,16 @@
 package by.vorakh.training.my_finance.controller.command.impl;
 
+import static  by.vorakh.training.my_finance.validation.request.RequestValidator.isSingleArgRequest;
+import static by.vorakh.training.my_finance.validation.type.IdValidator.isRecordId;
+
 import by.vorakh.training.my_finance.controller.command.Command;
 import by.vorakh.training.my_finance.controller.command.exception.CommandException;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.convertor.impl.request.RequestToIdConvertor;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.type.IdValidator;
 
-public class DeleteExpense implements Command, IdValidator {
+public class DeleteExpense implements Command {
     
     private RecordService service;
     private RequestToIdConvertor idConvertor;

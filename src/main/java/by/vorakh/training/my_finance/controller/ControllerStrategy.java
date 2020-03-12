@@ -2,20 +2,20 @@ package by.vorakh.training.my_finance.controller;
 
 import by.vorakh.training.my_finance.controller.exception.ControllerException;
 
-public class ContollerStrategy {
+public class ControllerStrategy {
 
-    private Controller contoller;
+    private Controller controller;
 
-    public ContollerStrategy() {}
+    public ControllerStrategy() {}
 
-    public void setContoller(Controller contoller) {
-        this.contoller = contoller;
+    public void setContoller(Controller controller) {
+        this.controller = controller;
     }
 
     public String executeTask(String request) {
         String response = null;
             try {
-                response = this.contoller.executeTask(request);
+                response = this.controller.executeTask(request);
         } catch (ControllerException e) {
             response ="This command is impossible to execute";
         }

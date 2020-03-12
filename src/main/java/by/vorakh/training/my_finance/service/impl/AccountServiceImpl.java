@@ -19,11 +19,8 @@ import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.BeanFillingException;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.type.CurrencyValidator;
-import by.vorakh.training.my_finance.validation.type.IdValidator;
 
-public class AccountServiceImpl implements AccountService, IdValidator,
-        CurrencyValidator {
+public class AccountServiceImpl implements AccountService {
 
     private AccountDAO accountDao;
     private UserDAO userDAO;

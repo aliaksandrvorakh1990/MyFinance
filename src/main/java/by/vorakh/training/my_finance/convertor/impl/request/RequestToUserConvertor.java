@@ -1,15 +1,16 @@
 package by.vorakh.training.my_finance.convertor.impl.request;
 
+import static  by.vorakh.training.my_finance.validation.request.RequestValidator.isMultiArgsRequest;
+import static by.vorakh.training.my_finance.validation.type.NameValidator.isCorrectLogin;
+import static by.vorakh.training.my_finance.validation.type.NameValidator.isCorrectRole;
+import static by.vorakh.training.my_finance.validation.type.PasswordValidator.isCorrectPassword;
+
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.validation.request.RequestValidator;
-import by.vorakh.training.my_finance.validation.type.NameValidator;
-import by.vorakh.training.my_finance.validation.type.PasswordValidator;
 
-public class RequestToUserConvertor implements Convertor<String, User>, 
-        NameValidator, PasswordValidator, RequestValidator{
+public class RequestToUserConvertor implements Convertor<String, User> {
 
     private static final String REGEX = "&";
     private static final char ARG_DELIMETER = '=';

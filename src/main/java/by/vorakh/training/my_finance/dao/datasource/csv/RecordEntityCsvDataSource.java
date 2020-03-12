@@ -11,8 +11,8 @@ public abstract class RecordEntityCsvDataSource extends
 
     protected RecordEntityCsvDataSource(
             Convertor<String, RecordEntity> csvToEntityConvertor,
-            Convertor<RecordEntity, String> entitycsvToConvertor) {
-        super(csvToEntityConvertor, entitycsvToConvertor);
+            Convertor<RecordEntity, String> entityToCsvConvertor) {
+        super(csvToEntityConvertor, entityToCsvConvertor);
     }
     
 }
