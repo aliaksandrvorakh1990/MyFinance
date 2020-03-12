@@ -108,7 +108,8 @@ public class CsvAccountDAOTest {
         when(dataSource.read(path)).thenReturn(accountMap);
         boolean actual = dao.update(updatedAccount);
         verify(dataSource, times(1)).clearFile(path);
-        verify(dataSource, times(1)).write(any(Collection.class), any(String.class));
+        verify(dataSource, times(1)).write(any(Collection.class), 
+                any(String.class));
         assertTrue(actual);
     }
     
@@ -119,7 +120,8 @@ public class CsvAccountDAOTest {
         when(dataSource.read(path)).thenReturn(accountMap);
         boolean actual = dao.delete(id);
         verify(dataSource, times(1)).clearFile(path);
-        verify(dataSource, times(1)).write(any(Collection.class), any(String.class));
+        verify(dataSource, times(1)).write(any(Collection.class), 
+                any(String.class));
         assertTrue(actual);
     }
 
