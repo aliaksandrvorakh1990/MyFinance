@@ -16,7 +16,7 @@ import by.vorakh.training.my_finance.validation.dao_entity.RecordEntityValidator
 
 public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
     
-    private final static String PATH_FORMAT= "csv/records/%s.csv";
+    private final static String PATH_FORMAT= "./csv/records/%s.csv";
     
     private RecordEntityCsvDataSource recordDataSource;
     private AccountEntityCsvDataSource accountDataSource;

@@ -14,7 +14,7 @@ import by.vorakh.training.my_finance.validation.dao_entity.AccountEntityValidato
 
 public class CsvAccountDAO implements AccountDAO, AccountEntityValidator {
     
-    private final static String PATH= "csv/accounts.csv";
+    private final static String PATH= "./csv/accounts.csv";
     
     private AccountEntityCsvDataSource dataSource;
 

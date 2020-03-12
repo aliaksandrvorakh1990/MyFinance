@@ -13,7 +13,7 @@ import by.vorakh.training.my_finance.validation.dao_entity.UserEntityValidator;
 
 public class CsvUserDAO implements UserDAO, UserEntityValidator {
     
-    private final static String PATH= "csv/users.csv";
+    private final static String PATH= "./csv/users.csv";
     
     private UserEntityCsvDataSource dataSource;
 
