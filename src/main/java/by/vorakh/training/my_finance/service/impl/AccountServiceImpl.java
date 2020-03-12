@@ -81,7 +81,12 @@ public class AccountServiceImpl implements AccountService, IdValidator,
             throw new ServiceException(message);
         }
         try {
-            return fillBean(accountDao.getById(id));
+            Account foundAccount = null;
+            AccountEntity account = accountDao.getById(id);
+            if (account != null) {
+                foundAccount = fillBean(account);
+            }
+            return foundAccount;
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
@@ -98,7 +103,11 @@ public class AccountServiceImpl implements AccountService, IdValidator,
             String response = null;
             String userId = object.getId();
             UserEntity selectedUser = userDAO.getById(userId);
-            if (selectedUser != null) {
+            long countSameName = accountDao.getAll(userId).stream()
+                    .filter(account -> 
+                            account.getName().equals(object.getName()))
+                    .count();
+            if ((selectedUser != null) &&  (countSameName == 0)) {
                 long creatingTime = new Date().getTime();
                 String accountId = String.format("%s@%s", userId,
                         creatingTime);

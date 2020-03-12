@@ -66,7 +66,7 @@ public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
             throw new DAOException(message);
         }
         try {
-            String accountId = null;
+            String accountId = getAccountIdFrom(id);
             String path = getPath(accountId);
             RecordEntity record = recordDataSource.read(path).get(id);
             return record;

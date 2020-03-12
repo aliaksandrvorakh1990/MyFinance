@@ -54,7 +54,12 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
             throw new ServiceException(message);
         }
         try {
-            return fillBean(userDAO.getById(id));
+            User foundUser = null;
+            UserEntity user = userDAO.getById(id);
+            if (user != null) {
+                foundUser = fillBean(user);
+            }
+            return foundUser;
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);

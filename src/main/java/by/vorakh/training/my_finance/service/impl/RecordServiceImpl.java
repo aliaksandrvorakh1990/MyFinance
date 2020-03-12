@@ -111,7 +111,11 @@ public class RecordServiceImpl implements RecordService,
             throw new ServiceException(message);
         }
         try {
-            return entityConvertor.converte(expenseDAO.getById(id));
+            RecordEntity record = expenseDAO.getById(id);
+            Record foundRecord = (record != null) 
+                    ? entityConvertor.converte(record) 
+                    : null;
+            return foundRecord;
         } catch (DAOException | ConvertorException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
@@ -159,8 +163,8 @@ public class RecordServiceImpl implements RecordService,
             Boolean response = null;
             String accountId = getAccountIdFrom(id);
             AccountEntity seletedAccount = accountDAO.getById(accountId);
-            if (seletedAccount != null) {
-                RecordEntity deletedRecord = expenseDAO.getById(id);
+            RecordEntity deletedRecord = expenseDAO.getById(id);
+            if ((seletedAccount != null) && (deletedRecord != null)) {
                 BigDecimal balanse =seletedAccount.getBalance();
                 BigDecimal amount = deletedRecord.getAmount();
                 balanse = (deletedRecord.getType().getIsExpense()) 
