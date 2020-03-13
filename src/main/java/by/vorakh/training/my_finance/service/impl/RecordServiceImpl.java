@@ -67,7 +67,7 @@ public class RecordServiceImpl implements RecordService {
                         Collectors.mapping(recordEntity -> 
                                 entityConvertor.converte(recordEntity), 
                                 Collectors.toList()));
-                        accountExpenses.addAll(foundRecords);
+                accountExpenses.addAll(foundRecords);
             }
             return accountExpenses;
         } catch (DAOException e) {
