@@ -1,5 +1,7 @@
 package by.vorakh.training.my_finance.dao.impl.csv;
 
+import static by.vorakh.training.my_finance.validation.dao_entity.RecordEntityValidator.isCorrectEntity;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -12,9 +14,9 @@ import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceExceptio
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
-import by.vorakh.training.my_finance.validation.dao_entity.RecordEntityValidator;
 
-public class CsvRecordDAO implements RecordDAO, RecordEntityValidator {
+
+public class CsvRecordDAO implements RecordDAO {
     
     private final static String PATH_FORMAT= "./csv/records/%s.csv";
     

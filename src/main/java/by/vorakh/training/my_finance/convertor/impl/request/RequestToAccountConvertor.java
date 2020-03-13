@@ -1,16 +1,16 @@
 package by.vorakh.training.my_finance.convertor.impl.request;
 
+import static  by.vorakh.training.my_finance.validation.request.RequestValidator.isMultiArgsRequest;
+import static by.vorakh.training.my_finance.validation.type.CurrencyValidator.isCorrectCurrency;
+import static by.vorakh.training.my_finance.validation.type.NameValidator.isCorrectAccountName;
+
 import java.math.BigDecimal;
 
 import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.validation.request.RequestValidator;
-import by.vorakh.training.my_finance.validation.type.CurrencyValidator;
-import by.vorakh.training.my_finance.validation.type.NameValidator;
 
-public class RequestToAccountConvertor implements Convertor<String, Account>,
-        RequestValidator, CurrencyValidator, NameValidator {
+public class RequestToAccountConvertor implements Convertor<String, Account> {
     
     private static final String REGEX = "&";
     private static final char ARG_DELIMETER = '=';

@@ -1,7 +1,6 @@
 package by.vorakh.training.my_finance.dao.impl.csv;
 
-import  org.hamcrest.CustomMatcher;
-import static org.hamcrest.CoreMatchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -101,6 +100,7 @@ public class CsvAccountDAOTest {
         assertEquals(expected, actual);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testUpdate() throws DataSourceException, DAOException {
         AccountEntity updatedAccount = new AccountEntity("MrXXX@1583996205058", 
@@ -108,15 +108,20 @@ public class CsvAccountDAOTest {
         when(dataSource.read(path)).thenReturn(accountMap);
         boolean actual = dao.update(updatedAccount);
         verify(dataSource, times(1)).clearFile(path);
+        verify(dataSource, times(1)).write(any(Collection.class), 
+                any(String.class));
         assertTrue(actual);
     }
     
+    @SuppressWarnings("unchecked")
     @Test
     public void testDelete() throws DataSourceException, DAOException {
         String id = "MrXXX@1583996205058";
         when(dataSource.read(path)).thenReturn(accountMap);
         boolean actual = dao.delete(id);
         verify(dataSource, times(1)).clearFile(path);
+        verify(dataSource, times(1)).write(any(Collection.class), 
+                any(String.class));
         assertTrue(actual);
     }
 

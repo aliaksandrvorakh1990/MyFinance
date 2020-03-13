@@ -4,7 +4,7 @@ import java.io.Console;
 import java.util.Arrays;
 
 import by.vorakh.training.my_finance.controller.CommandName;
-import by.vorakh.training.my_finance.controller.ContollerStrategy;
+import by.vorakh.training.my_finance.controller.ControllerStrategy;
 import by.vorakh.training.my_finance.controller.impl.AdminController;
 import by.vorakh.training.my_finance.controller.impl.LoginController;
 import by.vorakh.training.my_finance.controller.impl.UserContoller;
@@ -15,9 +15,9 @@ public class Main {
     private final static String USER = "USER";
     private final static String SIGN_IN = "SIGN_IN";
     private final static String SIGN_UP = "SIGN_UP";
-    private final static String EXIT = "Exit";
+    private final static String EXIT = "EXIT";
     
-    private static ContollerStrategy mainContoller = new ContollerStrategy();
+    private static ControllerStrategy mainController = new ControllerStrategy();
 
     public static void main (String[] args) {
         Console console = System.console();
@@ -29,7 +29,7 @@ public class Main {
         String response = null;
         do {
             String command = console.readLine("Enter command with arguments: ");
-            response = mainContoller.executeTask(command);
+            response = mainController.executeTask(command);
             console.format("%s%n",response);
         } while(!response.equals(EXIT));
         doExit(console);
@@ -52,7 +52,7 @@ public class Main {
                 case SIGN_UP:
                     response = doSignUp(console);
                     break;
-                case "EXIT":
+                case EXIT:
                     doExit(console);
                     break;
                 default:
@@ -71,7 +71,7 @@ public class Main {
         String command = CommandName.SIGN_IN.name();
         String request = String
                 .format("%s#LOGIN=%s&PASSWORD=%s",command, login, password);
-        String response = mainContoller.executeTask(request);
+        String response = mainController.executeTask(request);
         return response;
     }
     
@@ -81,7 +81,7 @@ public class Main {
         String command = CommandName.SIGN_UP.name();
         String request = String
                 .format("%s#LOGIN=%s&PASSWORD=%s",command, login, password);
-        String response =  mainContoller.executeTask(request);
+        String response =  mainController.executeTask(request);
         return response;
     }
     
@@ -113,13 +113,13 @@ public class Main {
     private static void selectController(String role) {
         switch(role) {
             case ADMIN:
-                mainContoller.setContoller(new AdminController());
+                mainController.setContoller(new AdminController());
                 break;
             case USER:
-                mainContoller.setContoller(new UserContoller());
+                mainController.setContoller(new UserContoller());
                 break;
             default:
-                mainContoller.setContoller(new LoginController());
+                mainController.setContoller(new LoginController());
         }
     }
 

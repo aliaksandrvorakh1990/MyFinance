@@ -19,11 +19,8 @@ import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.BeanFillingException;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.type.CurrencyValidator;
-import by.vorakh.training.my_finance.validation.type.IdValidator;
 
-public class AccountServiceImpl implements AccountService, IdValidator,
-        CurrencyValidator {
+public class AccountServiceImpl implements AccountService {
 
     private AccountDAO accountDao;
     private UserDAO userDAO;
@@ -31,9 +28,7 @@ public class AccountServiceImpl implements AccountService, IdValidator,
     private RecordService recordService;
     private Convertor<AccountEntity, Account> entityConvertor;
     private Convertor<Account, AccountEntity> beanConvertor;
-    
-    
-    
+
     public AccountServiceImpl(AccountDAO accountDao, UserDAO userDAO, 
             RecordDAO expenseDAO, RecordService recordService,
             Convertor<AccountEntity, Account> entityConvertor, 
@@ -49,9 +44,8 @@ public class AccountServiceImpl implements AccountService, IdValidator,
     @Override
     public List<Account> getAll() throws ServiceException {
         try {
-            return accountDao.getAll().stream().collect(
-                    Collectors.mapping(accountEntity -> fillBean(accountEntity), 
-                    Collectors.toList()));
+            return accountDao.getAll().stream()
+                    .map(this::fillBean).collect(Collectors.toList());
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message);

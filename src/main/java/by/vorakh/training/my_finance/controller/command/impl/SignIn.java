@@ -1,5 +1,7 @@
 package by.vorakh.training.my_finance.controller.command.impl;
 
+import static  by.vorakh.training.my_finance.validation.request.RequestValidator.isMultiArgsRequest;
+
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.controller.command.Command;

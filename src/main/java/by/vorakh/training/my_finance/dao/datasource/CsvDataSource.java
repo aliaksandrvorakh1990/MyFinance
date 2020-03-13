@@ -1,7 +1,5 @@
 package by.vorakh.training.my_finance.dao.datasource;
 
-import static by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException.*;
-
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -22,25 +20,25 @@ import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceExceptio
 public abstract class CsvDataSource<T, C extends Collection<T>> {
     
     private Convertor<String, T> csvToEntityConvertor;
-    private Convertor<T, String> entitycsvToConvertor;
+    private Convertor<T, String> entityToCsvConvertor;
     
     protected CsvDataSource(Convertor<String, T> csvToEntityConvertor, 
-            Convertor<T, String> entitycsvToConvertor) {
+            Convertor<T, String> entityToCsvConvertor) {
         this.csvToEntityConvertor = csvToEntityConvertor;
-        this.entitycsvToConvertor = entitycsvToConvertor;
+        this.entityToCsvConvertor = entityToCsvConvertor;
     }
 
     public Convertor<String, T> getCsvToEntityConvertor() {
         return csvToEntityConvertor;
     }
 
-    public Convertor<T, String> getEntitycsvToConvertor() {
-        return entitycsvToConvertor;
+    public Convertor<T, String> getEntityToCsvConvertor() {
+        return entityToCsvConvertor;
     }
     
     public Map<String, T> read(String path) throws DataSourceException{
         if (path == null) {
-            String message = READ_PROBLEM + "File path has null value.";
+            String message = "File path has null value.";
             throw new DataSourceException(message);
         }
         Map<String, T> map = new LinkedHashMap<String, T>();
@@ -51,7 +49,7 @@ public abstract class CsvDataSource<T, C extends Collection<T>> {
             });
                
         } catch (InvalidPathException | IOException e) {
-            String message = READ_PROBLEM + e.getMessage();
+            String message = e.getMessage();
             throw new DataSourceException(message, e);
         }
         return map;
@@ -61,17 +59,17 @@ public abstract class CsvDataSource<T, C extends Collection<T>> {
     
     public void write(T entity, String path) throws DataSourceException {
         if (entity == null) {
-            String message = WRITE_PROBLEM + "entity has null value.";
+            String message = "entity has null value.";
             throw new DataSourceException(message);
         }
         boolean append = true;
         try (Writer fileWriter = new FileWriter(path, append);
              BufferedWriter writer = new BufferedWriter(fileWriter);) {
-            String  csv = entitycsvToConvertor.converte(entity);
+            String  csv = entityToCsvConvertor.converte(entity);
             writer.write(csv);
             writer.newLine();
         } catch (ConvertorException|IOException e) {
-            String message = WRITE_PROBLEM + e.getMessage();
+            String message = e.getMessage();
             throw new DataSourceException(message, e);
         }
     }
@@ -80,14 +78,14 @@ public abstract class CsvDataSource<T, C extends Collection<T>> {
     public void write(C entities, String path) throws 
             DataSourceException {
         if (entities == null) {
-            String message = WRITE_PROBLEM + "entities has null value.";
+            String message = "Entities has null value.";
             throw new DataSourceException(message);
         }
         for  (T entity : entities) {
             try {
                 write(entity, path);
             } catch (DataSourceException e) {
-                String message = WRITE_PROBLEM + e.getMessage();
+                String message =  e.getMessage();
                 throw new DataSourceException(message, e);
             }
         }
@@ -95,7 +93,7 @@ public abstract class CsvDataSource<T, C extends Collection<T>> {
 
     public void clearFile(String path) throws DataSourceException {
         if (path == null) {
-            String message = CREAR_PROBLEM + "path has null value.";
+            String message = "path has null value.";
             throw new DataSourceException(message);
         }
         boolean append = false;
@@ -104,7 +102,7 @@ public abstract class CsvDataSource<T, C extends Collection<T>> {
              BufferedWriter writer = new BufferedWriter(fileWriter);) {
             writer.write("");
         } catch (IOException e) {
-            String message = CREAR_PROBLEM + e.getMessage();
+            String message = e.getMessage();
             throw new DataSourceException(message, e);
         }
     }

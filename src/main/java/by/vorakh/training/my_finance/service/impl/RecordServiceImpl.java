@@ -1,5 +1,8 @@
 package by.vorakh.training.my_finance.service.impl;
 
+import static by.vorakh.training.my_finance.validation.type.IdValidator.isAccountId;
+import static by.vorakh.training.my_finance.validation.type.IdValidator.isRecordId;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
@@ -18,10 +21,8 @@ import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
-import by.vorakh.training.my_finance.validation.type.IdValidator;
 
-public class RecordServiceImpl implements RecordService,
-        IdValidator {
+public class RecordServiceImpl implements RecordService {
 
     private AccountDAO accountDAO;
     private RecordDAO expenseDAO;
@@ -40,10 +41,9 @@ public class RecordServiceImpl implements RecordService,
     @Override
     public List<Record> getAll() throws ServiceException {
         try {
-            return expenseDAO.getAll().stream()
-                    .collect(Collectors.mapping(recordEntity -> 
-                            entityConvertor.converte(recordEntity), 
-                            Collectors.toList()));
+            return expenseDAO.getAll().stream().map(recordEntity -> 
+                    entityConvertor.converte(recordEntity))
+                    .collect(Collectors.toList());
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
@@ -67,7 +67,7 @@ public class RecordServiceImpl implements RecordService,
                         Collectors.mapping(recordEntity -> 
                                 entityConvertor.converte(recordEntity), 
                                 Collectors.toList()));
-                        accountExpenses.addAll(foundRecords);
+                accountExpenses.addAll(foundRecords);
             }
             return accountExpenses;
         } catch (DAOException e) {

@@ -1,10 +1,12 @@
 package by.vorakh.training.my_finance.convertor.impl.request;
 
+import static by.vorakh.training.my_finance.validation.request.RequestValidator.isMultiArgsRequest;
+import static by.vorakh.training.my_finance.validation.request.RequestValidator.isSingleArgRequest;
+
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.validation.request.RequestValidator;
 
-public class RequestToIdConvertor implements Convertor<String, String>, RequestValidator{
+public class RequestToIdConvertor implements Convertor<String, String> {
 
     private static final String REGEX = "&";
     private static final char ARG_DELIMETER = '=';

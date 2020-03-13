@@ -10,8 +10,8 @@ public class AccountEntityCsvDataSourceImpl extends AccountEntityCsvDataSource {
 
     public AccountEntityCsvDataSourceImpl(
             Convertor<String, AccountEntity> csvToEntityConvertor,
-            Convertor<AccountEntity, String> entitycsvToConvertor) {
-        super(csvToEntityConvertor, entitycsvToConvertor);
+            Convertor<AccountEntity, String> entityToCsvConvertor) {
+        super(csvToEntityConvertor, entityToCsvConvertor);
     }
 
     @Override

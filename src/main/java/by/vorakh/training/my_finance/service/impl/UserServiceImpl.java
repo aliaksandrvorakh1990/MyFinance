@@ -38,9 +38,9 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
     @Override
     public List<User> getAll() throws ServiceException {
         try {
-            return userDAO.getAll().stream().collect(
-                    Collectors.mapping(userEntity -> fillBean(userEntity), 
-                    Collectors.toList()));
+            return userDAO.getAll().stream().map(userEntity -> 
+                        entityConvertor.converte(userEntity))
+                    .collect(Collectors.toList());
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);

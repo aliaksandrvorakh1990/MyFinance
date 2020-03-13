@@ -1,18 +1,18 @@
 package by.vorakh.training.my_finance.convertor.impl.request;
 
+import static  by.vorakh.training.my_finance.validation.request.RequestValidator.isMultiArgsRequest;
+import static by.vorakh.training.my_finance.validation.type.CurrencyValidator.isCorrectCurrency;
+import static by.vorakh.training.my_finance.validation.type.NameValidator.isCorrectExpenseType;
+
 import java.math.BigDecimal;
 
-import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.ExpenseType;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.validation.request.RequestValidator;
-import by.vorakh.training.my_finance.validation.type.CurrencyValidator;
-import by.vorakh.training.my_finance.validation.type.NameValidator;
 
 public class RequestToExpenseRecordConvertor implements 
-        Convertor<String, Record>, RequestValidator, CurrencyValidator, 
-        NameValidator {
+        Convertor<String, Record> {
     
     private static final String REGEX = "&";
     private static final char ARG_DELIMETER = '=';

@@ -6,19 +6,21 @@ import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.controller.CommandName;
 
-public interface NameValidator {
+public class NameValidator {
+    
+    private NameValidator() {}
 
-    default boolean isCorrectAccountName(String str) {
+    public static boolean isCorrectAccountName(String str) {
         String regex ="[\\w]+";
         return ((str != null) && (str.matches(regex)));
     }
 
-    default boolean isCorrectLogin(String login) {
+    public static boolean isCorrectLogin(String login) {
         String regex ="^[a-zA-Z][a-zA-Z\\d]{3,19}?";
         return ((login != null) && (login.matches(regex)));
     }
     
-    default boolean isCorrectRole(String str) {
+    public static boolean isCorrectRole(String str) {
         boolean isCorrect = false;
         if (str != null) {
             for (UserRole role : UserRole.values()) {
@@ -31,7 +33,7 @@ public interface NameValidator {
         return isCorrect;
     }
     
-    default boolean isCorrectExpenseType(String str) {
+    public static boolean isCorrectExpenseType(String str) {
         boolean isCorrect = false;
         if (str != null) {
             for (ExpenseType type : ExpenseType.values()) {
@@ -44,7 +46,7 @@ public interface NameValidator {
         return isCorrect;
     }
     
-    default boolean isCorrectCommandName(String str, 
+    public static boolean isCorrectCommandName(String str, 
             Set<CommandName> commandNames) {
         boolean isCorect = false;
         if ((str != null) && (commandNames != null)) {
