@@ -4,15 +4,15 @@ import static by.vorakh.training.my_finance.validation.csv.AccountEntityCsvValid
 
 import java.math.BigDecimal;
 
+import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 
-public class CsvToAccountEntityConvertor implements  
-        Convertor<String, AccountEntity> {
+public class CsvToAccountConvertor implements  
+        Convertor<String, Account> {
 
     @Override
-    public AccountEntity converte(String object) {
+    public Account converte(String object) {
         if (!isCorrectAccountCsv(object)) {
             String message = "CVS has a wrong format for account entity";
             throw new ConvertorException(message);
@@ -22,7 +22,7 @@ public class CsvToAccountEntityConvertor implements
         String name = values[1];
         BigDecimal balance = new BigDecimal(values[2])
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
-        return new AccountEntity(id, name, balance);
+        return new Account(id, name, balance);
     }
 
 }

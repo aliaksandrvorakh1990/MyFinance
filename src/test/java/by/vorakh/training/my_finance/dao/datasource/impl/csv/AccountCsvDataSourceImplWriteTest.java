@@ -1,6 +1,6 @@
 package by.vorakh.training.my_finance.dao.datasource.impl.csv;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -13,15 +13,15 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.convertor.Convertor;
-import by.vorakh.training.my_finance.convertor.impl.csv.AccountEntityToCsvConvertor;
-import by.vorakh.training.my_finance.convertor.impl.csv.CsvToAccountEntityConvertor;
+import by.vorakh.training.my_finance.convertor.impl.csv.AccountToCsvConvertor;
+import by.vorakh.training.my_finance.convertor.impl.csv.CsvToAccountConvertor;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
-import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 
-public class AccountEntityCsvDataSourceImplWriteTest {
+public class AccountCsvDataSourceImplWriteTest {
     
-    private AccountEntityCsvDataSourceImpl ds;
+    private AccountCsvDataSourceImpl ds;
     private String path;
     private String expectedFilePath;
     private File expectedFile;
@@ -29,12 +29,12 @@ public class AccountEntityCsvDataSourceImplWriteTest {
 
     @Before
     public void init() throws IOException {
-        Convertor<String,  AccountEntity> csvToEntityConvertor = 
-                new CsvToAccountEntityConvertor();
-        Convertor< AccountEntity, String> entitycsvToConvertor = 
-                new AccountEntityToCsvConvertor();
-        ds = new AccountEntityCsvDataSourceImpl(
-                csvToEntityConvertor, entitycsvToConvertor);
+        Convertor<String, Account> csvToAccountConvertor = 
+                new CsvToAccountConvertor();
+        Convertor< Account, String> accountToCsvConvertor = 
+                new AccountToCsvConvertor();
+        ds = new AccountCsvDataSourceImpl(
+                csvToAccountConvertor, accountToCsvConvertor);
         
         path = "src/test/resources/csv/data_source_impl/test.csv";
         expectedFilePath = "src/test/resources/csv/data_source_impl"
@@ -56,7 +56,7 @@ public class AccountEntityCsvDataSourceImplWriteTest {
         String name = "MyFirstAccount";
         BigDecimal balance = new BigDecimal(100.00)
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
-        AccountEntity entity = new AccountEntity(id, name, balance);
+        Account entity = new Account(id, name, balance);
         ds.write(entity, path);
         byte[] expected = Files.readAllBytes(expectedFile.toPath());
         byte[] actual = Files.readAllBytes(actualFile.toPath());
@@ -70,8 +70,8 @@ public class AccountEntityCsvDataSourceImplWriteTest {
         String name = "MyFirstAccount";
         BigDecimal balance = new BigDecimal(100.00)
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
-        AccountEntity entity = new AccountEntity(id, name, balance);
-        Collection<AccountEntity> accounts = new ArrayList<AccountEntity>();
+        Account entity = new Account(id, name, balance);
+        Collection<Account> accounts = new ArrayList<Account>();
         accounts.add(entity);
         ds.write(accounts, path);
         byte[] expected = Files.readAllBytes(expectedFile.toPath());
