@@ -4,7 +4,7 @@ import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.UserDAO;
 import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
-import by.vorakh.training.my_finance.dao.datasource.csv.RecordEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.RecordCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.csv.UserEntityCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.factoty.DataSourceFactory;
 import by.vorakh.training.my_finance.dao.impl.csv.CsvAccountDAO;
@@ -50,10 +50,10 @@ public class DaoFactory {
     
     private static class RecordDAOBuilder {
 
-        private RecordEntityCsvDataSource recordDataSource;
+        private RecordCsvDataSource recordDataSource;
         private AccountEntityCsvDataSource accountDataSource;
         
-        RecordDAOBuilder setRecordDataSource(RecordEntityCsvDataSource 
+        RecordDAOBuilder setRecordDataSource(RecordCsvDataSource 
                 recordDataSource) {
             this.recordDataSource = recordDataSource;
             return this;
