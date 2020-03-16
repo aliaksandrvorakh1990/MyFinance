@@ -7,12 +7,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.datasource.csv.AccountCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.csv.RecordCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
-import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 
 public class CsvRecordDAO implements RecordDAO {
@@ -33,7 +33,7 @@ public class CsvRecordDAO implements RecordDAO {
         try {
             List<Record> allRecords = new ArrayList<Record>();
             String accountsPath = "./csv/accounts.csv";
-            for (AccountEntity account : accountDataSource
+            for (Account account : accountDataSource
                     .read(accountsPath).values()) {
                 String path = getPath(account.getId());
                 allRecords.addAll(recordDataSource.read(path).values());
