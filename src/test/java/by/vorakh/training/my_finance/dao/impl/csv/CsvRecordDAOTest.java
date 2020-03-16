@@ -1,7 +1,8 @@
 package by.vorakh.training.my_finance.dao.impl.csv;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,12 +20,12 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.dao.datasource.csv.AccountCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.csv.RecordCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
-import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 
 public class CsvRecordDAOTest {
@@ -40,7 +41,7 @@ public class CsvRecordDAOTest {
     
     private Map<String,Record> recordMap1;
     private Map<String,Record> recordMap2;
-    private Map<String,AccountEntity> accountMap;
+    private Map<String,Account> accountMap;
     private String path;
     private String path1;
     private String path2;
@@ -48,10 +49,10 @@ public class CsvRecordDAOTest {
     
     @Before
     public void init() {
-        accountMap = new LinkedHashMap<String, AccountEntity>();
-        AccountEntity account1 = new AccountEntity("MrRobot@1583824237692", 
+        accountMap = new LinkedHashMap<String, Account>();
+        Account account1 = new Account("MrRobot@1583824237692", 
                 "MyFirstAccount", new BigDecimal(100).setScale(2));
-        AccountEntity account2 = new AccountEntity("MrXXX@1583996205058", 
+        Account account2 = new Account("MrXXX@1583996205058", 
                 "Visa", new BigDecimal("150.99").setScale(2));
         accountMap.put(account1.getId(), account1);
         accountMap.put(account2.getId(), account2);

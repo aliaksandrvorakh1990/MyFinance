@@ -7,12 +7,10 @@ import java.util.stream.Collectors;
 import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.bean.Record;
-import by.vorakh.training.my_finance.convertor.Convertor;
+import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.UserDAO;
-import by.vorakh.training.my_finance.dao.entity.AccountEntity;
-import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.RecordService;
@@ -25,26 +23,23 @@ public class AccountServiceImpl implements AccountService {
     private UserDAO userDAO;
     private RecordDAO expenseDAO;
     private RecordService recordService;
-    private Convertor<AccountEntity, Account> entityConvertor;
-    private Convertor<Account, AccountEntity> beanConvertor;
+    
+    
 
     public AccountServiceImpl(AccountDAO accountDao, UserDAO userDAO, 
-            RecordDAO expenseDAO, RecordService recordService,
-            Convertor<AccountEntity, Account> entityConvertor, 
-            Convertor<Account, AccountEntity> beanConvertor) {
+            RecordDAO expenseDAO, RecordService recordService) {
         this.accountDao = accountDao;
         this.userDAO = userDAO;
         this.expenseDAO = expenseDAO;
         this.recordService = recordService;
-        this.entityConvertor = entityConvertor;
-        this.beanConvertor = beanConvertor;
     }
 
     @Override
     public List<Account> getAll() throws ServiceException {
         try {
             return accountDao.getAll().stream()
-                    .map(this::fillBean).collect(Collectors.toList());
+                    .peek(this::fillBean)
+                    .collect(Collectors.toList());
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message);
@@ -58,9 +53,9 @@ public class AccountServiceImpl implements AccountService {
             throw new ServiceException(message);
         }
         try {
-            return accountDao.getAll(userId).stream().collect(
-                    Collectors.mapping(accountEntity -> fillBean(accountEntity),
-                    Collectors.toList()));
+            return accountDao.getAll(userId).stream()
+                    .peek(this::fillBean)
+                    .collect(Collectors.toList());
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message);
@@ -74,12 +69,11 @@ public class AccountServiceImpl implements AccountService {
             throw new ServiceException(message);
         }
         try {
-            Account foundAccount = null;
-            AccountEntity account = accountDao.getById(id);
+            Account account = accountDao.getById(id);
             if (account != null) {
-                foundAccount = fillBean(account);
+                fillBean(account);
             }
-            return foundAccount;
+            return account;
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
@@ -95,7 +89,7 @@ public class AccountServiceImpl implements AccountService {
         try {
             String response = null;
             String userId = object.getId();
-            UserEntity selectedUser = userDAO.getById(userId);
+            User selectedUser = userDAO.getById(userId);
             long countSameName = accountDao.getAll(userId).stream()
                     .filter(account -> 
                             account.getName().equals(object.getName()))
@@ -109,7 +103,7 @@ public class AccountServiceImpl implements AccountService {
                         creatingTime);
                 Record firstRecord = new Record(recordId,
                         object.getBalance(), ExpenseType.INCOME);
-                accountDao.create(beanConvertor.converte(object));
+                accountDao.create(object);
                 expenseDAO.create(firstRecord);
                 response =object.getId();
             }
@@ -128,7 +122,7 @@ public class AccountServiceImpl implements AccountService {
         }
         try {
             Boolean response = null;
-            AccountEntity deletedAccount = accountDao.getById(id);
+            Account deletedAccount = accountDao.getById(id);
             if (deletedAccount != null) {
                 expenseDAO.deleteById(id);
                 response = accountDao.delete(id);
@@ -140,14 +134,12 @@ public class AccountServiceImpl implements AccountService {
         }
     }
     
-    private Account fillBean(AccountEntity entity) {
+    private void fillBean(Account account) {
         try {
-            Account account = entityConvertor.converte(entity);
             String id = account.getId();
             List<Record> accountRecords = recordService
                     .getAll(id);
             account.setExpenses(accountRecords);
-            return account;
         } catch (ServiceException e) {
             String message = e.getMessage();
             throw new BeanFillingException(message, e);

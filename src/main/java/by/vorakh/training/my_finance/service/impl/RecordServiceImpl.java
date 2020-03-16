@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.RecordDAO;
-import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
@@ -49,7 +49,7 @@ public class RecordServiceImpl implements RecordService {
         }
         try {
             List<Record> accountExpenses = new ArrayList<Record>();
-            AccountEntity account = accountDAO.getById(accountId);
+            Account account = accountDAO.getById(accountId);
             if (account != null) {
                 List<Record> foundRecords = expenseDAO.getAll(accountId)
                         .stream()
@@ -73,7 +73,7 @@ public class RecordServiceImpl implements RecordService {
         }
         try {
             List<Record> accountExpenses = new ArrayList<Record>();
-            AccountEntity account = accountDAO.getById(accountId);
+            Account account = accountDAO.getById(accountId);
             if (account != null) {
                 Stream<Record> recordEntities = expenseDAO
                         .getAll(accountId).stream();
@@ -112,7 +112,7 @@ public class RecordServiceImpl implements RecordService {
         try {
             String response = null;
             String id = object.getId();
-            AccountEntity seletedAccount = accountDAO.getById(id);
+            Account seletedAccount = accountDAO.getById(id);
             if (seletedAccount != null) {
                 BigDecimal balanse =seletedAccount.getBalance();
                 BigDecimal amount = object.getAmount();
@@ -143,7 +143,7 @@ public class RecordServiceImpl implements RecordService {
         try {
             Boolean response = null;
             String accountId = getAccountIdFrom(id);
-            AccountEntity seletedAccount = accountDAO.getById(accountId);
+            Account seletedAccount = accountDAO.getById(accountId);
             Record deletedRecord = expenseDAO.getById(id);
             if ((seletedAccount != null) && (deletedRecord != null)) {
                 BigDecimal balanse =seletedAccount.getBalance();

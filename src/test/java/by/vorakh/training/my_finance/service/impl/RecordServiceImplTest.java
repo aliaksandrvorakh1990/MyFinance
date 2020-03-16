@@ -14,11 +14,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.RecordDAO;
-import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 
@@ -32,17 +32,17 @@ public class RecordServiceImplTest {
     @InjectMocks
     private RecordServiceImpl service;
     
-    private List<AccountEntity> accounts; 
+    private List<Account> accounts; 
     private List<Record> records1; 
     private List<Record> records2;
    
     
     @Before
     public void init() {
-        accounts = new ArrayList<AccountEntity>();
-        AccountEntity account1 = new AccountEntity("MrRobot@1583824237692", 
+        accounts = new ArrayList<Account>();
+        Account account1 = new Account("MrRobot@1583824237692", 
                 "MyFirstAccount", new BigDecimal(100).setScale(2));
-        AccountEntity account2 = new AccountEntity("MrXXX@1583996205058", 
+        Account account2 = new Account("MrXXX@1583996205058", 
                 "Visa", new BigDecimal("150.99").setScale(2));
         accounts.add(account1);
         accounts.add(account2);
@@ -89,7 +89,7 @@ public class RecordServiceImplTest {
         expected.add(new Record("MrXXX@1583996205058@1584000954826", 
                 new BigDecimal(45).setScale(2),ExpenseType.HEALTH));
         String id = "MrXXX@1583996205058";
-        when(accountDAO.getById(id)).thenReturn(new AccountEntity(
+        when(accountDAO.getById(id)).thenReturn(new Account(
                 "MrXXX@1583996205058", "Visa", 
                 new BigDecimal("150.99").setScale(2)));
         when(expenseDAO.getAll(id)).thenReturn(records2);
@@ -116,7 +116,7 @@ public class RecordServiceImplTest {
                 "MrXXX@1583996205058@1584000734766", 
                 new BigDecimal(140).setScale(2),ExpenseType.OTHER));
         when(accountDAO.getById("MrXXX@1583996205058")).thenReturn(
-                new AccountEntity("MrXXX@1583996205058", "Visa", 
+                new Account("MrXXX@1583996205058", "Visa", 
                         new BigDecimal("150.99").setScale(2)));
         when(expenseDAO.delete(id)).thenReturn(true);
         Boolean actual = service.deleteById(id);
