@@ -9,7 +9,7 @@ import java.util.Map;
 
 import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.dao.RecordDAO;
-import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.AccountCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.csv.RecordCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
@@ -20,10 +20,10 @@ public class CsvRecordDAO implements RecordDAO {
     private final static String PATH_FORMAT= "./csv/records/%s.csv";
     
     private RecordCsvDataSource recordDataSource;
-    private AccountEntityCsvDataSource accountDataSource;
+    private AccountCsvDataSource accountDataSource;
     
     public CsvRecordDAO(RecordCsvDataSource dataSource, 
-            AccountEntityCsvDataSource accountDataSource) {
+            AccountCsvDataSource accountDataSource) {
         this.recordDataSource = dataSource;
         this.accountDataSource = accountDataSource;
     }

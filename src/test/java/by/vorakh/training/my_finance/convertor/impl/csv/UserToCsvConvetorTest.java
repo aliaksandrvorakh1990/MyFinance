@@ -8,7 +8,7 @@ import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.dao.entity.UserEntity;
 
-public class UserEntityToCsvConvetorTest {
+public class UserToCsvConvetorTest {
 
     @Test
     public void testConverte_Correct_UserEntity() throws ConvertorException {
@@ -19,7 +19,7 @@ public class UserEntityToCsvConvetorTest {
                 + "978d7c846f4";
         UserRole role = UserRole.ADMIN;
         UserEntity user = new UserEntity(login, password, role);
-        UserEntityToCsvConvetor convetor = new UserEntityToCsvConvetor();
+        UserToCsvConvetor convetor = new UserToCsvConvetor();
         String actual = convetor.converte(user);
         assertEquals(expected, actual);
     }
@@ -28,7 +28,7 @@ public class UserEntityToCsvConvetorTest {
     public void testConverte_Null_UserEntity_ThrownException() throws 
             ConvertorException {
         UserEntity user = null;
-        UserEntityToCsvConvetor convetor = new UserEntityToCsvConvetor();
+        UserToCsvConvetor convetor = new UserToCsvConvetor();
         String actual = convetor.converte(user);
         assertNull(actual);
     }

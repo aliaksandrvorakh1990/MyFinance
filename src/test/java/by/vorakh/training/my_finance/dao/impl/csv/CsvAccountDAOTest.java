@@ -20,7 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.AccountCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
@@ -29,7 +29,7 @@ import by.vorakh.training.my_finance.dao.exception.DAOException;
 public class CsvAccountDAOTest {
     
     @Mock
-    private AccountEntityCsvDataSource dataSource;
+    private AccountCsvDataSource dataSource;
     
     @InjectMocks
     private CsvAccountDAO dao;

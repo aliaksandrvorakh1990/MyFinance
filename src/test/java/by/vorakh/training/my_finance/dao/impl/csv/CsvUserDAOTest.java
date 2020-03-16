@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 import by.vorakh.training.my_finance.bean.UserRole;
-import by.vorakh.training.my_finance.dao.datasource.csv.UserEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.UserCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
 import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
@@ -28,7 +28,7 @@ import by.vorakh.training.my_finance.dao.exception.DAOException;
 public class CsvUserDAOTest {
     
     @Mock
-    private UserEntityCsvDataSource dataSource;
+    private UserCsvDataSource dataSource;
 
     @InjectMocks
     private CsvUserDAO dao;

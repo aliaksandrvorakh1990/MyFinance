@@ -17,23 +17,23 @@ import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
 
-public abstract class CsvDataSource<T, C extends Collection<T>> {
+public abstract class AbstractDataSource<T, C extends Collection<T>> {
     
-    private Convertor<String, T> csvToEntityConvertor;
-    private Convertor<T, String> entityToCsvConvertor;
+    private Convertor<String, T> formatToBeanConvertor;
+    private Convertor<T, String> beanToFormatConvertor;
     
-    protected CsvDataSource(Convertor<String, T> csvToEntityConvertor, 
-            Convertor<T, String> entityToCsvConvertor) {
-        this.csvToEntityConvertor = csvToEntityConvertor;
-        this.entityToCsvConvertor = entityToCsvConvertor;
+    protected AbstractDataSource(Convertor<String, T> formatToBeanConvertor, 
+            Convertor<T, String> beanToFormatConvertor) {
+        this.formatToBeanConvertor = formatToBeanConvertor;
+        this.beanToFormatConvertor = beanToFormatConvertor;
     }
 
-    public Convertor<String, T> getCsvToEntityConvertor() {
-        return csvToEntityConvertor;
+    public Convertor<String, T> getFormatToBeanConvertor() {
+        return formatToBeanConvertor;
     }
 
-    public Convertor<T, String> getEntityToCsvConvertor() {
-        return entityToCsvConvertor;
+    public Convertor<T, String> getBeanToFormatConvertor() {
+        return beanToFormatConvertor;
     }
     
     public Map<String, T> read(String path) throws DataSourceException{
@@ -44,7 +44,7 @@ public abstract class CsvDataSource<T, C extends Collection<T>> {
         Map<String, T> map = new LinkedHashMap<String, T>();
         try (Stream<String> stream = Files.lines(Paths.get(path))) {
             stream.filter(csv -> !csv.isEmpty()).forEach(csv -> {
-                    T entity = csvToEntityConvertor.converte(csv);
+                    T entity = formatToBeanConvertor.converte(csv);
                     addTo(map, entity);
             });
                
@@ -65,7 +65,7 @@ public abstract class CsvDataSource<T, C extends Collection<T>> {
         boolean append = true;
         try (Writer fileWriter = new FileWriter(path, append);
              BufferedWriter writer = new BufferedWriter(fileWriter);) {
-            String  csv = entityToCsvConvertor.converte(entity);
+            String  csv = beanToFormatConvertor.converte(entity);
             writer.write(csv);
             writer.newLine();
         } catch (ConvertorException|IOException e) {

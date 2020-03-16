@@ -1,16 +1,16 @@
 package by.vorakh.training.my_finance.convertor.impl.csv;
 
-import static by.vorakh.training.my_finance.validation.dao_entity.UserEntityValidator.isCorrectEntity;
+import static by.vorakh.training.my_finance.validation.bean.UserValidator.isCorrectForWriting;
 
+import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.dao.entity.UserEntity;
 
-public class UserEntityToCsvConvetor implements Convertor<UserEntity, String> {
+public class UserToCsvConvetor implements Convertor<User, String> {
 
     @Override
-    public String converte(UserEntity object) {
-        if (!isCorrectEntity(object)) {
+    public String converte(User object) {
+        if (!isCorrectForWriting(object)) {
             String message ="UserEntity has null value or One and more fields "
                     + "have null value.";
             throw new ConvertorException(message);

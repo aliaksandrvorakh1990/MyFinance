@@ -12,7 +12,6 @@ import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.UserDAO;
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
-import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.AccountService;
@@ -108,7 +107,7 @@ public class AccountServiceImpl implements AccountService {
                 object.setId(accountId);
                 String recordId = String.format("%s@%s", accountId,
                         creatingTime);
-                RecordEntity firstRecord = new RecordEntity(recordId,
+                Record firstRecord = new Record(recordId,
                         object.getBalance(), ExpenseType.INCOME);
                 accountDao.create(beanConvertor.converte(object));
                 expenseDAO.create(firstRecord);

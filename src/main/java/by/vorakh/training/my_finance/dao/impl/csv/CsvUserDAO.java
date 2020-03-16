@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import by.vorakh.training.my_finance.dao.UserDAO;
-import by.vorakh.training.my_finance.dao.datasource.csv.UserEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.UserCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
 import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
@@ -16,9 +16,9 @@ public class CsvUserDAO implements UserDAO {
     
     private final static String PATH= "./csv/users.csv";
     
-    private UserEntityCsvDataSource dataSource;
+    private UserCsvDataSource dataSource;
 
-    public CsvUserDAO(UserEntityCsvDataSource dataSource) {
+    public CsvUserDAO(UserCsvDataSource dataSource) {
         this.dataSource = dataSource;
     }
 

@@ -6,7 +6,7 @@ public class AccountValidator {
     
     private AccountValidator() {}
     
-    public static boolean isCorrectForConverting(Account account) {
+    public static boolean isCorrectForWriting(Account account) {
         return ((account != null) && ((account.getId() != null) 
                 && (account.getName() != null) 
                 && (account.getBalance() != null)));

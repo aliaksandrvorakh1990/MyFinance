@@ -9,9 +9,9 @@ import by.vorakh.training.my_finance.dao.datasource.csv.AccountCsvDataSource;
 public class AccountCsvDataSourceImpl extends AccountCsvDataSource {
 
     public AccountCsvDataSourceImpl(
-            Convertor<String, Account> csvToEntityConvertor,
-            Convertor<Account, String> entityToCsvConvertor) {
-        super(csvToEntityConvertor, entityToCsvConvertor);
+            Convertor<String, Account> formatToBeanConvertor,
+            Convertor<Account, String> beanToFormatConvertor) {
+        super(formatToBeanConvertor, beanToFormatConvertor);
     }
 
     @Override

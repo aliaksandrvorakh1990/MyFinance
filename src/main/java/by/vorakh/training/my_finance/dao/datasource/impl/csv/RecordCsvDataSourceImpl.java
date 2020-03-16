@@ -8,10 +8,9 @@ import by.vorakh.training.my_finance.dao.datasource.csv.RecordCsvDataSource;
 
 public class RecordCsvDataSourceImpl extends RecordCsvDataSource {
 
-    public RecordCsvDataSourceImpl(
-            Convertor<String, Record> csvToEntityConvertor,
-            Convertor<Record, String> entityToCsvConvertor) {
-        super(csvToEntityConvertor, entityToCsvConvertor);
+    public RecordCsvDataSourceImpl(Convertor<String, Record> formatToBeanConvertor,
+            Convertor<Record, String> beanToFormatConvertor) {
+        super(formatToBeanConvertor, beanToFormatConvertor);
     }
 
     @Override

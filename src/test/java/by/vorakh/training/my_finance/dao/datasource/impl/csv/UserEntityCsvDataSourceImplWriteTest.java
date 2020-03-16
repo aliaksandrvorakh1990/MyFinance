@@ -14,14 +14,14 @@ import org.junit.Test;
 
 import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.convertor.Convertor;
-import by.vorakh.training.my_finance.convertor.impl.csv.CsvToUserEntityConvetor;
-import by.vorakh.training.my_finance.convertor.impl.csv.UserEntityToCsvConvetor;
+import by.vorakh.training.my_finance.convertor.impl.csv.CsvToUserConvetor;
+import by.vorakh.training.my_finance.convertor.impl.csv.UserToCsvConvetor;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
 import by.vorakh.training.my_finance.dao.entity.UserEntity;
 
 public class UserEntityCsvDataSourceImplWriteTest {
     
-    UserEntityCsvDataSourceImpl ds;
+    UserCsvDataSourceImpl ds;
     private String path;
     private String expectedFilePath;
     private File expectedFile;
@@ -30,10 +30,10 @@ public class UserEntityCsvDataSourceImplWriteTest {
     @Before
     public void init() throws IOException {
         Convertor<String, UserEntity> csvToEntityConvertor = 
-                new CsvToUserEntityConvetor();
+                new CsvToUserConvetor();
         Convertor<UserEntity, String> entitycsvToConvertor = 
-                new UserEntityToCsvConvetor();
-        ds = new UserEntityCsvDataSourceImpl(
+                new UserToCsvConvetor();
+        ds = new UserCsvDataSourceImpl(
                 csvToEntityConvertor, entitycsvToConvertor);
         path = "src/test/resources/csv/data_source_impl/test.csv";
         expectedFilePath = "src/test/resources/csv/data_source_impl"

@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import by.vorakh.training.my_finance.dao.AccountDAO;
-import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.AccountCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
@@ -17,9 +17,9 @@ public class CsvAccountDAO implements AccountDAO {
     
     private final static String PATH= "./csv/accounts.csv";
     
-    private AccountEntityCsvDataSource dataSource;
+    private AccountCsvDataSource dataSource;
 
-    public CsvAccountDAO(AccountEntityCsvDataSource dataSource) {
+    public CsvAccountDAO(AccountCsvDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
