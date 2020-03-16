@@ -12,12 +12,10 @@ import java.util.stream.Stream;
 
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.bean.Record;
-import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
 import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
-import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.RecordService;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
@@ -26,24 +24,16 @@ public class RecordServiceImpl implements RecordService {
 
     private AccountDAO accountDAO;
     private RecordDAO expenseDAO;
-    private Convertor<RecordEntity, Record> entityConvertor;
-    private Convertor<Record, RecordEntity> beanConvertor;
 
-    public RecordServiceImpl(AccountDAO accountDAO, RecordDAO expenseDAO,
-            Convertor<RecordEntity, Record> entityConvertor, 
-            Convertor<Record, RecordEntity> beanConvertor) {
+    public RecordServiceImpl(AccountDAO accountDAO, RecordDAO expenseDAO) {
         this.accountDAO = accountDAO;
         this.expenseDAO = expenseDAO;
-        this.entityConvertor = entityConvertor;
-        this.beanConvertor = beanConvertor;
     }
 
     @Override
     public List<Record> getAll() throws ServiceException {
         try {
-            return expenseDAO.getAll().stream().map(recordEntity -> 
-                    entityConvertor.converte(recordEntity))
-                    .collect(Collectors.toList());
+            return expenseDAO.getAll().stream().collect(Collectors.toList());
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
@@ -61,12 +51,9 @@ public class RecordServiceImpl implements RecordService {
             List<Record> accountExpenses = new ArrayList<Record>();
             AccountEntity account = accountDAO.getById(accountId);
             if (account != null) {
-                Stream<RecordEntity> recordEntities = expenseDAO
-                        .getAll(accountId).stream();
-                List<Record> foundRecords = recordEntities.collect(
-                        Collectors.mapping(recordEntity -> 
-                                entityConvertor.converte(recordEntity), 
-                                Collectors.toList()));
+                List<Record> foundRecords = expenseDAO.getAll(accountId)
+                        .stream()
+                        .collect(Collectors.toList());
                 accountExpenses.addAll(foundRecords);
             }
             return accountExpenses;
@@ -88,13 +75,11 @@ public class RecordServiceImpl implements RecordService {
             List<Record> accountExpenses = new ArrayList<Record>();
             AccountEntity account = accountDAO.getById(accountId);
             if (account != null) {
-                Stream<RecordEntity> recordEntities = expenseDAO
+                Stream<Record> recordEntities = expenseDAO
                         .getAll(accountId).stream();
                 List<Record> foundRecords = recordEntities
                         .filter(record -> record.getType().equals(type))
-                        .collect(Collectors.mapping(recordEntity -> 
-                                entityConvertor.converte(recordEntity), 
-                                Collectors.toList()));
+                        .collect(Collectors.toList());
                         accountExpenses.addAll(foundRecords);
             }
             return accountExpenses;
@@ -111,11 +96,7 @@ public class RecordServiceImpl implements RecordService {
             throw new ServiceException(message);
         }
         try {
-            RecordEntity record = expenseDAO.getById(id);
-            Record foundRecord = (record != null) 
-                    ? entityConvertor.converte(record) 
-                    : null;
-            return foundRecord;
+            return expenseDAO.getById(id);
         } catch (DAOException | ConvertorException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
@@ -144,7 +125,7 @@ public class RecordServiceImpl implements RecordService {
                 String recordId = String.format("%s@%s", id,
                         creatingTime);
                 object.setId(recordId);
-                response = expenseDAO.create(beanConvertor.converte(object));
+                response = expenseDAO.create(object);
             }
             return response;
         } catch (DAOException e) {
@@ -163,7 +144,7 @@ public class RecordServiceImpl implements RecordService {
             Boolean response = null;
             String accountId = getAccountIdFrom(id);
             AccountEntity seletedAccount = accountDAO.getById(accountId);
-            RecordEntity deletedRecord = expenseDAO.getById(id);
+            Record deletedRecord = expenseDAO.getById(id);
             if ((seletedAccount != null) && (deletedRecord != null)) {
                 BigDecimal balanse =seletedAccount.getBalance();
                 BigDecimal amount = deletedRecord.getAmount();

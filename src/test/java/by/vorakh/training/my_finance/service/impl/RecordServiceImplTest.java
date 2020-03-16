@@ -2,9 +2,6 @@ package by.vorakh.training.my_finance.service.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doCallRealMethod;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
@@ -19,12 +16,9 @@ import org.mockito.MockitoAnnotations;
 
 import by.vorakh.training.my_finance.bean.ExpenseType;
 import by.vorakh.training.my_finance.bean.Record;
-import by.vorakh.training.my_finance.convertor.Convertor;
-import by.vorakh.training.my_finance.convertor.impl.bean.RecordEntityToRecordConvertor;
 import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
-import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 
@@ -35,13 +29,12 @@ public class RecordServiceImplTest {
     @Mock()
     private RecordDAO expenseDAO;
     
-    private Convertor<RecordEntity, Record> entityConvertor;
     @InjectMocks
     private RecordServiceImpl service;
     
     private List<AccountEntity> accounts; 
-    private List<RecordEntity> records1; 
-    private List<RecordEntity> records2;
+    private List<Record> records1; 
+    private List<Record> records2;
    
     
     @Before
@@ -53,25 +46,20 @@ public class RecordServiceImplTest {
                 "Visa", new BigDecimal("150.99").setScale(2));
         accounts.add(account1);
         accounts.add(account2);
-        records1 = new ArrayList<RecordEntity>();
-        records2 = new ArrayList<RecordEntity>();
-        RecordEntity record11 = new RecordEntity(
-                "MrRobot@1583824237692@1583924900106", 
+        records1 = new ArrayList<Record>();
+        records2 = new ArrayList<Record>();
+        Record record11 = new Record("MrRobot@1583824237692@1583924900106", 
                 new BigDecimal(25).setScale(2),ExpenseType.COMMUNAL);
-        RecordEntity record12 = new RecordEntity(
-                "MrRobot@1583824237692@1583926330227", 
+        Record record12 = new Record("MrRobot@1583824237692@1583926330227", 
                 new BigDecimal(40).setScale(2),ExpenseType.FOOD);
         records1.add(record11);
         records1.add(record12);
-        RecordEntity record21 = new RecordEntity(
-                "MrXXX@1583996205058@1584000734766", 
+        Record record21 = new Record("MrXXX@1583996205058@1584000734766", 
                 new BigDecimal(140).setScale(2),ExpenseType.OTHER);
-        RecordEntity record22 = new RecordEntity(
-                "MrXXX@1583996205058@1584000954826", 
+        Record record22 = new Record("MrXXX@1583996205058@1584000954826", 
                 new BigDecimal(45).setScale(2),ExpenseType.HEALTH);
         records2.add(record21);
         records2.add(record22);
-        entityConvertor = mock(RecordEntityToRecordConvertor.class);
         MockitoAnnotations.initMocks(this);
     }
     
@@ -86,9 +74,7 @@ public class RecordServiceImplTest {
                 new BigDecimal(140).setScale(2),ExpenseType.OTHER));
         expected.add(new Record("MrXXX@1583996205058@1584000954826", 
                 new BigDecimal(45).setScale(2),ExpenseType.HEALTH));
-        doCallRealMethod().when(entityConvertor)
-                .converte(any(RecordEntity.class));
-        List<RecordEntity> daoResponse = new ArrayList<RecordEntity>(records1);
+        List<Record> daoResponse = new ArrayList<Record>(records1);
         daoResponse.addAll(records2);
         when(expenseDAO.getAll()).thenReturn(daoResponse);
         List<Record> actual = service.getAll();
@@ -106,8 +92,6 @@ public class RecordServiceImplTest {
         when(accountDAO.getById(id)).thenReturn(new AccountEntity(
                 "MrXXX@1583996205058", "Visa", 
                 new BigDecimal("150.99").setScale(2)));
-        doCallRealMethod().when(entityConvertor)
-                .converte(any(RecordEntity.class));
         when(expenseDAO.getAll(id)).thenReturn(records2);
         List<Record> actual = service.getAll(id);
         assertEquals(expected, actual);
@@ -118,12 +102,9 @@ public class RecordServiceImplTest {
         Record expected = new Record("MrXXX@1583996205058@1584000734766", 
                 new BigDecimal(140).setScale(2),ExpenseType.OTHER);
         String id = "MrXXX@1583996205058@1584000734766";
-        
-        when(expenseDAO.getById(id)).thenReturn(new RecordEntity(
+        when(expenseDAO.getById(id)).thenReturn(new Record(
                 "MrXXX@1583996205058@1584000734766", 
                 new BigDecimal(140).setScale(2),ExpenseType.OTHER));
-        doCallRealMethod().when(entityConvertor)
-                .converte((RecordEntity)any(RecordEntity.class));
         Record actual = service.getById(id);
         assertEquals(expected, actual);
     }
@@ -131,7 +112,7 @@ public class RecordServiceImplTest {
     @Test
     public void testDeleteById() throws DAOException, ServiceException {
         String id = "MrXXX@1583996205058@1584000734766";
-        when(expenseDAO.getById(id)).thenReturn(new RecordEntity(
+        when(expenseDAO.getById(id)).thenReturn(new Record(
                 "MrXXX@1583996205058@1584000734766", 
                 new BigDecimal(140).setScale(2),ExpenseType.OTHER));
         when(accountDAO.getById("MrXXX@1583996205058")).thenReturn(

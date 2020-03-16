@@ -1,20 +1,16 @@
 package by.vorakh.training.my_finance.service.factory;
 
 import by.vorakh.training.my_finance.bean.Account;
-import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.impl.bean.AccountEntityToAccountConvertor;
-import by.vorakh.training.my_finance.convertor.impl.bean.RecordEntityToRecordConvertor;
 import by.vorakh.training.my_finance.convertor.impl.bean.UserEntityToUserConvertor;
 import by.vorakh.training.my_finance.convertor.impl.entity.AccountToAccountEntityConvertor;
-import by.vorakh.training.my_finance.convertor.impl.entity.RecordToRecordEntityConvertor;
 import by.vorakh.training.my_finance.convertor.impl.entity.UserToUserEntityConvertor;
 import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.UserDAO;
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
-import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.factory.DaoFactory;
 import by.vorakh.training.my_finance.service.AccountService;
@@ -34,8 +30,6 @@ public class ServiceFactory {
         setRecordService(new RecordServiceBuilder()
                 .setAccountDAO(new DaoFactory().getAccountDAO())
                 .setExpenseDAO(new DaoFactory().getRecordDAO())
-                .setEntityConvertor(new RecordEntityToRecordConvertor())
-                .setBeanConvertor(new RecordToRecordEntityConvertor())
                 .build());
         setAccountService(new AccountServiceBuilder()
                 .setAccountDao(new DaoFactory().getAccountDAO())
@@ -57,9 +51,7 @@ public class ServiceFactory {
         
         private AccountDAO accountDAO;
         private RecordDAO expenseDAO;
-        private Convertor<RecordEntity, Record> entityConvertor;
-        private Convertor<Record, RecordEntity> beanConvertor;
-        
+       
         RecordServiceBuilder setAccountDAO(AccountDAO accountDAO) {
             this.accountDAO = accountDAO;
             return this;
@@ -70,21 +62,8 @@ public class ServiceFactory {
             return this;
         }
 
-        RecordServiceBuilder setEntityConvertor(
-                Convertor<RecordEntity, Record> entityConvertor) {
-            this.entityConvertor = entityConvertor;
-            return this;
-        }
-
-        RecordServiceBuilder setBeanConvertor(
-                Convertor<Record, RecordEntity> beanConvertor) {
-            this.beanConvertor = beanConvertor;
-            return this;
-        }
-
         RecordService build() {
-            return new RecordServiceImpl(accountDAO, expenseDAO, entityConvertor,
-                    beanConvertor);
+            return new RecordServiceImpl(accountDAO, expenseDAO);
         }
     }
     
