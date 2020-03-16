@@ -6,7 +6,7 @@ public class RecordValidator {
     
     private RecordValidator() {}
     
-    public static boolean isCorrectForConverting(Record record) {
+    public static boolean isCorrectForWriting(Record record) {
         return ((record != null) && ((record.getId() != null) 
                 && (record.getAmount() != null) 
                 && (record.getType() != null)));
