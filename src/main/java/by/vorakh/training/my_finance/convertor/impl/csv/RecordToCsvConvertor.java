@@ -1,6 +1,6 @@
 package by.vorakh.training.my_finance.convertor.impl.csv;
 
-import static by.vorakh.training.my_finance.validation.bean.RecordValidator.isCorrectForConverting;
+import static by.vorakh.training.my_finance.validation.bean.RecordValidator.isCorrectForWriting;
 
 import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.convertor.Convertor;
@@ -11,7 +11,7 @@ public class RecordToCsvConvertor implements
 
     @Override
     public String converte(Record object) {
-        if (!isCorrectForConverting(object)) {
+        if (!isCorrectForWriting(object)) {
             String message = "RecordEntity has null value or One and more fields "
                     + "have null value.";
             throw new ConvertorException(message);
