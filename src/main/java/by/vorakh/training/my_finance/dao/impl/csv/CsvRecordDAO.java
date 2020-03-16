@@ -1,38 +1,37 @@
 package by.vorakh.training.my_finance.dao.impl.csv;
 
-import static by.vorakh.training.my_finance.validation.dao_entity.RecordEntityValidator.isCorrectEntity;
+import static by.vorakh.training.my_finance.validation.bean.RecordValidator.isCorrectForWriting;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
-import by.vorakh.training.my_finance.dao.datasource.csv.RecordEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.RecordCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
 import by.vorakh.training.my_finance.dao.entity.AccountEntity;
-import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
-
 
 public class CsvRecordDAO implements RecordDAO {
     
     private final static String PATH_FORMAT= "./csv/records/%s.csv";
     
-    private RecordEntityCsvDataSource recordDataSource;
+    private RecordCsvDataSource recordDataSource;
     private AccountEntityCsvDataSource accountDataSource;
     
-    public CsvRecordDAO(RecordEntityCsvDataSource dataSource, 
+    public CsvRecordDAO(RecordCsvDataSource dataSource, 
             AccountEntityCsvDataSource accountDataSource) {
         this.recordDataSource = dataSource;
         this.accountDataSource = accountDataSource;
     }
 
     @Override
-    public List<RecordEntity> getAll() throws DAOException {
+    public List<Record> getAll() throws DAOException {
         try {
-            List<RecordEntity> allRecords = new ArrayList<RecordEntity>();
+            List<Record> allRecords = new ArrayList<Record>();
             String accountsPath = "./csv/accounts.csv";
             for (AccountEntity account : accountDataSource
                     .read(accountsPath).values()) {
@@ -47,14 +46,14 @@ public class CsvRecordDAO implements RecordDAO {
     }
     
     @Override
-    public List<RecordEntity> getAll(String accountId) throws DAOException {
+    public List<Record> getAll(String accountId) throws DAOException {
         if (accountId == null) {
             String message = "Account id has null value.";
             throw new DAOException(message);
         }
         try {
             String path = getPath(accountId);
-            return new ArrayList<RecordEntity>(recordDataSource.read(path).values());
+            return new ArrayList<Record>(recordDataSource.read(path).values());
         } catch (DataSourceException e) {
             String message = e.getMessage();
             throw new DAOException(message, e);
@@ -62,7 +61,7 @@ public class CsvRecordDAO implements RecordDAO {
     }
 
     @Override
-    public RecordEntity getById(String id) throws DAOException {
+    public Record getById(String id) throws DAOException {
         if (id == null) {
             String message = "User id has null value.";
             throw new DAOException(message);
@@ -70,7 +69,7 @@ public class CsvRecordDAO implements RecordDAO {
         try {
             String accountId = getAccountIdFrom(id);
             String path = getPath(accountId);
-            RecordEntity record = recordDataSource.read(path).get(id);
+            Record record = recordDataSource.read(path).get(id);
             return record;
         } catch (DataSourceException e) {
             String message = e.getMessage();
@@ -79,8 +78,8 @@ public class CsvRecordDAO implements RecordDAO {
     }
 
     @Override
-    public String create(RecordEntity object) throws DAOException {
-        if (!isCorrectEntity(object)) {
+    public String create(Record object) throws DAOException {
+        if (!isCorrectForWriting(object)) {
             String message = "AccountEntity has null value or one and more "
                     + "fields have null value.";
             throw new DAOException(message);
@@ -97,8 +96,8 @@ public class CsvRecordDAO implements RecordDAO {
     }
 
     @Override
-    public boolean update(RecordEntity object) throws DAOException {
-        if (!isCorrectEntity(object)) {
+    public boolean update(Record object) throws DAOException {
+        if (!isCorrectForWriting(object)) {
             String message = "AccountEntity has null value or one and more "
                     + "fields have null value.";
             throw new DAOException(message);
@@ -106,7 +105,7 @@ public class CsvRecordDAO implements RecordDAO {
         try {
             String accountId = getAccountIdFrom(object.getId());
             String path = getPath(accountId);
-            Map<String, RecordEntity> records = recordDataSource.read(path);
+            Map<String, Record> records = recordDataSource.read(path);
             String id = object.getId();
             boolean isUpdated = (records.replace(id, object) != null);
             if (isUpdated) {
@@ -129,7 +128,7 @@ public class CsvRecordDAO implements RecordDAO {
         try {
             String accountId = getAccountIdFrom(id);
             String path = getPath(accountId);
-            Map<String, RecordEntity> records = recordDataSource.read(path);
+            Map<String, Record> records = recordDataSource.read(path);
             boolean isDeleted = (records.remove(id) != null);
             if (isDeleted) {
                 recordDataSource.clearFile(path);
