@@ -1,6 +1,6 @@
 package by.vorakh.training.my_finance.dao.datasource.impl.csv;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
 
 import java.io.File;
 import java.io.IOException;
@@ -12,12 +12,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.impl.csv.CsvToUserConvetor;
 import by.vorakh.training.my_finance.convertor.impl.csv.UserToCsvConvetor;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
-import by.vorakh.training.my_finance.dao.entity.UserEntity;
 
 public class UserEntityCsvDataSourceImplWriteTest {
     
@@ -29,9 +29,9 @@ public class UserEntityCsvDataSourceImplWriteTest {
     
     @Before
     public void init() throws IOException {
-        Convertor<String, UserEntity> csvToEntityConvertor = 
+        Convertor<String, User> csvToEntityConvertor = 
                 new CsvToUserConvetor();
-        Convertor<UserEntity, String> entitycsvToConvertor = 
+        Convertor<User, String> entitycsvToConvertor = 
                 new UserToCsvConvetor();
         ds = new UserCsvDataSourceImpl(
                 csvToEntityConvertor, entitycsvToConvertor);
@@ -55,7 +55,7 @@ public class UserEntityCsvDataSourceImplWriteTest {
         String password = "3ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f"
                 + "978d7c846f4";
         UserRole role = UserRole.ADMIN;
-        UserEntity user = new UserEntity(login, password, role);
+        User user = new User(login, password, role);
         ds.write(user, path);
         byte[] expected = Files.readAllBytes(expectedFile.toPath());
         byte[] actual = Files.readAllBytes(actualFile.toPath());
@@ -69,8 +69,8 @@ public class UserEntityCsvDataSourceImplWriteTest {
         String password = "3ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f"
                 + "978d7c846f4";
         UserRole role = UserRole.ADMIN;
-        UserEntity user = new UserEntity(login, password, role);
-        Collection<UserEntity> users =  new ArrayList<UserEntity>();
+        User user = new User(login, password, role);
+        Collection<User> users =  new ArrayList<User>();
         users.add(user);
         ds.write(users, path);
         byte[] expected = Files.readAllBytes(expectedFile.toPath());
