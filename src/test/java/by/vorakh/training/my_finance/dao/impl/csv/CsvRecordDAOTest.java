@@ -1,7 +1,8 @@
 package by.vorakh.training.my_finance.dao.impl.csv;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -19,28 +20,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.ExpenseType;
-import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
-import by.vorakh.training.my_finance.dao.datasource.csv.RecordEntityCsvDataSource;
+import by.vorakh.training.my_finance.bean.Record;
+import by.vorakh.training.my_finance.dao.datasource.csv.AccountCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.RecordCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
-import by.vorakh.training.my_finance.dao.entity.AccountEntity;
-import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 
 public class CsvRecordDAOTest {
     
     @Mock
-    private RecordEntityCsvDataSource recordDataSource;
+    private RecordCsvDataSource recordDataSource;
     @Mock
-    private AccountEntityCsvDataSource accountDataSource;
+    private AccountCsvDataSource accountDataSource;
     
     
     @InjectMocks
     private CsvRecordDAO dao;
     
-    private Map<String,RecordEntity> recordMap1;
-    private Map<String,RecordEntity> recordMap2;
-    private Map<String,AccountEntity> accountMap;
+    private Map<String,Record> recordMap1;
+    private Map<String,Record> recordMap2;
+    private Map<String,Account> accountMap;
     private String path;
     private String path1;
     private String path2;
@@ -48,27 +49,27 @@ public class CsvRecordDAOTest {
     
     @Before
     public void init() {
-        accountMap = new LinkedHashMap<String, AccountEntity>();
-        AccountEntity account1 = new AccountEntity("MrRobot@1583824237692", 
+        accountMap = new LinkedHashMap<String, Account>();
+        Account account1 = new Account("MrRobot@1583824237692", 
                 "MyFirstAccount", new BigDecimal(100).setScale(2));
-        AccountEntity account2 = new AccountEntity("MrXXX@1583996205058", 
+        Account account2 = new Account("MrXXX@1583996205058", 
                 "Visa", new BigDecimal("150.99").setScale(2));
         accountMap.put(account1.getId(), account1);
         accountMap.put(account2.getId(), account2);
-        recordMap1 = new LinkedHashMap<String,RecordEntity>();
-        recordMap2 = new LinkedHashMap<String,RecordEntity>();
-        RecordEntity record11 = new RecordEntity(
+        recordMap1 = new LinkedHashMap<String,Record>();
+        recordMap2 = new LinkedHashMap<String,Record>();
+        Record record11 = new Record(
                 "MrRobot@1583824237692@1583924900106", 
                 new BigDecimal(25).setScale(2),ExpenseType.COMMUNAL);
-        RecordEntity record12 = new RecordEntity(
+        Record record12 = new Record(
                 "MrRobot@1583824237692@1583926330227", 
                 new BigDecimal(40).setScale(2),ExpenseType.FOOD);
         recordMap1.put(record11.getId(), record11);
         recordMap1.put(record12.getId(), record12);
-        RecordEntity record21 = new RecordEntity(
+        Record record21 = new Record(
                 "MrXXX@1583996205058@1584000734766", 
                 new BigDecimal(140).setScale(2),ExpenseType.OTHER);
-        RecordEntity record22 = new RecordEntity(
+        Record record22 = new Record(
                 "MrXXX@1583996205058@1584000954826", 
                 new BigDecimal(45).setScale(2),ExpenseType.HEALTH);
         recordMap2.put(record21.getId(), record21);
@@ -81,51 +82,51 @@ public class CsvRecordDAOTest {
 
     @Test
     public void testGetAll() throws DataSourceException, DAOException {
-        List<RecordEntity> expected = new ArrayList<>();
-        expected.add(new RecordEntity("MrRobot@1583824237692@1583924900106", 
+        List<Record> expected = new ArrayList<>();
+        expected.add(new Record("MrRobot@1583824237692@1583924900106", 
                 new BigDecimal(25).setScale(2),ExpenseType.COMMUNAL));
-        expected.add(new RecordEntity("MrRobot@1583824237692@1583926330227", 
+        expected.add(new Record("MrRobot@1583824237692@1583926330227", 
                 new BigDecimal(40).setScale(2),ExpenseType.FOOD));
-        expected.add(new RecordEntity("MrXXX@1583996205058@1584000734766", 
+        expected.add(new Record("MrXXX@1583996205058@1584000734766", 
                 new BigDecimal(140).setScale(2),ExpenseType.OTHER));
-        expected.add(new RecordEntity("MrXXX@1583996205058@1584000954826", 
+        expected.add(new Record("MrXXX@1583996205058@1584000954826", 
                 new BigDecimal(45).setScale(2),ExpenseType.HEALTH));
         when(accountDataSource.read(path)).thenReturn(accountMap);
         when(recordDataSource.read(path1)).thenReturn(recordMap1);
         when(recordDataSource.read(path2)).thenReturn(recordMap2);
-        List<RecordEntity>  actual = dao.getAll();
+        List<Record>  actual = dao.getAll();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetAll_Account_ID() throws DataSourceException, 
             DAOException {
-        List<RecordEntity> expected = new ArrayList<>();
-        expected.add(new RecordEntity("MrRobot@1583824237692@1583924900106", 
+        List<Record> expected = new ArrayList<>();
+        expected.add(new Record("MrRobot@1583824237692@1583924900106", 
                 new BigDecimal(25).setScale(2),ExpenseType.COMMUNAL));
-        expected.add(new RecordEntity("MrRobot@1583824237692@1583926330227", 
+        expected.add(new Record("MrRobot@1583824237692@1583926330227", 
                 new BigDecimal(40).setScale(2),ExpenseType.FOOD));
         when(recordDataSource.read(path1)).thenReturn(recordMap1);
         String accountId = "MrRobot@1583824237692";
-        List<RecordEntity> actual = dao.getAll(accountId);
+        List<Record> actual = dao.getAll(accountId);
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetById() throws DataSourceException, DAOException {
-        RecordEntity expected = new RecordEntity(
+        Record expected = new Record(
                 "MrRobot@1583824237692@1583924900106", 
                 new BigDecimal(25).setScale(2),ExpenseType.COMMUNAL);
         String id = "MrRobot@1583824237692@1583924900106";
         when(recordDataSource.read(path1)).thenReturn(recordMap1);
-        RecordEntity actual = dao.getById(id);
+        Record actual = dao.getById(id);
         assertEquals(expected, actual);
     }
 
     @Test
     public void testCreate() throws DataSourceException, DAOException {
         String expected = "MrRobot@1583824237692@1583924900106";
-        RecordEntity newRecord = new RecordEntity(
+        Record newRecord = new Record(
                 "MrRobot@1583824237692@1583924900106", 
                 new BigDecimal(25).setScale(2),ExpenseType.COMMUNAL);
         
@@ -137,7 +138,7 @@ public class CsvRecordDAOTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testUpdate() throws DataSourceException, DAOException {
-        RecordEntity updatedRecord = new RecordEntity(
+        Record updatedRecord = new Record(
                 "MrRobot@1583824237692@1583924900106", 
                 new BigDecimal(250).setScale(2),ExpenseType.COMMUNAL);
         when(recordDataSource.read(path1)).thenReturn(recordMap1);

@@ -1,6 +1,6 @@
 package by.vorakh.training.my_finance.dao.datasource.impl.csv;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.util.LinkedHashMap;
@@ -10,23 +10,23 @@ import org.junit.Before;
 import org.junit.Test;
 
 import by.vorakh.training.my_finance.bean.ExpenseType;
+import by.vorakh.training.my_finance.bean.Record;
 import by.vorakh.training.my_finance.convertor.Convertor;
-import by.vorakh.training.my_finance.convertor.impl.csv.CsvToRecordEntityConvertor;
-import by.vorakh.training.my_finance.convertor.impl.csv.RecordEntityToCsvConvertor;
+import by.vorakh.training.my_finance.convertor.impl.csv.CsvToRecordConvertor;
+import by.vorakh.training.my_finance.convertor.impl.csv.RecordToCsvConvertor;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
-import by.vorakh.training.my_finance.dao.entity.RecordEntity;
 
-public class RecordEntityCsvDataSourceImplReadTest {
+public class RecordCsvDataSourceImplReadTest {
     
-    private RecordEntityCsvDataSourceImpl ds;
+    private RecordCsvDataSourceImpl ds;
     
     @Before
     public void init() {
-        Convertor<String, RecordEntity> csvToEntityConvertor = 
-                new CsvToRecordEntityConvertor();
-        Convertor<RecordEntity, String> entityToCsvConvertor = 
-                new RecordEntityToCsvConvertor();
-        ds = new RecordEntityCsvDataSourceImpl(
+        Convertor<String, Record> csvToEntityConvertor = 
+                new CsvToRecordConvertor();
+        Convertor<Record, String> entityToCsvConvertor = 
+                new RecordToCsvConvertor();
+        ds = new RecordCsvDataSourceImpl(
                 csvToEntityConvertor, entityToCsvConvertor);
     }
 
@@ -36,12 +36,12 @@ public class RecordEntityCsvDataSourceImplReadTest {
         BigDecimal amount = new BigDecimal(123.24)
                 .setScale(2, BigDecimal.ROUND_HALF_UP);
         ExpenseType type = ExpenseType.CAR;
-        RecordEntity expectedRecord = new RecordEntity(id, amount, type);
-        Map<String, RecordEntity> expected = 
-                new LinkedHashMap<String, RecordEntity>();
+        Record expectedRecord = new Record(id, amount, type);
+        Map<String, Record> expected = 
+                new LinkedHashMap<String, Record>();
         expected.put(id, expectedRecord);
         String path = "src/test/resources/csv/data_source_impl/records.csv";
-        Map<String, RecordEntity> actual = ds.read(path);
+        Map<String, Record> actual = ds.read(path);
         assertEquals(expected, actual);
     }
 

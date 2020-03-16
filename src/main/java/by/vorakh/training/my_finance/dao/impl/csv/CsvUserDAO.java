@@ -1,31 +1,31 @@
 package by.vorakh.training.my_finance.dao.impl.csv;
 
-import static by.vorakh.training.my_finance.validation.dao_entity.UserEntityValidator.isCorrectEntity;
+import static by.vorakh.training.my_finance.validation.bean.UserValidator.isCorrectForWriting;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.dao.UserDAO;
-import by.vorakh.training.my_finance.dao.datasource.csv.UserEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.UserCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
-import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 
 public class CsvUserDAO implements UserDAO {
     
     private final static String PATH= "./csv/users.csv";
     
-    private UserEntityCsvDataSource dataSource;
+    private UserCsvDataSource dataSource;
 
-    public CsvUserDAO(UserEntityCsvDataSource dataSource) {
+    public CsvUserDAO(UserCsvDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
-    public List<UserEntity> getAll() throws DAOException {
+    public List<User> getAll() throws DAOException {
         try {
-            return new ArrayList<UserEntity>(dataSource.read(PATH).values());
+            return new ArrayList<User>(dataSource.read(PATH).values());
         } catch (DataSourceException e) {
             String message = e.getMessage();
             throw new DAOException(message, e);
@@ -33,13 +33,13 @@ public class CsvUserDAO implements UserDAO {
     }
 
     @Override
-    public UserEntity getById(String id) throws DAOException {
+    public User getById(String id) throws DAOException {
         if (id == null) {
             String message = "User id has null value.";
             throw new DAOException(message);
         }
         try {
-            UserEntity user = dataSource.read(PATH).get(id);
+            User user = dataSource.read(PATH).get(id);
             return user;
         } catch (DataSourceException e) {
             String message = e.getMessage();
@@ -48,8 +48,8 @@ public class CsvUserDAO implements UserDAO {
     }
 
     @Override
-    public String create(UserEntity object) throws DAOException {
-        if (!isCorrectEntity(object)) {
+    public String create(User object) throws DAOException {
+        if (!isCorrectForWriting(object)) {
             String message = "UserEntity has null value or one and more "
                     + "fields have null value.";
             throw new DAOException(message);
@@ -64,14 +64,14 @@ public class CsvUserDAO implements UserDAO {
     }
 
     @Override
-    public boolean update(UserEntity object) throws DAOException {
-        if (!isCorrectEntity(object)) {
+    public boolean update(User object) throws DAOException {
+        if (!isCorrectForWriting(object)) {
             String message = "UserEntity has null value or one and more "
                     + "fields have null value.";
             throw new DAOException(message);
         }
         try {
-            Map<String, UserEntity> accounts = dataSource.read(PATH);
+            Map<String, User> accounts = dataSource.read(PATH);
             String id = object.getLogin();
             boolean isUpdated = (accounts.replace(id, object) != null);
             if (isUpdated) {
@@ -92,7 +92,7 @@ public class CsvUserDAO implements UserDAO {
             throw new DAOException(message);
         }
         try {
-            Map<String, UserEntity> accounts = dataSource.read(PATH);
+            Map<String, User> accounts = dataSource.read(PATH);
             boolean isDeleted = (accounts.remove(id) != null);
             if (isDeleted) {
                 dataSource.clearFile(PATH);

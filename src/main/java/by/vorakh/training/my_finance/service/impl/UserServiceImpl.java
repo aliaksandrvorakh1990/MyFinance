@@ -7,11 +7,9 @@ import java.util.stream.Collectors;
 import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;
-import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.crypto.Sha256Hasher;
 import by.vorakh.training.my_finance.crypto.exception.CryptoException;
 import by.vorakh.training.my_finance.dao.UserDAO;
-import by.vorakh.training.my_finance.dao.entity.UserEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.AccountService;
 import by.vorakh.training.my_finance.service.UserService;
@@ -22,24 +20,16 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
 
     private UserDAO userDAO ;
     private AccountService accountService;
-    private Convertor<UserEntity, User> entityConvertor;
-    private Convertor<User, UserEntity> beanConvertor;
 
-    public UserServiceImpl(UserDAO userDAO, AccountService accountService, 
-            Convertor<UserEntity, User> entityConvertor,
-            Convertor<User, UserEntity> beanConvertor) {
-        super();
+    public UserServiceImpl(UserDAO userDAO, AccountService accountService) {
         this.userDAO = userDAO;
         this.accountService = accountService;
-        this.entityConvertor = entityConvertor;
-        this.beanConvertor = beanConvertor;
     }
 
     @Override
     public List<User> getAll() throws ServiceException {
         try {
-            return userDAO.getAll().stream().map(userEntity -> 
-                        entityConvertor.converte(userEntity))
+            return userDAO.getAll().stream()
                     .collect(Collectors.toList());
         } catch (DAOException e) {
             String message = e.getMessage();
@@ -54,12 +44,11 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
             throw new ServiceException(message);
         }
         try {
-            User foundUser = null;
-            UserEntity user = userDAO.getById(id);
+            User user = userDAO.getById(id);
             if (user != null) {
-                foundUser = fillBean(user);
+                fillBean(user);
             }
-            return foundUser;
+            return user;
         } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
@@ -75,7 +64,7 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
             UserRole role  = null;
             String login = user.getLogin();
             String password = user.getPassword();
-            UserEntity foundUser = userDAO.getById(login);
+            User foundUser = userDAO.getById(login);
             if (foundUser != null) {
                 String encryptedPassword = getSHA(password);
                 String foundUserPassoword = foundUser.getPassword();
@@ -122,7 +111,7 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
             object.setPassword(encryptedPassword);
             boolean isContainLogin = userDAO.getById(login) != null;
             if (!isContainLogin) {
-                response = userDAO.create(beanConvertor.converte(object));
+                response = userDAO.create(object);
                 String accountId = object.getLogin();
                 String accoutnName = new String("MyFirstAccount");
                 BigDecimal startBalance = new BigDecimal(0).
@@ -164,14 +153,12 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
         }
     }
     
-    private User fillBean(UserEntity entity) {
+    private void fillBean(User user) {
         try {
-            User user = entityConvertor.converte(entity);
             String id = user.getLogin();
             List<Account> userAccounts = accountService
                     .getAll(id);
             user.setAccounts(userAccounts);
-            return user;
         } catch (ServiceException e) {
             String message = e.getMessage();
             throw new BeanFillingException(message, e);

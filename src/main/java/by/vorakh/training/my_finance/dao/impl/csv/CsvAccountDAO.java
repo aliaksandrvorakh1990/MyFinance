@@ -1,32 +1,32 @@
 package by.vorakh.training.my_finance.dao.impl.csv;
 
-import static by.vorakh.training.my_finance.validation.dao_entity.AccountEntityValidator.isCorrectEntity;
+import static by.vorakh.training.my_finance.validation.bean.AccountValidator.isCorrectForWriting;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.dao.AccountDAO;
-import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.AccountCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
-import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 
 public class CsvAccountDAO implements AccountDAO {
     
     private final static String PATH= "./csv/accounts.csv";
     
-    private AccountEntityCsvDataSource dataSource;
+    private AccountCsvDataSource dataSource;
 
-    public CsvAccountDAO(AccountEntityCsvDataSource dataSource) {
+    public CsvAccountDAO(AccountCsvDataSource dataSource) {
         this.dataSource = dataSource;
     }
 
     @Override
-    public List<AccountEntity> getAll() throws DAOException {
+    public List<Account> getAll() throws DAOException {
         try {
-            return new ArrayList<AccountEntity>(dataSource.read(PATH).values());
+            return new ArrayList<Account>(dataSource.read(PATH).values());
         } catch (DataSourceException e) {
             String message = e.getMessage();
             throw new DAOException(message, e);
@@ -34,7 +34,7 @@ public class CsvAccountDAO implements AccountDAO {
     }
     
     @Override
-    public List<AccountEntity> getAll(String userId) throws DAOException {
+    public List<Account> getAll(String userId) throws DAOException {
         if (userId == null) {
             String message = "User id has null value.";
             throw new DAOException(message);
@@ -51,13 +51,13 @@ public class CsvAccountDAO implements AccountDAO {
     }
 
     @Override
-    public AccountEntity getById(String id) throws DAOException {
+    public Account getById(String id) throws DAOException {
         if (id == null) {
             String message = "Account id has null value.";
             throw new DAOException(message);
         }
         try {
-            AccountEntity account = dataSource.read(PATH).get(id);
+            Account account = dataSource.read(PATH).get(id);
             return account;
         } catch (DataSourceException e) {
             String message = e.getMessage();
@@ -66,8 +66,8 @@ public class CsvAccountDAO implements AccountDAO {
     }
 
     @Override
-    public String create(AccountEntity object) throws DAOException {
-        if (!isCorrectEntity(object)) {
+    public String create(Account object) throws DAOException {
+        if (!isCorrectForWriting(object)) {
             String message = "AccountEntity has null value or one and more "
                     + "fields have null value.";
             throw new DAOException(message);
@@ -82,14 +82,14 @@ public class CsvAccountDAO implements AccountDAO {
     }
 
     @Override
-    public boolean update(AccountEntity object) throws DAOException {
-        if (!isCorrectEntity(object)) {
+    public boolean update(Account object) throws DAOException {
+        if (!isCorrectForWriting(object)) {
             String message = "AccountEntity has null value or one and more "
                     + "fields have null value.";
             throw new DAOException(message);
         }
         try {
-            Map<String, AccountEntity> accounts = dataSource.read(PATH);
+            Map<String, Account> accounts = dataSource.read(PATH);
             String id = object.getId();
             boolean isUpdated = (accounts.replace(id, object) != null);
             if (isUpdated) {
@@ -110,7 +110,7 @@ public class CsvAccountDAO implements AccountDAO {
             throw new DAOException(message);
         }
         try {
-            Map<String, AccountEntity> accounts = dataSource.read(PATH);
+            Map<String, Account> accounts = dataSource.read(PATH);
             boolean isDeleted = (accounts.remove(id) != null);
             if (isDeleted) {
                 dataSource.clearFile(PATH);

@@ -1,7 +1,8 @@
 package by.vorakh.training.my_finance.dao.impl.csv;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -15,36 +16,35 @@ import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
+import by.vorakh.training.my_finance.bean.Account;
+import by.vorakh.training.my_finance.dao.datasource.csv.AccountCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.exception.DataSourceException;
-import by.vorakh.training.my_finance.dao.entity.AccountEntity;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 
 @SuppressWarnings("unused")
 public class CsvAccountDAOTest {
     
     @Mock
-    private AccountEntityCsvDataSource dataSource;
+    private AccountCsvDataSource dataSource;
     
     @InjectMocks
     private CsvAccountDAO dao;
     
-    private Map<String,AccountEntity> accountMap;
+    private Map<String,Account> accountMap;
     private String path;
     
     @Before
     public void init() {
-        accountMap = new LinkedHashMap<String, AccountEntity>();
-        AccountEntity account1 = new AccountEntity("MrRobot@1583824237692", 
+        accountMap = new LinkedHashMap<String, Account>();
+        Account account1 = new Account("MrRobot@1583824237692", 
                 "MyFirstAccount", new BigDecimal(100).setScale(2));
-        AccountEntity account2 = new AccountEntity("MrXXX@1583996205058", 
+        Account account2 = new Account("MrXXX@1583996205058", 
                 "Visa", new BigDecimal("150.99").setScale(2));
-        AccountEntity account3 = new AccountEntity("MrXXX@1583998848244", 
+        Account account3 = new Account("MrXXX@1583998848244", 
                 "BelCard", new BigDecimal("230.44").setScale(2));
         path = "./csv/accounts.csv";
         accountMap.put(account1.getId(), account1);
@@ -55,45 +55,45 @@ public class CsvAccountDAOTest {
 
     @Test
     public void testGetAll() throws DAOException, DataSourceException {
-        List<AccountEntity> expected = new ArrayList<AccountEntity>();
-        expected.add(new AccountEntity("MrRobot@1583824237692", "MyFirstAccount",
+        List<Account> expected = new ArrayList<Account>();
+        expected.add(new Account("MrRobot@1583824237692", "MyFirstAccount",
                 new BigDecimal(100).setScale(2)));
-        expected.add(new AccountEntity("MrXXX@1583996205058", "Visa", 
+        expected.add(new Account("MrXXX@1583996205058", "Visa", 
                 new BigDecimal("150.99").setScale(2)));
-        expected.add(new AccountEntity("MrXXX@1583998848244", "BelCard", 
+        expected.add(new Account("MrXXX@1583998848244", "BelCard", 
                 new BigDecimal("230.44").setScale(2)));
         when(dataSource.read(path)).thenReturn(accountMap);
-        List<AccountEntity> actual = dao.getAll();
+        List<Account> actual = dao.getAll();
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetAllUserID() throws DataSourceException, DAOException {
-        List<AccountEntity> expected = new ArrayList<AccountEntity>();
-        expected.add(new AccountEntity("MrXXX@1583996205058", "Visa", 
+        List<Account> expected = new ArrayList<Account>();
+        expected.add(new Account("MrXXX@1583996205058", "Visa", 
                 new BigDecimal("150.99").setScale(2)));
-        expected.add(new AccountEntity("MrXXX@1583998848244", "BelCard", 
+        expected.add(new Account("MrXXX@1583998848244", "BelCard", 
                 new BigDecimal("230.44").setScale(2)));
         String userId = "MrXXX";
         when(dataSource.read(path)).thenReturn(accountMap);
-        List<AccountEntity> actual = dao.getAll(userId);
+        List<Account> actual = dao.getAll(userId);
         assertEquals(expected, actual);
     }
 
     @Test
     public void testGetById() throws DataSourceException, DAOException {
-        AccountEntity expected = new AccountEntity("MrRobot@1583824237692", 
+        Account expected = new Account("MrRobot@1583824237692", 
                 "MyFirstAccount", new BigDecimal(100).setScale(2));
         String id = "MrRobot@1583824237692";
         when(dataSource.read(path)).thenReturn(accountMap);
-        AccountEntity actual = dao.getById(id);
+        Account actual = dao.getById(id);
         assertEquals(expected, actual);
     }
 
     @Test
     public void testCreate() throws DataSourceException, DAOException {
         String expected = "MrXXX@1583999791975";
-        AccountEntity newAccount = new AccountEntity("MrXXX@1583999791975", 
+        Account newAccount = new Account("MrXXX@1583999791975", 
                 "VISA", new BigDecimal("204.56").setScale(2));
         String actual = dao.create(newAccount);
         verify(dataSource, times(1)).write(newAccount, path);
@@ -103,7 +103,7 @@ public class CsvAccountDAOTest {
     @SuppressWarnings("unchecked")
     @Test
     public void testUpdate() throws DataSourceException, DAOException {
-        AccountEntity updatedAccount = new AccountEntity("MrXXX@1583996205058", 
+        Account updatedAccount = new Account("MrXXX@1583996205058", 
                 "Visa", new BigDecimal("150.99").setScale(2));
         when(dataSource.read(path)).thenReturn(accountMap);
         boolean actual = dao.update(updatedAccount);

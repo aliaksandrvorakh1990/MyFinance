@@ -3,9 +3,9 @@ package by.vorakh.training.my_finance.dao.factory;
 import by.vorakh.training.my_finance.dao.AccountDAO;
 import by.vorakh.training.my_finance.dao.RecordDAO;
 import by.vorakh.training.my_finance.dao.UserDAO;
-import by.vorakh.training.my_finance.dao.datasource.csv.AccountEntityCsvDataSource;
-import by.vorakh.training.my_finance.dao.datasource.csv.RecordEntityCsvDataSource;
-import by.vorakh.training.my_finance.dao.datasource.csv.UserEntityCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.AccountCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.RecordCsvDataSource;
+import by.vorakh.training.my_finance.dao.datasource.csv.UserCsvDataSource;
 import by.vorakh.training.my_finance.dao.datasource.factoty.DataSourceFactory;
 import by.vorakh.training.my_finance.dao.impl.csv.CsvAccountDAO;
 import by.vorakh.training.my_finance.dao.impl.csv.CsvRecordDAO;
@@ -36,9 +36,9 @@ public class DaoFactory {
 
     private static class AccountDAOBuilder {
         
-        private AccountEntityCsvDataSource dataSource;
+        private AccountCsvDataSource dataSource;
         
-        AccountDAOBuilder setDataSource(AccountEntityCsvDataSource dataSource) {
+        AccountDAOBuilder setDataSource(AccountCsvDataSource dataSource) {
             this.dataSource = dataSource;
             return this;
         }
@@ -50,16 +50,16 @@ public class DaoFactory {
     
     private static class RecordDAOBuilder {
 
-        private RecordEntityCsvDataSource recordDataSource;
-        private AccountEntityCsvDataSource accountDataSource;
+        private RecordCsvDataSource recordDataSource;
+        private AccountCsvDataSource accountDataSource;
         
-        RecordDAOBuilder setRecordDataSource(RecordEntityCsvDataSource 
+        RecordDAOBuilder setRecordDataSource(RecordCsvDataSource 
                 recordDataSource) {
             this.recordDataSource = recordDataSource;
             return this;
         }
 
-        RecordDAOBuilder setAccountDataSource(AccountEntityCsvDataSource 
+        RecordDAOBuilder setAccountDataSource(AccountCsvDataSource 
                 accountDataSource) {
             this.accountDataSource = accountDataSource;
             return this;
@@ -72,9 +72,9 @@ public class DaoFactory {
     
     private static class UserDAOBuilder {
         
-        private UserEntityCsvDataSource dataSource;
+        private UserCsvDataSource dataSource;
 
-        UserDAOBuilder setDataSource(UserEntityCsvDataSource dataSource) {
+        UserDAOBuilder setDataSource(UserCsvDataSource dataSource) {
             this.dataSource = dataSource;
             return this;
         }

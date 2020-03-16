@@ -1,10 +1,7 @@
 package by.vorakh.training.my_finance.bean;
 
 import java.io.Serializable;
-
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Account implements Serializable {
@@ -127,26 +124,10 @@ public class Account implements Serializable {
             if (other.expenses != null) {
                 return false;
             }
-        } else if (!equals(expenses,other.expenses)) {
+        } else if (!expenses.equals(other.expenses)) {
             return false;
         }
         return true;
     }
     
-    private static boolean equals(List<Record> listA, List<Record> listB) {
-        boolean isEquals = false;
-        if (listA!=null && listB!=null) {
-            int sizeA = listA.size();
-            int sizeB = listB.size();
-            if (sizeA == sizeB) {
-                Record[] arrA= listA.toArray(new Record[sizeA]);
-                ArrayList<Record>  copyA = new ArrayList<>(Arrays.asList(arrA));
-                copyA.removeAll(listB);
-                if (copyA.isEmpty()) {
-                    isEquals= true;
-                }
-            }
-        }
-        return isEquals;
-    }
 }

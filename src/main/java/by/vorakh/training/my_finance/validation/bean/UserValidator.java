@@ -6,7 +6,7 @@ public class UserValidator {
     
     private UserValidator() {}
     
-    public static boolean isCorrectForConverting(User user) {
+    public static boolean isCorrectForWriting(User user) {
         return ((user != null) && ((user.getLogin() != null) 
                 && (user.getPassword() != null) 
                 && (user.getRole() != null)));

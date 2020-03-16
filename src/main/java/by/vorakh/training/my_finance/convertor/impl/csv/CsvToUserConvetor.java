@@ -2,15 +2,15 @@ package by.vorakh.training.my_finance.convertor.impl.csv;
 
 import static by.vorakh.training.my_finance.validation.csv.UserEntityCsvValidator.isCorrectUserCsv;
 
+import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;
 import by.vorakh.training.my_finance.convertor.Convertor;
 import by.vorakh.training.my_finance.convertor.exception.ConvertorException;
-import by.vorakh.training.my_finance.dao.entity.UserEntity;
 
-public class CsvToUserEntityConvetor implements Convertor<String, UserEntity> {
+public class CsvToUserConvetor implements Convertor<String, User> {
 
     @Override
-    public UserEntity converte(String object) {
+    public User converte(String object) {
         if (!isCorrectUserCsv(object)) {
             String message = "CVS has a wrong format for user entity";
             throw new ConvertorException(message);
@@ -19,7 +19,7 @@ public class CsvToUserEntityConvetor implements Convertor<String, UserEntity> {
         String login = values[0];
         String password = values[1];
         UserRole role = UserRole.valueOf(values[2]);
-        return new UserEntity(login, password, role);
+        return new User(login, password, role);
     }
 
 }
