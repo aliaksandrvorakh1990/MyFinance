@@ -1,8 +1,6 @@
 package by.vorakh.training.my_finance.bean;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class User implements Serializable {
@@ -114,26 +112,10 @@ public class User implements Serializable {
             if (other.accounts != null) {
                 return false;
             }
-        } else if (!equals(accounts ,other.accounts)) {
+        } else if (!accounts.equals(other.accounts)) {
             return false;
         }
         return true;
     }
-    
-    private boolean equals(List<Account> listA, List<Account> listB) {
-        boolean isEquals = false;
-        if (listA!=null && listB!=null) {
-            int sizeA = listA.size();
-            int sizeB = listB.size();
-            if (sizeA == sizeB) {
-                Account[] arrA= listA.toArray(new Account[sizeA]);
-                ArrayList<Account> copyA = new ArrayList<>(Arrays.asList(arrA));
-                copyA.removeAll(listB);
-                if (copyA.isEmpty()) {
-                    isEquals= true;
-                }
-            }   
-        }        
-        return isEquals;
-    }
+
 }
