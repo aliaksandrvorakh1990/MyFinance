@@ -15,8 +15,8 @@ public class UserToCsvConvetor implements Convertor<User, String> {
                     + "have null value.";
             throw new ConvertorException(message);
         }
-        return String.format("%s,%s,%s", object.getLogin(), 
-                object.getPassword(), object.getRole());
+        return String.join(",", object.getLogin(), object.getPassword(), 
+                object.getRole().name());
     }
 
 }
