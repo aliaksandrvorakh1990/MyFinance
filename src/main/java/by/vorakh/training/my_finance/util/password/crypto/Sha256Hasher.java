@@ -1,4 +1,4 @@
-package by.vorakh.training.my_finance.crypto;
+package by.vorakh.training.my_finance.util.password.crypto;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;
@@ -6,28 +6,32 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-import by.vorakh.training.my_finance.crypto.exception.CryptoException;
+import by.vorakh.training.my_finance.util.password.crypto.exception.CryptoException;
 
-public interface Sha256Hasher {
+public class Sha256Hasher {
+    
+    private Sha256Hasher() {}
 
-    default String getSHA(String password) throws CryptoException {
-        if ((password == null) || (password.isEmpty())) {
-            String message =  "Password length is ZERO or has null value.";
+    public static String getSHA(char[] password) throws CryptoException {
+        if (password == null) {
+            String message = "Unable to execute a password hashing. Password has a null value.";
             throw new CryptoException(message);
         }
         try {
+            String passwordAsString = new String(password);
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             Charset utf8Charset = StandardCharsets.UTF_8;
-            byte[] cryptedSymbols = md.digest(password.getBytes(utf8Charset));
+            byte[] cryptedSymbols = md.digest(passwordAsString.getBytes(utf8Charset));
             BigInteger number = new BigInteger(1, cryptedSymbols);
             StringBuilder hexString = new StringBuilder(number.toString(16));
-            while (hexString.length() < 32) {
+            while (hexString.length() < 64) {
                 hexString.insert(0, '0');
             }
             return hexString.toString();
         } catch (NoSuchAlgorithmException e) {
-            String message = e.getMessage();
+            String message = "Unable to execute a password hashing." + e.getMessage();
             throw new CryptoException(message, e);
         }
     }
+
 }

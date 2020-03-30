@@ -1,4 +1,4 @@
-package by.vorakh.training.my_finance.crypto.exception;
+package by.vorakh.training.my_finance.util.password.crypto.exception;
 
 public class CryptoException extends Exception {
 
