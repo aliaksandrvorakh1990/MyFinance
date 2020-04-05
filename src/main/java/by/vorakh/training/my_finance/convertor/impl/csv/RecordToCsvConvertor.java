@@ -16,8 +16,8 @@ public class RecordToCsvConvertor implements
                     + "have null value.";
             throw new ConvertorException(message);
         }
-        return String.format("%s,%s,%s", object.getId(), 
-                object.getAmount(), object.getType());
+        return String.join(",", object.getId(), object.getAmount().toString(), 
+                object.getType().name());
     }
 
 }

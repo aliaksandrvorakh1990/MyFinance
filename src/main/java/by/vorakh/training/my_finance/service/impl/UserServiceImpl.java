@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import by.vorakh.training.my_finance.bean.Account;
 import by.vorakh.training.my_finance.bean.User;
 import by.vorakh.training.my_finance.bean.UserRole;
-import by.vorakh.training.my_finance.crypto.Sha256Hasher;
-import by.vorakh.training.my_finance.crypto.exception.CryptoException;
 import by.vorakh.training.my_finance.dao.UserDAO;
 import by.vorakh.training.my_finance.dao.exception.DAOException;
 import by.vorakh.training.my_finance.service.AccountService;
@@ -16,7 +14,7 @@ import by.vorakh.training.my_finance.service.UserService;
 import by.vorakh.training.my_finance.service.exception.BeanFillingException;
 import by.vorakh.training.my_finance.service.exception.ServiceException;
 
-public class UserServiceImpl implements UserService, Sha256Hasher {
+public class UserServiceImpl implements UserService {
 
     private UserDAO userDAO ;
     private AccountService accountService;
@@ -65,15 +63,14 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
             String login = user.getLogin();
             String password = user.getPassword();
             User foundUser = userDAO.getById(login);
-            if (foundUser != null) {
-                String encryptedPassword = getSHA(password);
+            if (foundUser != null) { 
                 String foundUserPassoword = foundUser.getPassword();
-                if (encryptedPassword.equals(foundUserPassoword)) {
+                if (password.equals(foundUserPassoword)) {
                     role = foundUser.getRole();
                 }
             }
             return role;
-        } catch (CryptoException | DAOException e) {
+        } catch (DAOException e) {
             String message = e.getMessage();
             throw new ServiceException(message, e);
         }
@@ -107,8 +104,7 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
         String password = object.getPassword();
         try {
             String response = null;
-            String encryptedPassword = getSHA(password);
-            object.setPassword(encryptedPassword);
+            object.setPassword(password);
             boolean isContainLogin = userDAO.getById(login) != null;
             if (!isContainLogin) {
                 response = userDAO.create(object);
@@ -121,7 +117,7 @@ public class UserServiceImpl implements UserService, Sha256Hasher {
                 accountService.create(newAccount);
             }
             return response;
-        } catch (DAOException | ServiceException | CryptoException e) {
+        } catch (DAOException | ServiceException e) {
                 String message = e.getMessage();
                 throw new ServiceException(message, e);
         }

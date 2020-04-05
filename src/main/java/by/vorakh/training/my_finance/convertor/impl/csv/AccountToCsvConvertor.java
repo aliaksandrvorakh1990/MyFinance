@@ -16,8 +16,8 @@ public class AccountToCsvConvertor implements
                     + " fields have null value.";
             throw new ConvertorException(message);
         }
-        return String.format("%s,%s,%s", object.getId(), 
-                object.getName(), object.getBalance());
+        return String.join(",", object.getId(), object.getName(), 
+                object.getBalance().toString());
     }
 
 }
